@@ -1,1 +1,0 @@
-/usr/bin/gcc  -fPIC -g -Wall -pedantic -std=c99   -shared -Wl,-soname,libCreationEnv.so -o libCreationEnv.so CMakeFiles/CreationEnvShared.dir/CreationEnv.c.o -L/home/jeremy/Documents/jeuEDC/build/SDL_Ex -L/home/jeremy/Documents/jeuEDC/build/CreationEnv -L/home/jeremy/Documents/jeuEDC/build/main -L/usr/local/lib 
