@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 2.8)
+
+add_library(Creation_EnvShared SHARED Creation_Env.c)
+add_library(Creation_EnvStatic STATIC Creation_Env.c)
+
+set_target_properties(
+	Creation_EnvShared Creation_EnvStatic
+	PROPERTIES OUTPUT_NAME Creation_Env
+)
+

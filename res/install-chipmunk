@@ -1,0 +1,76 @@
+# Dans Chipmunk-6.2.1/src/CMakeLists.txt
+#if(BUILD_STATIC)
+#  add_library(chipmunk_static STATIC
+#    ${chipmunk_source_files}
+#  )
+#  ajouter --> target_link_libraries(chipmunk m) <--
+
+jeremy@jeremy-K50IN:~/Documents/Chipmunk-6.2.1$ cmake .
+jeremy@jeremy-K50IN:~/Documents/Chipmunk-6.2.1$ sudo make install
+[sudo] password for jeremy: 
+[ 32%] Built target chipmunk
+[ 65%] Built target chipmunk_static
+[100%] Built target chipmunk_demos
+Install the project...
+-- Install configuration: "Release"
+-- Up-to-date: /usr/local/lib/libchipmunk.so.6.2.1
+-- Up-to-date: /usr/local/lib/libchipmunk.so
+-- Up-to-date: /usr/local/lib/libchipmunk.a
+-- Up-to-date: /usr/local/include/chipmunk/cpSpace.h
+-- Up-to-date: /usr/local/include/chipmunk/cpVect.h
+-- Up-to-date: /usr/local/include/chipmunk/cpPolyShape.h
+-- Up-to-date: /usr/local/include/chipmunk/chipmunk_unsafe.h
+-- Up-to-date: /usr/local/include/chipmunk/cpBody.h
+-- Up-to-date: /usr/local/include/chipmunk/cpShape.h
+-- Up-to-date: /usr/local/include/chipmunk/cpArbiter.h
+-- Up-to-date: /usr/local/include/chipmunk/chipmunk_ffi.h
+-- Up-to-date: /usr/local/include/chipmunk/chipmunk_private.h
+-- Up-to-date: /usr/local/include/chipmunk/cpSpatialIndex.h
+-- Up-to-date: /usr/local/include/chipmunk/cpBB.h
+-- Up-to-date: /usr/local/include/chipmunk/chipmunk.h
+-- Up-to-date: /usr/local/include/chipmunk/chipmunk_types.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpRotaryLimitJoint.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpPivotJoint.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpSlideJoint.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpGrooveJoint.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpDampedRotarySpring.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpGearJoint.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpRatchetJoint.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpSimpleMotor.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpPinJoint.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpConstraint.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/cpDampedSpring.h
+-- Up-to-date: /usr/local/include/chipmunk/constraints/util.h
+
+jeremy@jeremy-K50IN:~/Documents/Chipmunk-6.2.1$ ldconfig
+jeremy@jeremy-K50IN:~/Documents/test-chipmunk/build$ rm -rf *
+jeremy@jeremy-K50IN:~/Documents/test-chipmunk/build$ cmake ../src
+-- The C compiler identification is GNU 4.7.2
+-- Check for working C compiler: /usr/bin/gcc
+-- Check for working C compiler: /usr/bin/gcc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/jeremy/Documents/test-chipmunk/build
+
+jeremy@jeremy-K50IN:~/Documents/test-chipmunk/build$ make debug
+Scanning dependencies of target debug
+[100%] Building debug version...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/jeremy/Documents/test-chipmunk/build
+[100%] Building C object programme/CMakeFiles/chipmunk-test.dir/chipmunk-test.c.o
+Linking C executable chipmunk-test
+[100%] Built target chipmunk-test
+Built target debug
+  OU -->  gcc -std=c99 chipmunk-test.c -I../chipmunk/include -L../chipmunk/lib -lchipmunk
+jeremy@jeremy-K50IN:~/Documents/test-chipmunk/build$ cd programme/
+jeremy@jeremy-K50IN:~/Documents/test-chipmunk/build/programme$ ./chipmunk-test 
+Time is  0.00. ballBody is at ( 0.00, 15.00). It's velocity is ( 0.00,  0.00)
+Time is  0.02. ballBody is at ( 0.00, 15.00). It's velocity is ( 0.00, -1.67)
+
+jeremy@jeremy-K50IN:~/Téléchargements$ sudo apt-get install libsdl1.2-dev
+jeremy@jeremy-K50IN:~/Documents/test-sdl$ gcc sdl-test.c -lSDLmain -lSDL
+$ gcc -g -Wall -pedantic -std=c99 *.c -I/usr/local/include/chipmunk -L/usr/local/lib/ -lchipmunk -lSDLmain -lSDL && ./a.out
+

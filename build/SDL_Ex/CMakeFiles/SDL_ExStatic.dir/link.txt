@@ -1,0 +1,2 @@
+/usr/bin/ar cr libSDL_Ex.a  CMakeFiles/SDL_ExStatic.dir/SDL_Ex.c.o
+/usr/bin/ranlib libSDL_Ex.a

@@ -1,0 +1,2 @@
+/usr/bin/ar cr libCreationEnv.a  CMakeFiles/CreationEnvStatic.dir/CreationEnv.c.o
+/usr/bin/ranlib libCreationEnv.a
