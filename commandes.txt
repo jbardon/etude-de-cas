@@ -1,25 +1,38 @@
+------------------------------------------------------------------------------------------
+				Première utilisation
+------------------------------------------------------------------------------------------
 Importer le projet
 git clone https://jeremy-lr@bitbucket.org/jeremy-lr/etude-de-cas.git
 
-Ajouter de nouveaux fichiers
+Lier le projet en ligne
+git remote add origin https://jeremy-lr@bitbucket.org/jeremy-lr/etude-de-cas.git
+
+------------------------------------------------------------------------------------------
+				Gestion des fichiers en local
+------------------------------------------------------------------------------------------
+Ajouter de nouveaux fichiers en local
 git add *
 
 Fichiers changés en local
 git status
 
-Dernières modif mises en ligne
+Déclarer une modification en local
+git commit * -m "commentaire" ou git commit * && taper commentaire && taper <echap>:wq
+
+------------------------------------------------------------------------------------------
+				Gestion des fichiers en ligne
+------------------------------------------------------------------------------------------
+/!\ A faire après un commit ou avoir fini de travailler /!\
+Mettre à jour les fichiers en ligne à partir du local 
+git push -u origin master 
+
+/!\ A faire avant de commencer à travailler /!\ 
+Mettre à jour les fichiers en local à partir de ceux en ligne
+git pull
+
+Dernières modifs mises en ligne
 git log
 
-Déclarer une modification en local
-git commit * -m "commentaire" ou git commit & taper commentaire && taper <echap>:wq
 
-Lier le projet en ligne
-git remote add origin https://jeremy-lr@bitbucket.org/jeremy-lr/etude-de-cas.git
-
-Mettre à jour les fichiers en ligne après un commit et avoir fini de travailler
-git push -u origin master
-
-Mettre à jour les fichiers en local avant de commencer à travailler
-git pull
 
 
