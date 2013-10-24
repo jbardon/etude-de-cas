@@ -26,7 +26,7 @@ git commit * -m "commentaire" ou git commit * && taper commentaire && taper <ech
 Mettre à jour les fichiers en ligne à partir du local 
 git push -u origin master 
 
-/!\ A faire avant de commencer à travailler /!\ 
+/!\ A faire avant de commencer à travailler /!\
 Mettre à jour les fichiers en local à partir de ceux en ligne
 git pull
 
