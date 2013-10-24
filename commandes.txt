@@ -17,7 +17,7 @@ Fichiers changés en local
 git status
 
 Déclarer une modification en local
-git commit * -m "commentaire" ou git commit * && taper commentaire && taper <echap>:wq
+git commit * -a -m "commentaire" ou git commit * && taper commentaire && taper <echap>:wq
 
 ------------------------------------------------------------------------------------------
 				Gestion des fichiers en ligne
