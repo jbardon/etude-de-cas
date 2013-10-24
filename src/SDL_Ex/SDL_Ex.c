@@ -38,11 +38,11 @@ SDL_Ex_Point point(int x, int y){
 void SDL_Ex_DessinerLigneHoriz(SDL_Surface* surf, int x, int y, int l, int e, Uint32 coul){
 	SDL_Rect rect;
 
-	rect.x = x; rect.y = y + e/2;
+	rect.x = x; rect.y = y - e/2;
 	rect.w = l; rect.h = e;	
-	
-	if(e > 1 && e%2 != 0){ //epaisseur impaire
-		rect.h++;
+
+	if(e > 1 && e%2 == 0){ //epaisseur paire
+		rect.y++;
 	}
 
 	SDL_FillRect(surf, &rect, coul);
@@ -51,11 +51,11 @@ void SDL_Ex_DessinerLigneHoriz(SDL_Surface* surf, int x, int y, int l, int e, Ui
 void SDL_Ex_DessinerLigneVert(SDL_Surface* surf, int x, int y, int h, int e, Uint32 coul){
 	SDL_Rect rect;
 
-	rect.x = x - e/2; rect.y = h - y;
+	rect.x = x - e/2; rect.y = y - h;
 	rect.w = e; rect.h = h;	
-	
-	if(e > 1 && e%2 != 0){ //epaisseur impaire
-		rect.w++;
+
+	if(e > 1 && e%2 == 0){ //epaisseur paire
+		rect.x++;
 	}
 
 	SDL_FillRect(surf, &rect, coul);

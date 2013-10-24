@@ -3,6 +3,7 @@
 
 #include <SDL/SDL.h>
 #include <config.h>
+#include <stdio.h> /* DEBUG */
 
 typedef struct _SDL_Ex_Point SDL_Ex_Point;
 struct _SDL_Ex_Point {

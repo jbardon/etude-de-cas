@@ -8,7 +8,7 @@ void CreationEnv_creerPanier(cpSpace* espace, SDL_Surface* surf, int dec){
   int y = dec;
   int l = LARGUEUR_ECRAN - 2*dec;
   int h = 0;
-  int e = 4; //epaisseur du trait (SDL)
+  int e = 11; //epaisseur du trait (SDL)
   
   //Création du sol qui est un élément statique---------------------------------
   panier[0] = cpSegmentShapeNew(espace->staticBody, cpv(x,y), 
@@ -17,7 +17,8 @@ void CreationEnv_creerPanier(cpSpace* espace, SDL_Surface* surf, int dec){
   cpSpaceAddShape(espace, panier[0]);
   
   y = HAUTEUR_ECRAN - y;
-  SDL_Ex_DessinerLigneHoriz(surf, x, y, l - dec, e, SDL_Ex_Couleur(0, 0, 0));
+
+  SDL_Ex_DessinerLigneHoriz(surf, x, y + e/2, l, e, SDL_Ex_Couleur(0, 0, 0));
   
   //Création du mur gauche------------------------------------------------------
   x = dec;
@@ -29,7 +30,7 @@ void CreationEnv_creerPanier(cpSpace* espace, SDL_Surface* surf, int dec){
   cpSpaceAddShape(espace, panier[1]);
   
   y = HAUTEUR_ECRAN - y;
-  SDL_Ex_DessinerLigneVert(surf, x - e/2, y, h - dec, e, SDL_Ex_Couleur(0, 0, 0));
+  SDL_Ex_DessinerLigneVert(surf, x - e/2, y + e, h, e, SDL_Ex_Couleur(0, 0, 0));
 
   //Création du mur droit-------------------------------------------------------
   x = LARGUEUR_ECRAN - dec;
@@ -41,8 +42,11 @@ void CreationEnv_creerPanier(cpSpace* espace, SDL_Surface* surf, int dec){
   cpSpaceAddShape(espace, panier[2]);
 
   y = HAUTEUR_ECRAN - y;
-  SDL_Ex_DessinerLigneVert(surf, x + e/2, y, h - dec, e, SDL_Ex_Couleur(0, 0, 0));
+  SDL_Ex_DessinerLigneVert(surf, x + e/2, y + e, h, e, SDL_Ex_Couleur(0, 0, 0));
 
+SDL_Ex_DessinerLigneHoriz(surf, 0, HAUTEUR_ECRAN-dec, LARGUEUR_ECRAN,1,SDL_Ex_Couleur(25,70,32));
+SDL_Ex_DessinerLigneVert(surf, dec, HAUTEUR_ECRAN, HAUTEUR_ECRAN,1,SDL_Ex_Couleur(25,70,32));
+SDL_Ex_DessinerLigneVert(surf, LARGUEUR_ECRAN-dec, HAUTEUR_ECRAN, LARGUEUR_ECRAN,1,SDL_Ex_Couleur(25,70,32));
 }
 
 void CreationEnv_supprimerPanier(){
