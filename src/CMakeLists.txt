@@ -34,20 +34,20 @@ enable_testing()
 
 include_directories(
 	"/usr/local/include/chipmunk"
-	"${CMAKE_CURRENT_SOURCE_DIR}/SDL_Ex"
-	"${CMAKE_CURRENT_SOURCE_DIR}/CreationEnv"
 	"${CMAKE_CURRENT_SOURCE_DIR}/main"
-	"${CMAKE_INSTALL_PREFIX}/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/GestionEnv"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Balle"
 )
 
 link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/SDL_Ex"
-	"${CMAKE_CURRENT_BINARY_DIR}/CreationEnv"
+	"/usr/lib/i386-linux-gnu"
 	"${CMAKE_CURRENT_BINARY_DIR}/main"
-	"${CMAKE_INSTALL_PREFIX}/lib"
+	"${CMAKE_CURRENT_BINARY_DIR}/GestionEnv"
+	"${CMAKE_CURRENT_BINARY_DIR}/Balle"
 )
 
-add_subdirectory(SDL_Ex)
-add_subdirectory(CreationEnv)
+add_subdirectory(GestionEnv)
+add_subdirectory(Balle)
 add_subdirectory(main)
+
 
