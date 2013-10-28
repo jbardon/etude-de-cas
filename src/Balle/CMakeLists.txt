@@ -8,3 +8,8 @@ set_target_properties(
 	PROPERTIES OUTPUT_NAME Balle
 )
 
+add_executable(TestBalle TestBalle.c)
+target_link_libraries(TestBalle Balle SDLmain SDL chipmunk SDL_gfx)
+
+add_test(TestBalle ./TestBalle)
+

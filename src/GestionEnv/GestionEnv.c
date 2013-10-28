@@ -1,7 +1,5 @@
 #include "GestionEnv.h"
 
-static cpShape* panier[3];
-
 void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf, int dec){
   
   int x = dec;
@@ -16,7 +14,7 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf, int dec){
   cpSpaceAddShape(espace, panier[0]);
   
   y = HAUTEUR_ECRAN - y + e/2;
-  thickLineColor(surf, x, y, x + l, y, e, SDL_MapRGB(surf->format, 0, 0, 255));
+  thickLineColor(surf, x - e, y, x + l, y, e, SDL_MapRGB(surf->format, 0, 0, 255));
 
   //Création du mur gauche------------------------------------------------------
   x = dec;
@@ -26,7 +24,7 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf, int dec){
   
   y = HAUTEUR_ECRAN - dec;
   h = 2 * dec;
-  thickLineColor(surf, x - e/2, y + e, x - e/2, h, e, SDL_MapRGB(surf->format, 0, 0, 255));
+  thickLineColor(surf, x - e, y + e, x - e, h, e, SDL_MapRGB(surf->format, 0, 0, 255));
 
   //Création du mur droit-------------------------------------------------------
   x = LARGUEUR_ECRAN - dec;
@@ -36,7 +34,7 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf, int dec){
 
   y = HAUTEUR_ECRAN - dec;
   h = 2 * dec;
-  thickLineColor(surf, x - e/2, y + e, x - e/2, h, e, SDL_MapRGB(surf->format, 0, 0, 255));
+  thickLineColor(surf, x, y + e, x, h, e, SDL_MapRGB(surf->format, 0, 0, 255));
 }
 
 void GestionEnv_supprimerPanier(){

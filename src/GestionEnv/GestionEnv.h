@@ -5,6 +5,8 @@
 #include <SDL/SDL_gfxPrimitives.h>
 #include <config.h>
 
+cpShape* panier[3];
+
 extern void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf, int decalage);
 extern void GestionEnv_supprimerPanier();
 

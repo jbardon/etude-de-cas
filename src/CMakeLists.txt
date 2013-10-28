@@ -33,7 +33,7 @@ include(CPack)
 enable_testing()
 
 include_directories(
-	"/usr/local/include/chipmunk"
+	"/usr/include/chipmunk"
 	"${CMAKE_CURRENT_SOURCE_DIR}/main"
 	"${CMAKE_CURRENT_SOURCE_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Balle"
