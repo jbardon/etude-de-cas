@@ -16,9 +16,7 @@ Balle* Balle_creer(cpSpace* espace, SDL_Surface* surf, int cx, int cy, int rayon
 		if(balle->canvas){
 
 			//Place la zone de dessin sur l'écran de jeu
-		    SDL_FillRect(balle->canvas, NULL, 0xFFFFFF);
-			SDL_Rect position = { cx - rayon, cy -rayon };
-			SDL_BlitSurface(balle->canvas, NULL, surf, &position);
+		    SDL_FillRect(balle->canvas, NULL, 0x0000FFFF);
 
 			//Caractéristiques physiques de la balle
 			cpFloat masse = 1;
@@ -37,6 +35,7 @@ Balle* Balle_creer(cpSpace* espace, SDL_Surface* surf, int cx, int cy, int rayon
 			balle->cx = cx;
 			balle->cy = cy;
 			balle->couleur = couleur;
+			balle->angle = 0;
 
 			//Créé la balle graphique
 			Balle_dessiner(balle);
@@ -50,6 +49,10 @@ Balle* Balle_creer(cpSpace* espace, SDL_Surface* surf, int cx, int cy, int rayon
 
 static int Balle_donneRayon(Balle* balle){
 	return cpCircleShapeGetRadius(balle->zoneCollision);
+}
+
+float Balle_donneAngle(Balle* balle){
+	return cpBodyGetAngle(cpShapeGetBody(balle->zoneCollision));
 }
 
 void Balle_supprimer(Balle* balle){
@@ -69,13 +72,15 @@ void Balle_dessiner(Balle* balle){
 	int rayon = Balle_donneRayon(balle);
 
 	//Dessin du cercle
-	filledCircleColor(balle->canvas, rayon -1, rayon, rayon, balle->couleur);
+	filledCircleColor(balle->canvas, rayon , rayon, rayon, balle->couleur);
+	lineColor(balle->canvas, 0, 20, rayon*2, 20, 0x0000FFFF);
 
 	//Dessin du caractère
 	//....
 
 	//Met à jour l'affichage
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
+
 	SDL_BlitSurface(balle->canvas, NULL, balle->ecranJeu, &position);
 	SDL_Flip(balle->ecranJeu);
 }
@@ -85,7 +90,7 @@ void Balle_effacer(Balle* balle){
 	int rayon = Balle_donneRayon(balle);
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
 
-	SDL_FillRect(balle->canvas, NULL, 0xFFFFFF);
+	SDL_FillRect(balle->canvas, NULL, 0x0000FFFF);	
 	SDL_BlitSurface(balle->canvas, NULL, balle->ecranJeu, &position);
 //	SDL_Flip(balle->ecranJeu);
 }
@@ -96,9 +101,19 @@ void Balle_deplacer(Balle* balle){
 
 	//Nouvelles coordonées de la balle
 	cpVect pos = Balle_donneCoordonnees(balle);
-	balle->cx = pos.x; 
-	balle->cy =  HAUTEUR_ECRAN - pos.y;
+	balle->cx = ((pos.x > LARGUEUR_ECRAN/2) ? floor(pos.x) : ceil(pos.x)); 
+	balle->cy =  HAUTEUR_ECRAN  - pos.y;
 
+	Balle_rotation(balle);
 	Balle_dessiner(balle);
 }
 
+void Balle_rotation(Balle* balle){
+	
+	float angle = Balle_donneAngle(balle);
+	float rotation = /*angle - balle->angle*/0.1;
+	
+	SDL_Surface* sav = balle->canvas;
+	balle->canvas = rotozoomSurface(balle->canvas, rotation, 1, 0);
+//	SDL_FreeSurface(sav);
+}

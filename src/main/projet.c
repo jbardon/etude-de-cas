@@ -25,8 +25,9 @@ int main(void){
     
   //Evolution des objets de l'espace dans le temps
   cpFloat timeStep = 1.0/60.0;
-  for(cpFloat time = 0; time < 6; time += timeStep){
+  for(cpFloat time = 0; time < 8; time += timeStep){
     cpVect pos = Balle_donneCoordonnees(balle1);
+	float ang = Balle_donneAngle(balle1);
     //cpVect vel = cpBodyGetVel(ballBody);
     //cpFloat ang = cpBodyGetAngle(ballBody);
     /*printf(
@@ -35,8 +36,8 @@ int main(void){
     );*/
 
     printf(
-      "Time is %5.2f. ballBody is at (%5.2f, %5.2f)\n",
-      time, pos.x, pos.y
+      "Temps %5.2f balle(%5.2f, %5.2f) angle %f\n",
+      time, pos.x, pos.y, ang
     );
 
     cpSpaceStep(space, timeStep);

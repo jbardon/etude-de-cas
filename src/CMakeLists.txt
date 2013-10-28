@@ -37,6 +37,8 @@ include_directories(
 	"${CMAKE_CURRENT_SOURCE_DIR}/main"
 	"${CMAKE_CURRENT_SOURCE_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Balle"
+	"${CMAKE_CURRENT_SOURCE_DIR}/TestSDL"
+	"${CMAKE_CURRENT_SOURCE_DIR}/TestChipmunk"
 )
 
 link_directories(
@@ -44,10 +46,13 @@ link_directories(
 	"${CMAKE_CURRENT_BINARY_DIR}/main"
 	"${CMAKE_CURRENT_BINARY_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_BINARY_DIR}/Balle"
+	"${CMAKE_CURRENT_BINARY_DIR}/TestSDL"	
+	"${CMAKE_CURRENT_BINARY_DIR}/TestChipmunk"
 )
 
 add_subdirectory(GestionEnv)
 add_subdirectory(Balle)
 add_subdirectory(main)
-
+add_subdirectory(TestChipmunk)
+add_subdirectory(TestSDL)
 
