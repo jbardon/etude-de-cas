@@ -7,6 +7,9 @@ git clone https://jeremy-lr@bitbucket.org/jeremy-lr/etude-de-cas.git
 Lier le projet en ligne
 git remote add origin https://jeremy-lr@bitbucket.org/jeremy-lr/etude-de-cas.git
 
+Remplissage d'infos
+git config --global user.email "jeremy.bardon@etudiant.univ-lr.fr"
+git config --global user.name "jeremy"
 ------------------------------------------------------------------------------------------
 				Gestion des fichiers en local
 ------------------------------------------------------------------------------------------
