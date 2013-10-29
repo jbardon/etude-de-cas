@@ -16,7 +16,6 @@ struct _Balle {
 	cpShape* zoneCollision;
 
 	int cx, cy;
-	float angle;
 	Uint32 couleur;
 
 	char lettre;
@@ -26,11 +25,11 @@ extern Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, int cx, int cy, in
 extern void Balle_supprimer(Balle* balle);
 
 extern cpVect Balle_donneCoordonnees(Balle* balle);
-extern float Balle_donneAngle(Balle* balle);
+extern float Balle_donneAngleDeg(Balle* balle);
 
 extern void Balle_dessiner(Balle* balle);
 extern void Balle_effacer(Balle* balle);
 extern void Balle_deplacer(Balle* balle);
-extern void Balle_rotation(Balle* balle);
+extern SDL_Surface* Balle_rotation(Balle* balle);
 
 #endif /* __BALLE_H__ */

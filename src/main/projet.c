@@ -27,7 +27,7 @@ int main(void){
   cpFloat timeStep = 1.0/60.0;
   for(cpFloat time = 0; time < 8; time += timeStep){
     cpVect pos = Balle_donneCoordonnees(balle1);
-	float ang = Balle_donneAngle(balle1);
+	float ang = Balle_donneAngleDeg(balle1);
     //cpVect vel = cpBodyGetVel(ballBody);
     //cpFloat ang = cpBodyGetAngle(ballBody);
     /*printf(

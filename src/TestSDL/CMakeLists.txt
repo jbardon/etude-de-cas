@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 
-add_executable(testSDL_gfx testSDL_gfx.c)
-target_link_libraries(testSDL_gfx SDLmain SDL SDL_gfx)
+add_executable(testTranslation testTranslation.c)
+target_link_libraries(testTranslation SDLmain SDL SDL_gfx)
 
-add_executable(testSDL_rotozoom testSDL_rotozoom.c)
-target_link_libraries(testSDL_rotozoom SDLmain SDL SDL_gfx)
+add_executable(testRotation testRotation.c)
+target_link_libraries(testRotation SDLmain SDL SDL_gfx)
 
-add_test(testSDL_gfx ./testSDL_gfx)
-add_test(testSDL_rotozoom ./testSDL_rotozoom)
+add_executable(testRotationTranslation testRotationTranslation.c)
+target_link_libraries(testRotationTranslation SDLmain SDL SDL_gfx)
+
+add_test(testTranslation ./testTranslation)
+add_test(testRotation ./testRotation)
+add_test(testRotationTranslation ./testRotationTranslation)

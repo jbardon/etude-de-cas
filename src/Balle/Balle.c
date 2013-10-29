@@ -16,7 +16,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, int cx, int cy, int rayon
 		if(balle->canvas){
 
 			//Place la zone de dessin sur l'écran de jeu
-		    SDL_FillRect(balle->canvas, NULL, 0x0000FFFF);
+		    SDL_FillRect(balle->canvas, NULL, /*0x0000FFFF*/0xFFFFFFFF);
 
 			//Caractéristiques physiques de la balle
 			cpFloat masse = 1;
@@ -35,7 +35,6 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, int cx, int cy, int rayon
 			balle->cx = cx;
 			balle->cy = cy;
 			balle->couleur = couleur;
-			balle->angle = 0;
 			balle->lettre = lettre;
 
 			//Créé la balle graphique
@@ -52,8 +51,13 @@ static int Balle_donneRayon(Balle* balle){
 	return cpCircleShapeGetRadius(balle->zoneCollision);
 }
 
-float Balle_donneAngle(Balle* balle){
-	return cpBodyGetAngle(cpShapeGetBody(balle->zoneCollision));
+float Balle_donneAngleDeg(Balle* balle){
+
+	float angleRad =  cpBodyGetAngle(cpShapeGetBody(balle->zoneCollision));
+	float nbTours = angleRad / M_PI; //M_PI dans SDL_gfx_rotozoom.h
+
+	//Angle en dégrés : partie décimale (enlève les tours complets) pui convertion en dégrés
+	return (nbTours - (int)nbTours) * 360; 
 }
 
 void Balle_supprimer(Balle* balle){
@@ -81,8 +85,8 @@ void Balle_dessiner(Balle* balle){
 
 	//Met à jour l'affichage
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
-
-	SDL_BlitSurface(balle->canvas, NULL, balle->ecranJeu, &position);
+	SDL_Surface* balleTourne = Balle_rotation(balle);
+	SDL_BlitSurface(balleTourne, NULL, balle->ecranJeu, &position);
 	SDL_Flip(balle->ecranJeu);
 }
 
@@ -91,7 +95,7 @@ void Balle_effacer(Balle* balle){
 	int rayon = Balle_donneRayon(balle);
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
 
-	SDL_FillRect(balle->canvas, NULL, 0x0000FFFF);	
+	SDL_FillRect(balle->canvas, NULL, 0xFFFFFFFF);	
 	SDL_BlitSurface(balle->canvas, NULL, balle->ecranJeu, &position);
 //	SDL_Flip(balle->ecranJeu);
 }
@@ -105,14 +109,11 @@ void Balle_deplacer(Balle* balle){
 	balle->cx = ((pos.x > LARGUEUR_ECRAN/2) ? floor(pos.x) : ceil(pos.x)); 
 	balle->cy =  HAUTEUR_ECRAN  - pos.y;
 
-//	Balle_rotation(balle);
 	Balle_dessiner(balle);
 }
 
-void Balle_rotation(Balle* balle){
+SDL_Surface* Balle_rotation(Balle* balle){
 	
-	//float angle = Balle_donneAngle(balle);
-	//float rotation = /*angle - balle->angle*/0.1;
-	
-	balle->canvas = rotozoomSurface(balle->canvas, 5, 1, 0);
+	float angle = Balle_donneAngleDeg(balle);	
+	return rotozoomSurface(balle->canvas, angle, 1, 0);
 }
