@@ -16,7 +16,7 @@ int main(void){
 
 /* DEBUT TEST */
 
-	Balle* balle = Balle_creer(space, ecran, 100, 100, 50, SDL_MapRGB(ecran->format, 0, 255, 255));
+	Balle* balle = Balle_creer(ecran, space, 100, 100, 50, SDL_MapRGB(ecran->format, 0, 255, 255), 'A');
 
 	sleep(1);
 	Balle_effacer(balle);

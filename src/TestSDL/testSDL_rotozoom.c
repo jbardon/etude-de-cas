@@ -14,7 +14,6 @@ int main(void){
   SDL_WM_SetCaption("Projet étude de cas", NULL);
 
 	SDL_Surface* s = SDL_CreateRGBSurface(SDL_HWSURFACE, 100, 100, 32, 0, 0, 0, 0);
-	SDL_FillRect(s, NULL, 0x00000000);
 	SDL_Rect position = { 50, 50 };
 	filledCircleColor(s, 50 , 50, 50, SDL_MapRGB(ecran->format, 255, 0, 255));
 	lineColor(s, 0, 20, 100, 20, 0x0000FFFF);
@@ -22,10 +21,17 @@ int main(void){
 
   SDL_Flip(ecran);
 
-	s = rotozoomSurface(s, 90, 1, 0);
-	SDL_Rect position2 = { 200, 150 };
-	SDL_BlitSurface(s, NULL, ecran, &position2);  
-	//filledCircleColor(s, 50 , 50, 50, SDL_MapRGB(ecran->format, 255, 0, 255));
+	SDL_Surface* s2 = rotozoomSurface(s, 90, 1, 0); 
+	position.x += 150;
+	SDL_BlitSurface(s2, NULL, ecran, &position);  
+
+  SDL_Flip(ecran);
+
+	//!\\ Il faut obligatoirement donner la surface d'origine s et non s2
+	//!\\ Sinon ça ne marche pas ...
+	SDL_Surface* s3 = rotozoomSurface(s, -90, 1, 0); 
+	position.x += 150;
+	SDL_BlitSurface(s3, NULL, ecran, &position); 
 
   SDL_Flip(ecran);
 

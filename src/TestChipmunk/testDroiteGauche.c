@@ -28,7 +28,7 @@ int main(void){
   cpShapeSetFriction(panier[0], 1);
   cpSpaceAddShape(space, panier[0]);
 
-  Balle* balle1 = Balle_creer(space, ecran, LARGUEUR_ECRAN - 100, 0, 50, SDL_MapRGB(ecran->format, 255, 0, 255));
+  Balle* balle1 = Balle_creer(ecran, space, LARGUEUR_ECRAN - 100, 0, 50, SDL_MapRGB(ecran->format, 255, 0, 255), 'A');
 
 /* FIN TEST */
 

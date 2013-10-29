@@ -1,6 +1,6 @@
 #include "Balle.h"
 
-Balle* Balle_creer(cpSpace* espace, SDL_Surface* surf, int cx, int cy, int rayon, Uint32 couleur){
+Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, int cx, int cy, int rayon, Uint32 couleur, char lettre){
 
 	if(surf == NULL || espace == NULL){
 		return NULL;
@@ -36,6 +36,7 @@ Balle* Balle_creer(cpSpace* espace, SDL_Surface* surf, int cx, int cy, int rayon
 			balle->cy = cy;
 			balle->couleur = couleur;
 			balle->angle = 0;
+			balle->lettre = lettre;
 
 			//Créé la balle graphique
 			Balle_dessiner(balle);
@@ -104,16 +105,14 @@ void Balle_deplacer(Balle* balle){
 	balle->cx = ((pos.x > LARGUEUR_ECRAN/2) ? floor(pos.x) : ceil(pos.x)); 
 	balle->cy =  HAUTEUR_ECRAN  - pos.y;
 
-	Balle_rotation(balle);
+//	Balle_rotation(balle);
 	Balle_dessiner(balle);
 }
 
 void Balle_rotation(Balle* balle){
 	
-	float angle = Balle_donneAngle(balle);
-	float rotation = /*angle - balle->angle*/0.1;
+	//float angle = Balle_donneAngle(balle);
+	//float rotation = /*angle - balle->angle*/0.1;
 	
-	SDL_Surface* sav = balle->canvas;
-	balle->canvas = rotozoomSurface(balle->canvas, rotation, 1, 0);
-//	SDL_FreeSurface(sav);
+	balle->canvas = rotozoomSurface(balle->canvas, 5, 1, 0);
 }

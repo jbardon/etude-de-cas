@@ -20,7 +20,7 @@ int main(void){
 
   GestionEnv_creerPanier(space, ecran, 50);
 
-  Balle* balle1 = Balle_creer(space, ecran, 100, 0, 50, SDL_MapRGB(ecran->format, 255, 0, 255));
+  Balle* balle1 = Balle_creer(ecran, space, 100, 0, 50, SDL_MapRGB(ecran->format, 255, 0, 255), 'A');
   SDL_Flip(ecran);
     
   //Evolution des objets de l'espace dans le temps
