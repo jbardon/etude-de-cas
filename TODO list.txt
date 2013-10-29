@@ -1,0 +1,25 @@
+//-----------------------------SDL---------------------------------------
+Balle:
+	- initialisation du caractère (Balle_creer)
+	- affichage du caractère (Balle_afficher)
+	- rotation du caractère (Balle_rotation)
+	- résoudre le problème avec SDL_rotozoom qui bloque le programme
+
+GestionEnv:
+	- Ajouter une fonction CreerBalles(int nb)
+	- Gérer la liste des balle crées
+	- Ajouter une fonction SupprimerBalles()
+
+TestSDL:
+	- Capture du clic
+	- Test avec dessin d'une ligne avec 2 clic (selection des lettres)
+	
+//-----------------------------Chipmunk-----------------------------------
+Balle:
+	- Trouver comment modifier la direction initiale des balles
+
+TestChipmunk:
+	- Création d'une balle & d'une ligne -> obtenir les objets que traverse la ligne
+
+//-----------------------------Algo mots----------------------------------
+	- Création d'un répertoire Algo avec la bibliothèque, tests, différentes versions
