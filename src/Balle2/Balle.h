@@ -13,6 +13,7 @@ typedef struct _Balle Balle;
 struct _Balle {
 	SDL_Surface* ecranJeu;
 	SDL_Surface* canvas;
+	SDL_Surface* precedent;
 	cpShape* zoneCollision;
 
 	int cx, cy;

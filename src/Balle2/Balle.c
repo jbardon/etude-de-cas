@@ -31,6 +31,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, int cx, int cy, int rayon
 			//Place la zone de dessin sur l'écran de jeu
 		    SDL_FillRect(balle->canvas, NULL, 0x0000FFFF);
 			SDL_SetColorKey(balle->canvas, SDL_SRCCOLORKEY, 0x0000FFFF);
+			filledCircleColor(balle->canvas, rayon , rayon, rayon, balle->couleur);
 
 			//Caractéristiques physiques de la balle
 			cpFloat masse = 1;
@@ -46,6 +47,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, int cx, int cy, int rayon
 
 			//Associe la surface de jeu
 			balle->ecranJeu = surf;
+			balle->precedent = NULL;
 			balle->cx = cx;
 			balle->cy = cy;
 			balle->couleur = couleur;
@@ -88,36 +90,72 @@ cpVect Balle_donneCoordonnees(Balle* balle){
 	return cpBodyGetPos(cpShapeGetBody(balle->zoneCollision));
 }
 
-static void _Balle_dessiner(Balle* balle, Uint32 couleur){
-printf("couleur: %hx\n", couleur);
+Uint32 donnePixel(SDL_Surface *s, int x, int y){
+    
+	Uint32 *pixels = (Uint32 *)s->pixels;
+	return pixels[y * (s->pitch/sizeof(unsigned int)) + x];
+}
+
+void mettrePixel(SDL_Surface *surface, int x, int y, Uint32 pixel){
+
+    //Convert the pixels to 32 bit
+    Uint32 *pixels = (Uint32 *)surface->pixels;
+    
+    //Set the pixel
+    pixels[ (y * surface->w) + x ] = pixel;
+
+}
+
+void calculSurfaceSupprimer(Balle* balle){
+
+	//Calcul la surface à supprimer pour le prochain déplacement
+	// -> remplace les pixels de la couleur du cercle par la couleur du fond
+	const unsigned int tailleSurface = balle->precedent->w * balle->precedent->h;	
+	unsigned int x, y;
+	for(unsigned int i = 0; i < tailleSurface; i++){
+		x = i / balle->precedent->w;
+		y = i % balle->precedent->w;	
+
+		if(donnePixel(balle->precedent, x, y) == 0x00FF00FF){
+			mettrePixel(balle->precedent, x, y, 0xFFFFFFFF);
+		}
+	}
+}
+	
+void Balle_afficher(Balle* balle){
+
 	//Informations sur la balle
 	const unsigned int rayon = Balle_donneRayon(balle);
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
 
 	//Effectue la rotation de la balle
-	filledCircleColor(balle->canvas, rayon , rayon, rayon, couleur);
 	SDL_Surface* balleTourne = Balle_rotation(balle);
+	balle->precedent = balleTourne;
 
 	//Informations pour l'affichage
-	const int delta = balleTourne->w - balle->canvas->w;
+	const int delta = balle->precedent->w - balle->canvas->w;
 	SDL_Rect masque = { delta/2, delta/2, balle->canvas->h, balle->canvas->w };
 
 	//Affiche la balle
 	SDL_BlitSurface(balleTourne, &masque, balle->ecranJeu, &position);
-	if(couleur != 0xFFFFFFFF){ //N'affiche pas après effacement de la balle
-		SDL_Flip(balle->ecranJeu);	
-	}
+	SDL_Flip(balle->ecranJeu);	
 
 	//Calcul la surface pour supprimer
-	SDL_FreeSurface(balleTourne);
-}	
-
-void Balle_afficher(Balle* balle){
-	_Balle_dessiner(balle, balle->couleur);
+	calculSurfaceSupprimer(balle);
 }
 
 void Balle_effacer(Balle* balle){
-	_Balle_dessiner(balle, 0xFFFFFFFF);
+
+	//Calcul de la surface à supprimer
+	const unsigned int rayon = Balle_donneRayon(balle);
+	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
+	const int delta = balle->precedent->w - balle->canvas->w;
+	SDL_Rect masque = { delta/2, delta/2, balle->canvas->h, balle->canvas->w };
+
+	//Efface la surface
+	SDL_BlitSurface(balle->precedent, &masque, balle->ecranJeu, &position);
+	SDL_FreeSurface(balle->precedent);
+
 }
 
 void Balle_deplacer(Balle* balle){

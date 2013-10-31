@@ -28,7 +28,7 @@ int main(void){
   cpShapeSetFriction(panier[0], 1);
   cpSpaceAddShape(space, panier[0]);
 
-  Balle* balle1 = Balle_creer(ecran, space, LARGUEUR_ECRAN - 100, 0, 50, SDL_MapRGB(ecran->format, 255, 0, 255), 'A');
+  Balle* balle1 = Balle_creer(ecran, space, LARGUEUR_ECRAN - 100, 0, 50, 0x00FF00FF, 'A');
 
 /* FIN TEST */
 
@@ -58,11 +58,11 @@ int main(void){
   pause();
   
   //Détruit la fenêtre
+  Balle_supprimer(balle1);
   SDL_FreeSurface(ecran);
   SDL_Quit();
   
   //Détruit l'espace physique
-  Balle_supprimer(balle1);
   GestionEnv_supprimerPanier();
   cpSpaceFree(space);
 

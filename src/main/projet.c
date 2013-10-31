@@ -20,7 +20,7 @@ int main(void){
 
   GestionEnv_creerPanier(space, ecran, 50);
 
-  Balle* balle1 = Balle_creer(ecran, space, 100, 0, 50, SDL_MapRGB(ecran->format, 255, 0, 255), 'A');
+  Balle* balle1 = Balle_creer(ecran, space, 100, 0, 50, 0x00FF00FFF, 'A');
   SDL_Flip(ecran);
     
   //Evolution des objets de l'espace dans le temps
@@ -47,11 +47,11 @@ int main(void){
   pause();
   
   //Détruit la fenêtre
+  Balle_supprimer(balle1);
   SDL_FreeSurface(ecran);
   SDL_Quit();
-  
+
   //Détruit l'espace physique
-  Balle_supprimer(balle1);
   GestionEnv_supprimerPanier();
   cpSpaceFree(space);
 

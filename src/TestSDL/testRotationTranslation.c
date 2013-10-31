@@ -25,7 +25,7 @@ int main(void){
 //Cercle d'origine
 	SDL_Surface* s = SDL_CreateRGBSurface(SDL_HWSURFACE, 100, 100, 32, 0, 0, 0, 0);
 	SDL_FillRect(s, NULL, 0x0000FFFF);
-
+SDL_SetColorKey(s, SDL_SRCCOLORKEY, 0x0000FFFF);
 	filledCircleColor(s, 50 , 50, 50, SDL_MapRGB(ecran->format, 255, 0, 255));
 	lineColor(s, 0, 20, 100, 20, 0x0000FFFF);
 

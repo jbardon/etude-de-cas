@@ -58,11 +58,11 @@ int main(void){
   pause();
   
   //Détruit la fenêtre
+  Balle_supprimer(balle1);
   SDL_FreeSurface(ecran);
   SDL_Quit();
   
   //Détruit l'espace physique
-  Balle_supprimer(balle1);
   GestionEnv_supprimerPanier();
   cpSpaceFree(space);
 
