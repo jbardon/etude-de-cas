@@ -21,7 +21,8 @@ struct _Balle {
 	char lettre;
 };
 
-extern Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, int cx, int cy, int rayon, Uint32 couleur, char lettre);
+extern Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect direction, 
+						  int rayon, Uint32 couleur, char lettre);
 extern void Balle_supprimer(Balle* balle);
 
 extern cpVect Balle_donneCoordonnees(Balle* balle);

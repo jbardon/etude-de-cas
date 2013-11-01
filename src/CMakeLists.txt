@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(Jeu C)
+project(EtudeDeCas C)
 
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Jeu")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "EtudeDeCas")
 
 set(PGCD_VERSION_MAJOR 0)
 set(PGCD_VERSION_MINOR 0)
@@ -34,24 +34,24 @@ enable_testing()
 
 include_directories(
 	"/usr/include/chipmunk"
-	"${CMAKE_CURRENT_SOURCE_DIR}/main"
-	"${CMAKE_CURRENT_SOURCE_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Balle"
+	"${CMAKE_CURRENT_SOURCE_DIR}/GestionEnv"
+	"${CMAKE_CURRENT_SOURCE_DIR}/main"
 	"${CMAKE_CURRENT_SOURCE_DIR}/TestSDL"
 	"${CMAKE_CURRENT_SOURCE_DIR}/TestChipmunk"
 )
 
 link_directories(
 	"/usr/lib/i386-linux-gnu"
-	"${CMAKE_CURRENT_BINARY_DIR}/main"
-	"${CMAKE_CURRENT_BINARY_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_BINARY_DIR}/Balle"
+	"${CMAKE_CURRENT_BINARY_DIR}/GestionEnv"
+	"${CMAKE_CURRENT_BINARY_DIR}/main"
 	"${CMAKE_CURRENT_BINARY_DIR}/TestSDL"	
 	"${CMAKE_CURRENT_BINARY_DIR}/TestChipmunk"
 )
 
-add_subdirectory(GestionEnv)
 add_subdirectory(Balle)
+add_subdirectory(GestionEnv)
 add_subdirectory(main)
 add_subdirectory(TestChipmunk)
 add_subdirectory(TestSDL)

@@ -5,15 +5,17 @@
 //	Entrée
 //  	surf: écran de jeu
 // 		espace: monde chipmunk
-// 		cx: abscisse du centre de la balle
-// 		cy: ordonnée du centre de la balle
+// 		centre: coordonées du centre de la balle
+//		direction: direction initiale de la balle
 // 		rayon: rayon de la balle
 // 		couleur: couleur de la balle
 // 		lettre: lettre de l'alphabet attaché à cette balle
 //	Sortie
 //		balle créée
 //-------------------------------------------------------------------------------------------------------------
-Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, int cx, int cy, int rayon, Uint32 couleur, char lettre){
+Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect direction, 
+					int rayon, Uint32 couleur, char lettre)
+{
 
 	if(surf == NULL || espace == NULL){
 		return NULL;
@@ -38,16 +40,19 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, int cx, int cy, int rayon
 
 			//Créé une balle dont la position initiale est cx cy
 			cpBody* corpsBalle = cpSpaceAddBody(espace, cpBodyNew(masse, moment));
-			cpBodySetPos(corpsBalle, cpv(cx, HAUTEUR_ECRAN - cy));
+			cpBodySetPos(corpsBalle, cpv(centre.x, HAUTEUR_ECRAN - centre.y));
+			cpBodySetForce(corpsBalle, direction);
+			cpBodySetVelLimit(corpsBalle, 100);
 
 			//Zone de zoneCollision de la balle
 			balle->zoneCollision = cpSpaceAddShape(espace, cpCircleShapeNew(corpsBalle, rayon, cpvzero));
 			cpShapeSetFriction(balle->zoneCollision, 1);
+			cpShapeSetElasticity(balle->zoneCollision, 2);
 
 			//Associe la surface de jeu
 			balle->ecranJeu = surf;
-			balle->cx = cx;
-			balle->cy = cy;
+			balle->cx = centre.x;
+			balle->cy = centre.y;
 			balle->couleur = couleur;
 			balle->lettre = lettre;
 
@@ -80,7 +85,9 @@ void Balle_supprimer(Balle* balle){
 	SDL_FreeSurface(balle->canvas);
 	SDL_Flip(balle->ecranJeu);
 
-	free(balle->zoneCollision);
+	cpBody* tmp = cpShapeGetBody(balle->zoneCollision);
+	cpShapeFree(balle->zoneCollision);
+	cpBodyFree(tmp);
 	free(balle);
 }
 
@@ -89,7 +96,7 @@ cpVect Balle_donneCoordonnees(Balle* balle){
 }
 
 static void _Balle_dessiner(Balle* balle, Uint32 couleur){
-printf("couleur: %hx\n", couleur);
+
 	//Informations sur la balle
 	const unsigned int rayon = Balle_donneRayon(balle);
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
@@ -120,15 +127,37 @@ void Balle_effacer(Balle* balle){
 	_Balle_dessiner(balle, 0xFFFFFFFF);
 }
 
+/*
+static void _Balle_maj_coordonees(Balle* balle){
+
+	const cpVect pos = Balle_donneCoordonnees(balle);
+	balle->cx = pos.x;
+	balle->cy = HAUTEUR_ECRAN - pos.y;
+
+	const int r = Balle_donneRayon(balle);
+
+	//Vérifie abscisse
+	if(pos.x < DEC + r)
+		balle->cx = DEC + r;
+	else if(pos.x > LARGUEUR_ECRAN - 2*DEC - r)
+		balle->cx = LARGUEUR_ECRAN - 2*DEC - r;
+
+	//Vérifie ordonnée
+	if(HAUTEUR_ECRAN - pos.y < DEC + r)
+		balle->cx = DEC + r;	
+}
+*/
+
 void Balle_deplacer(Balle* balle){
 
 	//Efface l'ancienne balle
 	Balle_effacer(balle);
 
 	//Récupère les nouvelles coordonées de la balle
+	//_Balle_maj_coordonees(balle);
 	const cpVect pos = Balle_donneCoordonnees(balle);
-	balle->cx = ((pos.x > LARGUEUR_ECRAN/2) ? floor(pos.x) : ceil(pos.x)); 
-	balle->cy =  HAUTEUR_ECRAN  - pos.y;
+	balle->cx = pos.x;
+	balle->cy = HAUTEUR_ECRAN - pos.y;
 
 	//Affiche la balle
 	Balle_afficher(balle);
@@ -141,3 +170,4 @@ SDL_Surface* Balle_rotation(Balle* balle){
 	return rotozoomSurface(balle->canvas, angle, 1, 0);
 
 }
+

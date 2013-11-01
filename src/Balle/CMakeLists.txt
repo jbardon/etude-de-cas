@@ -8,11 +8,11 @@ set_target_properties(
 	PROPERTIES OUTPUT_NAME Balle
 )
 
-add_executable(TestBalle TestBalle.c)
-target_link_libraries(TestBalle Balle SDLmain SDL chipmunk SDL_gfx)
+add_executable(testBalle testBalle.c)
+target_link_libraries(testBalle GestionEnv Balle SDL SDLmain SDL_gfx chipmunk)
 
-add_executable(TestSwapPixel TestSwapPixel.c)
-target_link_libraries(TestSwapPixel SDLmain SDL)
+add_executable(testSwapPixel testSwapPixel.c)
+target_link_libraries(testSwapPixel SDLmain SDL)
 
-add_test(TestBalle ./TestBalle)
-add_test(TestSwapPixel ./TestSwapPixel)
+add_test(testBalle ./testBalle)
+add_test(testSwapPixel ./testSwapPixel)
