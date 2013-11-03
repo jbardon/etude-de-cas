@@ -1,0 +1,5 @@
+/*
+	Les fichiers de ce dossier ne sont pas destinés à être compilés. 
+	Ils présentent seulement une autre façon de gérer l'effacement 
+	et le dépassement de coordonnées d'une balle
+*/

@@ -13,13 +13,14 @@ int main(void){
 	GestionEnv_creerPanier(espace, ecran);
 
 /* DEBUT TEST */
-//La balle débute en haut à droite
-//Le sol oblique amène la balle en bas à gauche
+// La balle débute en haut à droite
+// Le sol oblique amène la balle en bas à gauche
 
-	panier[0] = cpSegmentShapeNew(espace->staticBody, cpv(0,50), cpv(LARGUEUR_ECRAN,300), 0);
-	cpShapeSetFriction(panier[0], 1);
-	cpShapeSetElasticity(panier[0], 1);
-	cpSpaceAddShape(espace, panier[0]);
+	cpShape** panier = donnerSol(); //!\\ Fonction uniquement pour débugger
+	*panier = cpSegmentShapeNew(espace->staticBody, cpv(0,50), cpv(LARGUEUR_ECRAN,300), 0);
+	cpShapeSetFriction(*panier, 1);
+	cpShapeSetElasticity(*panier, 1);
+	cpSpaceAddShape(espace, *panier);
 
 	Balle* balle = Balle_creer(ecran, espace, cpv(LARGUEUR_ECRAN - 100,0), cpvzero, 50, 0x00FF00FF, 'A');
 
@@ -27,19 +28,20 @@ int main(void){
 
 	SDL_Flip(ecran);
 
-	//Evolution des objets de l'espace dans le temps
 	cpFloat timeStep = 1.0/60.0;
-	for(cpFloat time = 0; time < 8; time += timeStep){
+	for(cpFloat time = 0; time < 15; time += timeStep){
+
 		cpVect pos = Balle_donneCoordonnees(balle);
 		float ang = Balle_donneAngleDeg(balle);
 
 		printf(
-		"Temps %5.2f balle(%5.2f, %5.2f) angle %f\n",
-		time, pos.x, pos.y, ang
+			"Temps %5.2f balle(%5.2f, %5.2f) angle %f\n",
+			time, pos.x, pos.y, ang
 		);
 
 		cpSpaceStep(espace, timeStep);
 		Balle_deplacer(balle);
+		SDL_Flip(ecran);
 	}
 
 	pause();

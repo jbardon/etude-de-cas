@@ -5,10 +5,10 @@
 #define LARGUEUR_ECRAN 640
 #define SCREEN_BPP 32
 
-#define COULEUR_FOND 0xFFFFFFFF //Blanc
-#define OFFSET 50 //Offset panier
-#define REBOND 0.85 //Elasticité balle & murs
+#define COULEUR_FOND 0xFFFFFFFF // Fond de la fenêtre (blanche)
+#define OFFSET 50               // Décalage du panier par rapport au bord de la fenêtre
+#define REBOND 0.85             // Elasticité balle & murs
 #define FRICTION 1
-#define DELAI_APPARITION 60 //Apparition des balles (1 seconde)
+#define DELAI_APPARITION 60     // Délai d'apparition des balles (60(FPS) -> 1 seconde)
 
 #endif /* __CONFIG_H__ */

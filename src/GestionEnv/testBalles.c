@@ -10,9 +10,14 @@ int main(void){
 	GestionEnv_creerPanier(espace, ecran);
 	GestionEnv_creerBalles(20);
 
+/* DEBUT TEST */
+// Laisse l'évolution du système à la bibliothèque
+
 	for(float i = 0; i < 15; i+=uniteTemps){
 		GestionEnv_evoluer();
 	}
+
+/* FIN TEST */
 
 	pause();
 

@@ -1,4 +1,5 @@
-//-----------------------------SDL---------------------------------------
+====> SDL <====												
+
 Balle:
 	- affichage du caractère (Balle_dessiner)
 	- dessin du caractère (revoir Balle_effacer pour ne pas le dessiner)
@@ -7,21 +8,27 @@ TestSDL:
 	- Capture du clic
 	- Test avec dessin d'une ligne avec 2 clic (selection des lettres)
 	
-//-----------------------------Chipmunk-----------------------------------
+====> Chipmunk <====
+
 Balle:
 	- Comment initialiser un tableau de cpVect
 	- Créer un tableau de couleurs en hexa
 
 TestChipmunk:
-	- Création d'une balle & d'une ligne -> obtenir les objets que traverse la ligne
+	- Création d'une balle & d'une ligne -> obtenir la liste des objets que traverse la ligne
 
 GestionEnv:
 	- dans evoluer() arrêter quand les balles ne bougent plus
 
-//-----------------------------Algo mots----------------------------------
+====> Algorithmes sur les mots <====
+
 	- Création d'un répertoire Algo avec la bibliothèque, tests, différentes versions
 
-//-----------------------------Bugs à résoudre----------------------------------
-L'effacement des balles ne fonctionne pas parfaitement
-Quelques fois les balles rentrent un peu dans les murs (réglage chipmunk)
+====> Bugs connus <====
 
+L'effacement des balles ne fonctionne pas parfaitement (voir Balle2)
+
+Quelques fois les balles rentrent un peu dans les murs ou le sol (réglage chipmunk, voir Balle2)
+
+Les balles ne s'arrêtent jamais de rouler sur un sol plat (pas géré par chipmunk)
+	-> pas vraiment un problème les balles se bloquent entre elles

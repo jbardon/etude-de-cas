@@ -9,11 +9,15 @@ int main(void){
 
 	GestionEnv_creerPanier(espace, ecran);
 
-	/* DEBUT DEBUG */
+/* DEBUT DEBUG */
+// Affiche les lignes du panier avec une épaisseur de 1px pour vérifier
+// que l'épaisseur est bien gérée et les lignes sont aubon endroit
+
 	lineColor(ecran, 0, HAUTEUR_ECRAN - OFFSET, LARGUEUR_ECRAN, HAUTEUR_ECRAN - OFFSET, 0x00FFFF);
 	lineColor(ecran, OFFSET, 0, OFFSET, HAUTEUR_ECRAN, 0x00FFFF);
 	lineColor(ecran, LARGUEUR_ECRAN - OFFSET, 0, LARGUEUR_ECRAN - OFFSET, HAUTEUR_ECRAN, 0x00FFFF);
-	/* FIN DEBUG */
+
+/* FIN DEBUG */
 
 	SDL_Flip(ecran);
 

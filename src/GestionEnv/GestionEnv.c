@@ -1,20 +1,26 @@
 #include "GestionEnv.h"
 
+//-------------------------------------------------------------------------------------------------------------
+//										Déclaration des fonctions locales
+//-------------------------------------------------------------------------------------------------------------
+static unsigned int _randMinMax(int min, int max);
 static void _Balle_foreach(Balle_Fonction fonction);
 static void _creerUneBalle();
+
 //-------------------------------------------------------------------------------------------------------------
 //										Variables liées à l'environnement
 //-------------------------------------------------------------------------------------------------------------
 
 static cpSpace* espace = NULL;
-static double temps = 0;
+static cpShape* panier[3]; // Contient les 2 murs et le sol du panier
+static double temps = 0;   // Temps qui s'écoule dans l'espace de jeu (gestion avec chipmunk, voir GestionEnv_evoluer)
 
 static SDL_Surface* ecran = NULL;
 
 static Balle** balles = NULL;
-static int nbBallesTotal = 0;
-static int nbBallesCrees = 0;
-static int timerLancement = 0;
+static int nbBallesTotal = 0;  // Taille de de la variables du tableau de balles
+static int nbBallesCrees = 0;  // Nombre de balles déjà crées
+static int timerLancement = 0; // Timer qui sert créer des balles à un intervalle de temps régulier
 
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation de l'environnement
@@ -62,15 +68,18 @@ void GestionEnv_quitSDL(){
 //-------------------------------------------------------------------------------------------------------------
 void GestionEnv_evoluer(){
 
+	// Fait évoluer les balles, applique le déplacement et maj de l'affichage
 	cpSpaceStep(espace, uniteTemps);	
-	_Balle_foreach(Balle_deplacer);
+	_Balle_foreach(Balle_deplacer);  
 	SDL_Flip(ecran);
 
+	// Créé une balle à chaque intervalle de temps, max = nombre de balles donnée dans GestionEnv_creerBalles
 	if(nbBallesCrees < nbBallesTotal && timerLancement == DELAI_APPARITION){
 		_creerUneBalle();
 		timerLancement = 0;	
 	}
 
+	// Gestion du temps
 	temps += uniteTemps;
 	timerLancement += 1;
 }
@@ -84,9 +93,9 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	int y = OFFSET;
 	int l = LARGUEUR_ECRAN - 2*OFFSET;
 	int h = 0;
-	int e = 10; //epaisseur du trait (SDL)
+	int e = 10; // Epaisseur du trait (SDL)
 
-	//Création du sol qui est un élément statique---------------------------------
+	//Création du sol qui est un élément statique
 	panier[0] = cpSegmentShapeNew(espace->staticBody, cpv(0,y), cpv(LARGUEUR_ECRAN,y), 0);
 	cpShapeSetFriction(panier[0], FRICTION);
 	cpShapeSetElasticity(panier[0], REBOND);
@@ -95,7 +104,7 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	y = HAUTEUR_ECRAN - y + e/2;
 	thickLineColor(surf, x - e, y, x + l + e, y, e, 0x000000FF);
 
-	//Création du mur gauche------------------------------------------------------
+	//Création du mur gauche
 	x = OFFSET;
 	panier[1] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
 	cpShapeSetFriction(panier[1], FRICTION);
@@ -107,7 +116,7 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	h = 2 * OFFSET;
 	thickLineColor(surf, x, y + e, x, h, e, 0x00000FF);
 
-	//Création du mur droit-------------------------------------------------------
+	//Création du mur droit
 	x = LARGUEUR_ECRAN - OFFSET;
 	panier[2] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
 	cpShapeSetFriction(panier[2], FRICTION);
@@ -131,29 +140,14 @@ void GestionEnv_supprimerPanier(){
 //										Gestion des balles
 //-------------------------------------------------------------------------------------------------------------
 
-//Retourne un nombre aléatoire entre min et max
-static unsigned int _randMinMax(int min, int max){
-	return (rand() % (max-min)) + min;
-}
-
-//Exécute la fonction donnée en paramètre pour toutes les balles
+// Exécute la fonction donnée en paramètre pour toutes les balles
 static void _Balle_foreach(Balle_Fonction fonction){
 	for(unsigned int i = 0; i < nbBallesCrees; i++){
 		fonction(balles[i]);
 	}
 }
 
-//Calcule une direction aléatoire
-/*
-static cpVect* directions = calloc(5, sizeof(cpVect));
-directions[0] = cpv(-20,-40); directions[1] = cpv(-40,-40); directions[2] = cpvzero;
-directions[3] = cpv(40,-40); directions[4] = cpv(20,40);
-
-static cpVect _randDirection(){
-	return directions[_randMinMax(0, sizeof(directions)/sizeof(cpVect))];
-}
-*/
-
+// Créé une balle dans l'environnement
 static void _creerUneBalle(){
 
 	if(nbBallesCrees < nbBallesTotal){
@@ -170,7 +164,8 @@ static void _creerUneBalle(){
 	}			
 }
 
-//Créé et affiche n balles
+// Créé une balle et configuration pour créé les n-1 autres balles
+// à intervalle de temps donnée (voir config.h)
 void GestionEnv_creerBalles(int nbBalles){
 
 	balles = calloc(nbBalles, sizeof(Balle*));
@@ -179,12 +174,38 @@ void GestionEnv_creerBalles(int nbBalles){
 		nbBallesTotal = nbBalles;	
 		nbBallesCrees = 0;	
 		_creerUneBalle();		
-//printf("%pBalle #%d: centre(%f,%f), rayon(%d), lettre(%c)\n", balles[i],i, centre.x, centre.y, rayon, lettre);
 	}
 }
 
 //Supprime toutes les balles créés
 void GestionEnv_supprimerBalles(){
 	_Balle_foreach(Balle_supprimer);
+}
+
+//-------------------------------------------------------------------------------------------------------------
+//											Gestion de l'aléatoire
+//-------------------------------------------------------------------------------------------------------------
+
+//Retourne un nombre aléatoire entre min et max
+static unsigned int _randMinMax(int min, int max){
+	return (rand() % (max-min)) + min;
+}
+
+//Calcule une direction aléatoire
+/*
+static cpVect* directions = calloc(5, sizeof(cpVect));
+directions[0] = cpv(-20,-40); directions[1] = cpv(-40,-40); directions[2] = cpvzero;
+directions[3] = cpv(40,-40); directions[4] = cpv(20,40);
+
+static cpVect _randDirection(){
+	return directions[_randMinMax(0, sizeof(directions)/sizeof(cpVect))];
+}
+*/
+
+//-------------------------------------------------------------------------------------------------------------
+//						Fonctions debug (laisser pour compiler testDroiteGauche & testGaucheDroite)
+//-------------------------------------------------------------------------------------------------------------
+cpShape** donnerSol(){
+	return panier;
 }
 

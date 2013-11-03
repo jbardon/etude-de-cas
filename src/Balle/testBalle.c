@@ -16,25 +16,32 @@ int main(void){
 
 	Balle* balle = Balle_creer(ecran, espace, cpv(100,100), cpvzero, 50, 0x00FF00FF, 'A');
 
+	//Affichage de la balle
+	SDL_Flip(balle->ecranJeu);
 	printf("Balle_creer...fait\n");
-	sleep(1);
-	//balle->cx+=150;
-	Balle_effacer(balle);
 
+	//Effacement de la balle
+	sleep(1);
+	Balle_effacer(balle);
 	//Par défaut effacer ne met pas à jour l'affichage
 	//Sinon la balle clignote lors du déplacement
 	SDL_Flip(balle->ecranJeu); 
 	printf("Balle_effacer...fait\n");
 
+	//Deplacement de la balle
 	sleep(1);
 	cpBodySetPos(cpShapeGetBody(balle->zoneCollision), cpv(200, 200));
-	//Balle_deplacer(balle);
+	Balle_deplacer(balle);
+	SDL_Flip(balle->ecranJeu);
+	printf("Balle_deplacer...fait\n");
+
 
 /* FIN TEST */
 
 	pause();
 
 	Balle_supprimer(balle);
+
 	cpSpaceFree(espace);
 	SDL_FreeSurface(ecran);
 	SDL_Quit();
