@@ -43,7 +43,8 @@ int main(void){
 	//Détruit l'espace physique
 	GestionEnv_supprimerPanier();
 	
-	GestionEnv_quitChipmunk(espace);
-	GestionEnv_quitSDL(ecran);
-  return 0;
+	GestionEnv_quitChipmunk();
+	GestionEnv_quitSDL();
+
+	return 0;
 }

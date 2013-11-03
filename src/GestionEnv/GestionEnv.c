@@ -1,5 +1,21 @@
 #include "GestionEnv.h"
 
+static void _Balle_foreach(Balle_Fonction fonction);
+static void _creerUneBalle();
+//-------------------------------------------------------------------------------------------------------------
+//										Variables liées à l'environnement
+//-------------------------------------------------------------------------------------------------------------
+
+static cpSpace* espace = NULL;
+static double temps = 0;
+
+static SDL_Surface* ecran = NULL;
+
+static Balle** balles = NULL;
+static int nbBallesTotal = 0;
+static int nbBallesCrees = 0;
+static int timerLancement = 0;
+
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation de l'environnement
 //-------------------------------------------------------------------------------------------------------------
@@ -7,8 +23,11 @@ cpSpace* GestionEnv_initChipmunk(){
 
 	srand(time(NULL));	/* A VOIR */
 	espace = cpSpaceNew();
-	cpVect gravite = cpv(0, -100);  
-	cpSpaceSetGravity(espace, gravite);
+
+	if(espace){
+		cpVect gravite = cpv(0, -100);  
+		cpSpaceSetGravity(espace, gravite);
+	}
 
 	return espace;
 }
@@ -17,8 +36,11 @@ SDL_Surface* GestionEnv_initSDL(){
 
 	SDL_Init(SDL_INIT_VIDEO);
 	ecran = SDL_SetVideoMode(LARGUEUR_ECRAN, HAUTEUR_ECRAN, SCREEN_BPP, SDL_HWSURFACE);
-	SDL_FillRect(ecran, NULL, COULEUR_FOND);
-	SDL_WM_SetCaption("Projet étude de cas", NULL);
+
+	if(ecran){
+		SDL_FillRect(ecran, NULL, COULEUR_FOND);
+		SDL_WM_SetCaption("Projet étude de cas", NULL);
+	}
 
 	return ecran;	
 }
@@ -36,6 +58,24 @@ void GestionEnv_quitSDL(){
 }
 
 //-------------------------------------------------------------------------------------------------------------
+//									Evolution de l'environnement (dans le temps)
+//-------------------------------------------------------------------------------------------------------------
+void GestionEnv_evoluer(){
+
+	cpSpaceStep(espace, uniteTemps);	
+	_Balle_foreach(Balle_deplacer);
+	SDL_Flip(ecran);
+
+	if(nbBallesCrees < nbBallesTotal && timerLancement == DELAI_APPARITION){
+		_creerUneBalle();
+		timerLancement = 0;	
+	}
+
+	temps += uniteTemps;
+	timerLancement += 1;
+}
+
+//-------------------------------------------------------------------------------------------------------------
 //										Gestion du panier
 //-------------------------------------------------------------------------------------------------------------
 void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
@@ -48,8 +88,8 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 
 	//Création du sol qui est un élément statique---------------------------------
 	panier[0] = cpSegmentShapeNew(espace->staticBody, cpv(0,y), cpv(LARGUEUR_ECRAN,y), 0);
-	cpShapeSetFriction(panier[0], 1);
-	cpShapeSetElasticity(panier[0], 1);
+	cpShapeSetFriction(panier[0], FRICTION);
+	cpShapeSetElasticity(panier[0], REBOND);
 	cpSpaceAddShape(espace, panier[0]);
 
 	y = HAUTEUR_ECRAN - y + e/2;
@@ -58,8 +98,8 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	//Création du mur gauche------------------------------------------------------
 	x = OFFSET;
 	panier[1] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
-	cpShapeSetFriction(panier[1],1);
-	cpShapeSetElasticity(panier[1],1);
+	cpShapeSetFriction(panier[1], FRICTION);
+	cpShapeSetElasticity(panier[1], REBOND);
 	cpSpaceAddShape(espace, panier[1]);
 
 	x = OFFSET - e/2;
@@ -70,8 +110,8 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	//Création du mur droit-------------------------------------------------------
 	x = LARGUEUR_ECRAN - OFFSET;
 	panier[2] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
-	cpShapeSetFriction(panier[2],1);
-	cpShapeSetElasticity(panier[2],1);
+	cpShapeSetFriction(panier[2], FRICTION);
+	cpShapeSetElasticity(panier[2], REBOND);
 	cpSpaceAddShape(espace, panier[2]);
 
 	x = x + e/2;
@@ -82,7 +122,7 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 }
 
 void GestionEnv_supprimerPanier(){
-	for(int i = 0; i < sizeof(panier); i++){
+	for(int i = 0; i < 3; i++){
 		cpShapeFree(panier[i]);
 	}
 }
@@ -91,36 +131,60 @@ void GestionEnv_supprimerPanier(){
 //										Gestion des balles
 //-------------------------------------------------------------------------------------------------------------
 
+//Retourne un nombre aléatoire entre min et max
 static unsigned int _randMinMax(int min, int max){
 	return (rand() % (max-min)) + min;
 }
 
+//Exécute la fonction donnée en paramètre pour toutes les balles
+static void _Balle_foreach(Balle_Fonction fonction){
+	for(unsigned int i = 0; i < nbBallesCrees; i++){
+		fonction(balles[i]);
+	}
+}
+
+//Calcule une direction aléatoire
+/*
+static cpVect* directions = calloc(5, sizeof(cpVect));
+directions[0] = cpv(-20,-40); directions[1] = cpv(-40,-40); directions[2] = cpvzero;
+directions[3] = cpv(40,-40); directions[4] = cpv(20,40);
+
+static cpVect _randDirection(){
+	return directions[_randMinMax(0, sizeof(directions)/sizeof(cpVect))];
+}
+*/
+
+static void _creerUneBalle(){
+
+	if(nbBallesCrees < nbBallesTotal){
+
+		//Caractéritiques aléatoires pour les balles
+		const int rayon = _randMinMax(30,50);
+		const cpVect centre = cpv(_randMinMax(OFFSET + rayon, LARGUEUR_ECRAN - 2*OFFSET - rayon), -rayon);
+		const cpVect direction = cpv(20,0);
+		const char lettre = (char) _randMinMax(65,90);
+
+		//Création de la balle
+		balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, 0xFF0000FF, lettre);
+		nbBallesCrees++;
+	}			
+}
+
+//Créé et affiche n balles
 void GestionEnv_creerBalles(int nbBalles){
 
 	balles = calloc(nbBalles, sizeof(Balle*));
 
 	if(balles){
-
-		//Créé les balles
-		for(int i = 0; i < nbBalles; i++){			
-			//Caractéritiques aléatoires pour les balles
-			const unsigned int rayon = _randMinMax(25,50);
-			const cpVect centre = cpv(_randMinMax(OFFSET + rayon, LARGUEUR_ECRAN - 2*OFFSET - rayon), /*-rayon*/100);
-			const cpVect direction = cpv(-_randMinMax(40,100), _randMinMax(40,100));
-			const char lettre = (char) _randMinMax(65,90);
-
-			balles[i] = Balle_creer(ecran, espace, centre, direction, rayon, 0xFF0000FF, lettre);			
-printf("Balle #%d: centre(%f,%f), rayon(%d), lettre(%c)\n", i, centre.x, centre.y, rayon, lettre);
-		}
+		nbBallesTotal = nbBalles;	
+		nbBallesCrees = 0;	
+		_creerUneBalle();		
+//printf("%pBalle #%d: centre(%f,%f), rayon(%d), lettre(%c)\n", balles[i],i, centre.x, centre.y, rayon, lettre);
 	}
 }
 
+//Supprime toutes les balles créés
 void GestionEnv_supprimerBalles(){
-
-	unsigned int nbBalles = sizeof(balles);
-
-	for(unsigned int i = 0; i < nbBalles; i++){
-		Balle_supprimer(balles[0]);
-printf("Supression balle #%d/%d\n", i, nbBalles);
-	}
+	_Balle_foreach(Balle_supprimer);
 }
+

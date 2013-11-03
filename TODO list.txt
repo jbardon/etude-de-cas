@@ -1,14 +1,7 @@
 //-----------------------------SDL---------------------------------------
 Balle:
-	- initialisation du caractère (Balle_creer)
-	- affichage du caractère (Balle_afficher)
-	- rotation du caractère (Balle_rotation)
-	- résoudre le problème avec SDL_rotozoom qui bloque le programme
-
-GestionEnv:
-	- Ajouter une fonction CreerBalles(int nb)
-	- Gérer la liste des balle crées
-	- Ajouter une fonction SupprimerBalles()
+	- affichage du caractère (Balle_dessiner)
+	- dessin du caractère (revoir Balle_effacer pour ne pas le dessiner)
 
 TestSDL:
 	- Capture du clic
@@ -16,10 +9,19 @@ TestSDL:
 	
 //-----------------------------Chipmunk-----------------------------------
 Balle:
-	- Trouver comment modifier la direction initiale des balles
+	- Comment initialiser un tableau de cpVect
+	- Créer un tableau de couleurs en hexa
 
 TestChipmunk:
 	- Création d'une balle & d'une ligne -> obtenir les objets que traverse la ligne
 
+GestionEnv:
+	- dans evoluer() arrêter quand les balles ne bougent plus
+
 //-----------------------------Algo mots----------------------------------
 	- Création d'un répertoire Algo avec la bibliothèque, tests, différentes versions
+
+//-----------------------------Bugs à résoudre----------------------------------
+L'effacement des balles ne fonctionne pas parfaitement
+Quelques fois les balles rentrent un peu dans les murs (réglage chipmunk)
+

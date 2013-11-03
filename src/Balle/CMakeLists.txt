@@ -9,7 +9,7 @@ set_target_properties(
 )
 
 add_executable(testBalle testBalle.c)
-target_link_libraries(testBalle GestionEnv Balle SDL SDLmain SDL_gfx chipmunk)
+target_link_libraries(testBalle Balle SDL SDLmain SDL_gfx chipmunk)
 
 add_executable(testSwapPixel testSwapPixel.c)
 target_link_libraries(testSwapPixel SDLmain SDL)

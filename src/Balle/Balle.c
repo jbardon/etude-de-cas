@@ -41,13 +41,15 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 			//Créé une balle dont la position initiale est cx cy
 			cpBody* corpsBalle = cpSpaceAddBody(espace, cpBodyNew(masse, moment));
 			cpBodySetPos(corpsBalle, cpv(centre.x, HAUTEUR_ECRAN - centre.y));
-			cpBodySetForce(corpsBalle, direction);
 			cpBodySetVelLimit(corpsBalle, 100);
+			//cpBodyApplyImpulse(corpsBalle, direction, cpvzero);
+			//cpBodySetForce(corpsBalle, direction);
+			cpBodyApplyForce(corpsBalle, direction, cpvzero);
 
 			//Zone de zoneCollision de la balle
 			balle->zoneCollision = cpSpaceAddShape(espace, cpCircleShapeNew(corpsBalle, rayon, cpvzero));
-			cpShapeSetFriction(balle->zoneCollision, 1);
-			cpShapeSetElasticity(balle->zoneCollision, 2);
+			cpShapeSetFriction(balle->zoneCollision, FRICTION);
+			cpShapeSetElasticity(balle->zoneCollision, REBOND);
 
 			//Associe la surface de jeu
 			balle->ecranJeu = surf;
@@ -57,7 +59,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 			balle->lettre = lettre;
 
 			//Créé la balle graphique
-			Balle_afficher(balle);
+			//Balle_afficher(balle);
 		}
 		else {
 			free(balle);
@@ -111,9 +113,9 @@ static void _Balle_dessiner(Balle* balle, Uint32 couleur){
 
 	//Affiche la balle
 	SDL_BlitSurface(balleTourne, &masque, balle->ecranJeu, &position);
-	if(couleur != 0xFFFFFFFF){ //N'affiche pas après effacement de la balle
-		SDL_Flip(balle->ecranJeu);	
-	}
+	//if(couleur != 0xFFFFFFFF){ //N'affiche pas après effacement de la balle
+	//	SDL_Flip(balle->ecranJeu);	
+	//}
 
 	//Calcul la surface pour supprimer
 	SDL_FreeSurface(balleTourne);
@@ -162,12 +164,12 @@ void Balle_deplacer(Balle* balle){
 	//Affiche la balle
 	Balle_afficher(balle);
 
+	//cpVect vel = cpBodyGetVel(cpShapeGetBody(balle->zoneCollision));
+	//printf("Vitesse: %d %d\n", vel.x, vel.y);
 }
 
 SDL_Surface* Balle_rotation(Balle* balle){
-	
 	const float angle = Balle_donneAngleDeg(balle);	
 	return rotozoomSurface(balle->canvas, angle, 1, 0);
-
 }
 
