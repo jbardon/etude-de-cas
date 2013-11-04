@@ -124,13 +124,28 @@ void Balle_effacer(Balle* balle){
 }
 
 static void _Balle_dessiner(Balle* balle, Uint32 couleur){
-
+static int a = 0;
 	// Informations sur la balle
 	const unsigned int rayon = Balle_donneRayon(balle);
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
 
-	// Effectue la rotation de la balle
+	//Dessine le cercle
 	filledCircleColor(balle->canvas, rayon , rayon, rayon, couleur);
+
+	// Dessine le caractère
+	SDL_Color couleurNoire = {50,50,50};
+	TTF_Font* police = TTF_OpenFont("/usr/share/fonts/truetype/msttcorefonts/arial.ttf", 30);
+	SDL_Surface* texte = TTF_RenderText_Solid(police, &(balle->lettre), couleurNoire);
+
+	int h, w;
+	TTF_SizeText(police, &(balle->lettre), &w, &h);
+	SDL_Rect positiont = {rayon - w/2, rayon - h/2};
+if(a==0)printf("%c\n", balle->lettre);
+a++;
+	SDL_BlitSurface(texte, NULL, balle->canvas, &positiont);
+	TTF_CloseFont(police);	
+
+	// Effectue la rotation de la balle
 	SDL_Surface* balleTourne = Balle_rotation(balle);
 
 	// Informations pour l'affichage

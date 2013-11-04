@@ -41,6 +41,7 @@ cpSpace* GestionEnv_initChipmunk(){
 SDL_Surface* GestionEnv_initSDL(){
 
 	SDL_Init(SDL_INIT_VIDEO);
+	TTF_Init();
 	ecran = SDL_SetVideoMode(LARGUEUR_ECRAN, HAUTEUR_ECRAN, SCREEN_BPP, SDL_HWSURFACE);
 
 	if(ecran){
@@ -60,6 +61,7 @@ void GestionEnv_quitChipmunk(){
 
 void GestionEnv_quitSDL(){
 	SDL_FreeSurface(ecran);
+	TTF_Quit();
 	SDL_Quit();
 }
 

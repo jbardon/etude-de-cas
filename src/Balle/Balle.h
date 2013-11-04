@@ -5,8 +5,12 @@
 #include <stdio.h> /* DEBUG */
 #include <math.h>
 #include <chipmunk.h>
-#include <SDL/SDL_gfxPrimitives.h>
-#include <SDL/SDL_rotozoom.h>
+
+#include <SDL_ttf.h>
+#include <SDL_image.h>
+
+#include <SDL_gfxPrimitives.h>
+#include <SDL_rotozoom.h>
 #include <config.h>
 
 typedef struct _Balle Balle;

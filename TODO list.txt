@@ -32,3 +32,6 @@ Quelques fois les balles rentrent un peu dans les murs ou le sol (réglage chipm
 
 Les balles ne s'arrêtent jamais de rouler sur un sol plat (pas géré par chipmunk)
 	-> pas vraiment un problème les balles se bloquent entre elles
+
+Jérémy:
+	Rendre la surface du cercle plus grand que le cercle

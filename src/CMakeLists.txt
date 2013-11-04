@@ -34,6 +34,7 @@ enable_testing()
 
 include_directories(
 	"/usr/include/chipmunk"
+	"/usr/include/SDL"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Balle"
 	"${CMAKE_CURRENT_SOURCE_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_SOURCE_DIR}/main"

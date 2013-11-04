@@ -13,13 +13,13 @@ int main(void){
 	cpSpaceSetGravity(espace, gravite);
 
 /* DEBUT TEST */
-
+TTF_Init();
 	Balle* balle = Balle_creer(ecran, espace, cpv(100,100), cpvzero, 50, 0x00FF00FF, 'A');
-
+TTF_Quit();
 	//Affichage de la balle
 	SDL_Flip(balle->ecranJeu);
 	printf("Balle_creer...fait\n");
-
+/*
 	//Effacement de la balle
 	sleep(1);
 	Balle_effacer(balle);
@@ -34,7 +34,7 @@ int main(void){
 	Balle_deplacer(balle);
 	SDL_Flip(balle->ecranJeu);
 	printf("Balle_deplacer...fait\n");
-
+*/
 
 /* FIN TEST */
 
