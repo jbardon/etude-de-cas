@@ -14,7 +14,6 @@ Balle:
 
 GestionEnv:
 	- dans evoluer() arrêter quand les balles ne bougent plus
-	- réparer le core dump
 
 ====> Algorithmes sur les mots <====
 
@@ -33,5 +32,7 @@ OK	- Le premier caractère de la première balle s'affiche mal
 			-> la fonction TTF_RenderText_Solid attent une chaîne de caractère avec un zéro terminal
 			-> la fonction TTF_SizeText attend la même chose
 
+OK	- Core dump lors du cpSpaceFree alors que le pointeur n'est pas nul
+			-> utiliser les fonctions cpSpaceRemoveBody et cpSpaceRemoveShape pour les balles (pas dans l'exemple chipmunk)
 
 Quand la fenêtre reste ouverte : kill -9 $(ps -e | grep test | cut -d ' ' -f1)
