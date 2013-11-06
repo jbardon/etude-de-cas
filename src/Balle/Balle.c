@@ -45,13 +45,16 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 			SDL_SetColorKey(balle->canvas, SDL_SRCCOLORKEY, 0x0000FFFF);
 
 			// Caractéristiques physiques de la balle
-			cpFloat masse = 1;
+			cpFloat masse = rayon;
 			cpFloat moment = cpMomentForCircle(masse, 0, rayon, cpvzero);
 
 			// Créé une balle dont la position initiale est cx cy
 			cpBody* corpsBalle = cpSpaceAddBody(espace, cpBodyNew(masse, moment));
 			cpBodySetPos(corpsBalle, cpv(centre.x, HAUTEUR_ECRAN - centre.y));
-			cpBodySetVelLimit(corpsBalle, 250);
+			
+			// Pour donner l'impression que les plus grandes balles tombent plus vite
+			cpBodySetVelLimit(corpsBalle, rayon * 10); 
+
 			cpBodyApplyImpulse(corpsBalle, direction, cpvzero);
 
 			// Zone de zoneCollision de la balle
@@ -61,6 +64,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 
 			// Sauvegarde les caractéristiques de la balle
 			balle->ecranJeu = surf;
+			balle->espaceJeu = espace;
 			balle->cx = centre.x;
 			balle->cy = centre.y;
 			balle->couleur = couleur;
@@ -73,16 +77,24 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 			free(balle);
 		}
 	}
+
 	return balle;
 }
 
 void Balle_supprimer(Balle* balle){
 
+	// Supprime la balle graphiquement
 	Balle_effacer(balle);
 	SDL_FreeSurface(balle->canvas);
 	SDL_Flip(balle->ecranJeu);
 
 	cpBody* tmp = cpShapeGetBody(balle->zoneCollision);
+
+	// Supprime la balle de l'espace
+	cpSpaceRemoveShape(balle->espaceJeu, balle->zoneCollision);
+	cpSpaceRemoveBody(balle->espaceJeu, tmp);
+
+	// Libère les variables liées à la balle
 	cpShapeFree(balle->zoneCollision);
 	cpBodyFree(tmp);
 	free(balle);
@@ -160,15 +172,18 @@ static void _Balle_dessiner_lettre(Balle* balle){
 	const unsigned int taillePolice = floor((2 * rayon) * 0.65);
 	SDL_Color couleurNoire = {50,50,50};
 	TTF_Font* police = TTF_OpenFont("/usr/share/fonts/truetype/msttcorefonts/arial.ttf", taillePolice);
-	SDL_Surface* texte = TTF_RenderText_Solid(police, &(balle->lettre), couleurNoire);
+
+	// Ecriture de la lettre
+	char lettre [2] = { balle->lettre, 0 }; // Ajoute un zero terminal
+	SDL_Surface* texte = TTF_RenderText_Solid(police, lettre, couleurNoire);
 
 	// Calcul la position de la lettre en fonction de sa taille
-	int h, w;
-	TTF_SizeText(police, &(balle->lettre), &w, &h);
-	SDL_Rect positiont = {rayon - w/2, rayon - h/2};
+	int longueurPolice = 0, hauteurPolice = 0;
+	TTF_SizeText(police, lettre, &longueurPolice, &hauteurPolice);
+	SDL_Rect position = {rayon - longueurPolice/2, rayon - hauteurPolice/2};
 
 	// Affichage du caractère
-	SDL_BlitSurface(texte, NULL, balle->canvas, &positiont);
+	SDL_BlitSurface(texte, NULL, balle->canvas, &position);
 	TTF_CloseFont(police);
 }
 

@@ -24,7 +24,7 @@ TTF_Init();
 TTF_Quit();
 
 	//Affichage de la balle
-	SDL_Flip(balle->ecranJeu);
+	SDL_Flip(ecran);
 	printf("Balle_creer...fait\n");
 
 	//Effacement de la balle
@@ -32,14 +32,14 @@ TTF_Quit();
 	Balle_effacer(balle);
 	//Par défaut effacer ne met pas à jour l'affichage
 	//Sinon la balle clignote lors du déplacement
-	SDL_Flip(balle->ecranJeu); 
+	SDL_Flip(ecran); 
 	printf("Balle_effacer...fait\n");
 
 	//Deplacement de la balle
 	sleep(1);
 	cpBodySetPos(cpShapeGetBody(balle->zoneCollision), cpv(200, 200));
 	Balle_deplacer(balle);
-	SDL_Flip(balle->ecranJeu);
+	SDL_Flip(ecran);
 	printf("Balle_deplacer...fait\n");
 
 	//Balle immobile

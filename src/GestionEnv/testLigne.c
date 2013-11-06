@@ -28,8 +28,8 @@ int main(void){
 	pause();
 
 	GestionEnv_supprimerBalles();
-
 	GestionEnv_supprimerPanier();
+
 	GestionEnv_quitChipmunk();
 	GestionEnv_quitSDL();
 

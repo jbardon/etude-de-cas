@@ -48,7 +48,7 @@ SDL_Surface* GestionEnv_initSDL(){
 
 	if(ecran){
 		SDL_FillRect(ecran, NULL, COULEUR_FOND);
-		SDL_WM_SetCaption("Projet étude de cas", NULL);
+		SDL_WM_SetCaption("Projet etude de cas", NULL);
 	}
 
 	return ecran;	
@@ -194,7 +194,7 @@ void GestionEnv_supprimerBalles(){
 char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 	// Dessine la ligne
-	thickLineColor(ecran, x1, y1, x2, y2, 5, 0x000000FF);
+	lineColor(ecran, x1, y1, x2, y2, 0x000000FF);
 
 	// Cherche les lettres
 	char* lettres = calloc(nbBallesCrees + 1, sizeof(char));
@@ -211,7 +211,8 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 		// La balle est bien touchée
 		if(touche){
-			strcat(lettres, &(balles[i]->lettre));
+			char l [2] = { balles[i]->lettre, 0 }; // Ajoute zéro terminal
+			strcat(lettres, l);
 		}
 	}
 
