@@ -14,5 +14,9 @@ target_link_libraries(testPanier GestionEnv Balle SDL SDLmain SDL_gfx SDL_image 
 add_executable(testBalles testBalles.c)
 target_link_libraries(testBalles GestionEnv Balle SDL SDLmain SDL_gfx SDL_image SDL_ttf chipmunk)
 
+add_executable(testLigne testLigne.c)
+target_link_libraries(testLigne GestionEnv Balle SDL SDLmain SDL_gfx SDL_image SDL_ttf chipmunk)
+
 add_test(testPanier ./testPanier)
 add_test(testBalles ./testBalles)
+add_test(testLigne ./testLigne)

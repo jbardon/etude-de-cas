@@ -27,3 +27,5 @@ GestionEnv:
 
 	- Les balles ne s'arrêtent jamais de rouler sur un sol plat (pas géré par chipmunk)
 			-> pas vraiment un problème les balles se bloquent entre elles
+
+	- Le premier caractère de la première balle s'affiche mal

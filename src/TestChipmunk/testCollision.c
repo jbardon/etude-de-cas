@@ -16,9 +16,6 @@ int main(void){
 	// Extrémités de la ligne
 	const int x1 = 0, x2 = LARGUEUR_ECRAN;
 	const int y1 = 0, y2 = HAUTEUR_ECRAN;
-
-	// Dessine la ligne
-	lineColor(ecran, x1, y1, x2, y2, 0x00FFFF);
 	
 	cpFloat temps = 0, uniteTemps = 1.0/60.0;
 	for(; temps < 12; temps += uniteTemps){
@@ -35,6 +32,10 @@ int main(void){
 
 		cpSpaceStep(espace, uniteTemps);	
 		Balle_deplacer(balle);
+
+		// Dessine la ligne
+		lineColor(ecran, x1, y1, x2, y2, 0x00FFFF);
+
 		SDL_Flip(ecran);
 	}
 

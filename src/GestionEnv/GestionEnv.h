@@ -26,6 +26,8 @@ extern void GestionEnv_supprimerPanier();
 extern void GestionEnv_creerBalles(int nbBalles);
 extern void GestionEnv_supprimerBalles();
 
+extern char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2);
+
 /* DEBUG */
 extern cpShape** donnerSol();
 /* DEBUG */

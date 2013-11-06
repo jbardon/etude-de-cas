@@ -11,11 +11,17 @@ int main(void){
 	GestionEnv_creerBalles(20);
 
 /* DEBUT TEST */
-// Laisse l'évolution du système à la bibliothèque
+// Trace une ligne est vérifie quelles balles sont traversées
 
 	for(float i = 0; i < 30; i+=uniteTemps){
 		GestionEnv_evoluer();
 	}
+
+	int x1 = OFFSET + 100, y1 = HAUTEUR_ECRAN - OFFSET - 150;
+	int x2 = LARGUEUR_ECRAN - OFFSET - 100, y2 = HAUTEUR_ECRAN - OFFSET - 50;
+	char* lettres = GestionEnv_donnerCaracteresLigne(x1, y1, x2, y2);
+
+	printf("Lettres sélectionnées: %s\n", lettres);
 
 /* FIN TEST */
 

@@ -185,6 +185,40 @@ void GestionEnv_creerBalles(int nbBalles){
 // Supprime toutes les balles créés
 void GestionEnv_supprimerBalles(){
 	_Balle_foreach(Balle_supprimer);
+	free(balles);
+}
+
+//-------------------------------------------------------------------------------------------------------------
+//								Gestion tracer ligne & récupération des caractères
+//-------------------------------------------------------------------------------------------------------------
+char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
+
+	// Dessine la ligne
+	thickLineColor(ecran, x1, y1, x2, y2, 5, 0x000000FF);
+
+	// Cherche les lettres
+	char* lettres = calloc(nbBallesCrees + 1, sizeof(char));
+	
+	for(unsigned int i = 0; i < nbBallesCrees; i++){
+		
+		// Vérifie si la balle est touchée par la ligne
+		int touche =  cpShapeSegmentQuery(
+						   balles[i]->zoneCollision, 
+						   cpv(x1, HAUTEUR_ECRAN - y1), 
+						   cpv(x2, HAUTEUR_ECRAN - y2),
+						   NULL
+		);
+
+		// La balle est bien touchée
+		if(touche){
+			strcat(lettres, &(balles[i]->lettre));
+		}
+	}
+
+	// Met à jour l'affichage
+	SDL_Flip(ecran);
+
+	return lettres;
 }
 
 //-------------------------------------------------------------------------------------------------------------

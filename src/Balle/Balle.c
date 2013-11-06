@@ -52,9 +52,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 			cpBody* corpsBalle = cpSpaceAddBody(espace, cpBodyNew(masse, moment));
 			cpBodySetPos(corpsBalle, cpv(centre.x, HAUTEUR_ECRAN - centre.y));
 			cpBodySetVelLimit(corpsBalle, 250);
-			//cpBodyApplyImpulse(corpsBalle, direction, cpvzero);
-			//cpBodySetForce(corpsBalle, direction);
-			cpBodyApplyForce(corpsBalle, direction, cpvzero);
+			cpBodyApplyImpulse(corpsBalle, direction, cpvzero);
 
 			// Zone de zoneCollision de la balle
 			balle->zoneCollision = cpSpaceAddShape(espace, cpCircleShapeNew(corpsBalle, rayon, cpvzero));
