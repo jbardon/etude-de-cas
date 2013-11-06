@@ -5,7 +5,7 @@
 //-------------------------------------------------------------------------------------------------------------
 static unsigned int Balle_donneRayon(Balle* balle);
 static void _Balle_dessiner(Balle* balle, Uint32 couleur);
-
+static void _Balle_dessiner_lettre(Balle* balle);
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation et suppression
 //-------------------------------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 			// Créé une balle dont la position initiale est cx cy
 			cpBody* corpsBalle = cpSpaceAddBody(espace, cpBodyNew(masse, moment));
 			cpBodySetPos(corpsBalle, cpv(centre.x, HAUTEUR_ECRAN - centre.y));
-			cpBodySetVelLimit(corpsBalle, 100);
+			cpBodySetVelLimit(corpsBalle, 250);
 			//cpBodyApplyImpulse(corpsBalle, direction, cpvzero);
 			//cpBodySetForce(corpsBalle, direction);
 			cpBodyApplyForce(corpsBalle, direction, cpvzero);
@@ -111,8 +111,14 @@ cpVect Balle_donneCoordonnees(Balle* balle){
 	return cpBodyGetPos(cpShapeGetBody(balle->zoneCollision));
 }
 
+int Balle_estImmobile(Balle* balle){
+	cpVect vitesse = cpBodyGetVel(cpShapeGetBody(balle->zoneCollision));
+	printf("%f %d\n", vitesse.y, (vitesse.y == 0.0));
+	return (vitesse.y == 0.0);
+}
+
 //-------------------------------------------------------------------------------------------------------------
-//											Affichage et évolution de la balle
+//										Affichage et évolution de la balle
 //-------------------------------------------------------------------------------------------------------------
 
 void Balle_afficher(Balle* balle){
@@ -124,26 +130,14 @@ void Balle_effacer(Balle* balle){
 }
 
 static void _Balle_dessiner(Balle* balle, Uint32 couleur){
-static int a = 0;
+
 	// Informations sur la balle
 	const unsigned int rayon = Balle_donneRayon(balle);
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
 
-	//Dessine le cercle
+	//Dessine le cercle puis la lettre
 	filledCircleColor(balle->canvas, rayon , rayon, rayon, couleur);
-
-	// Dessine le caractère
-	SDL_Color couleurNoire = {50,50,50};
-	TTF_Font* police = TTF_OpenFont("/usr/share/fonts/truetype/msttcorefonts/arial.ttf", 30);
-	SDL_Surface* texte = TTF_RenderText_Solid(police, &(balle->lettre), couleurNoire);
-
-	int h, w;
-	TTF_SizeText(police, &(balle->lettre), &w, &h);
-	SDL_Rect positiont = {rayon - w/2, rayon - h/2};
-if(a==0)printf("%c\n", balle->lettre);
-a++;
-	SDL_BlitSurface(texte, NULL, balle->canvas, &positiont);
-	TTF_CloseFont(police);	
+	_Balle_dessiner_lettre(balle);
 
 	// Effectue la rotation de la balle
 	SDL_Surface* balleTourne = Balle_rotation(balle);
@@ -160,6 +154,25 @@ a++;
 	// Calcul la surface pour supprimer
 	SDL_FreeSurface(balleTourne);
 }	
+
+static void _Balle_dessiner_lettre(Balle* balle){
+
+	// Chargement de la police et création de la lettre
+	const unsigned int rayon = Balle_donneRayon(balle);
+	const unsigned int taillePolice = floor((2 * rayon) * 0.65);
+	SDL_Color couleurNoire = {50,50,50};
+	TTF_Font* police = TTF_OpenFont("/usr/share/fonts/truetype/msttcorefonts/arial.ttf", taillePolice);
+	SDL_Surface* texte = TTF_RenderText_Solid(police, &(balle->lettre), couleurNoire);
+
+	// Calcul la position de la lettre en fonction de sa taille
+	int h, w;
+	TTF_SizeText(police, &(balle->lettre), &w, &h);
+	SDL_Rect positiont = {rayon - w/2, rayon - h/2};
+
+	// Affichage du caractère
+	SDL_BlitSurface(texte, NULL, balle->canvas, &positiont);
+	TTF_CloseFont(police);
+}
 
 void Balle_deplacer(Balle* balle){
 

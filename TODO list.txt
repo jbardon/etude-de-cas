@@ -1,21 +1,16 @@
 ====> SDL <====												
 
 Balle:
-	- affichage du caractère (Balle_dessiner)
-	- dessin du caractère (revoir Balle_effacer pour ne pas le dessiner)
+	- SDL_gfx dépasse pour dessiner son cercle	
 
 TestSDL:
 	- Capture du clic
-	- Test avec dessin d'une ligne avec 2 clic (selection des lettres)
+	- Test avec dessin d'une ligne avec 2 clics (selection des lettres)
 	
 ====> Chipmunk <====
 
 Balle:
-	- Comment initialiser un tableau de cpVect
-	- Créer un tableau de couleurs en hexa
-
-TestChipmunk:
-	- Création d'une balle & d'une ligne -> obtenir la liste des objets que traverse la ligne
+	- problème dans Balle_estImmobile 0==0 ne fonctionne pas (voir testBalle)
 
 GestionEnv:
 	- dans evoluer() arrêter quand les balles ne bougent plus
@@ -26,12 +21,9 @@ GestionEnv:
 
 ====> Bugs connus <====
 
-L'effacement des balles ne fonctionne pas parfaitement (voir Balle2)
+	- L'effacement des balles ne fonctionne pas parfaitement (voir Balle2)
 
-Quelques fois les balles rentrent un peu dans les murs ou le sol (réglage chipmunk, voir Balle2)
+	- Quelques fois les balles rentrent un peu dans les murs ou le sol (réglage chipmunk, voir Balle2)
 
-Les balles ne s'arrêtent jamais de rouler sur un sol plat (pas géré par chipmunk)
-	-> pas vraiment un problème les balles se bloquent entre elles
-
-Jérémy:
-	Rendre la surface du cercle plus grand que le cercle
+	- Les balles ne s'arrêtent jamais de rouler sur un sol plat (pas géré par chipmunk)
+			-> pas vraiment un problème les balles se bloquent entre elles

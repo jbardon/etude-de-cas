@@ -6,6 +6,8 @@
 static unsigned int _randMinMax(int min, int max);
 static void _Balle_foreach(Balle_Fonction fonction);
 static void _creerUneBalle();
+static Uint32 _randCouleur();
+static cpVect _randDirection();
 
 //-------------------------------------------------------------------------------------------------------------
 //										Variables liées à l'environnement
@@ -97,7 +99,7 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	int h = 0;
 	int e = 10; // Epaisseur du trait (SDL)
 
-	//Création du sol qui est un élément statique
+	// Création du sol qui est un élément statique
 	panier[0] = cpSegmentShapeNew(espace->staticBody, cpv(0,y), cpv(LARGUEUR_ECRAN,y), 0);
 	cpShapeSetFriction(panier[0], FRICTION);
 	cpShapeSetElasticity(panier[0], REBOND);
@@ -106,7 +108,7 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	y = HAUTEUR_ECRAN - y + e/2;
 	thickLineColor(surf, x - e, y, x + l + e, y, e, 0x000000FF);
 
-	//Création du mur gauche
+	// Création du mur gauche
 	x = OFFSET;
 	panier[1] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
 	cpShapeSetFriction(panier[1], FRICTION);
@@ -118,7 +120,7 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	h = 2 * OFFSET;
 	thickLineColor(surf, x, y + e, x, h, e, 0x00000FF);
 
-	//Création du mur droit
+	// Création du mur droit
 	x = LARGUEUR_ECRAN - OFFSET;
 	panier[2] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
 	cpShapeSetFriction(panier[2], FRICTION);
@@ -154,14 +156,15 @@ static void _creerUneBalle(){
 
 	if(nbBallesCrees < nbBallesTotal){
 
-		//Caractéritiques aléatoires pour les balles
+		// Caractéritiques aléatoires pour les balles
 		const int rayon = _randMinMax(30,50);
 		const cpVect centre = cpv(_randMinMax(OFFSET + rayon, LARGUEUR_ECRAN - 2*OFFSET - rayon), -rayon);
-		const cpVect direction = cpv(20,0);
+		const cpVect direction = _randDirection();
+		const Uint32 couleur = _randCouleur();
 		const char lettre = (char) _randMinMax(65,90);
 
-		//Création de la balle
-		balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, 0xFF0000FF, lettre);
+		// Création de la balle
+		balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
 		nbBallesCrees++;
 	}			
 }
@@ -179,7 +182,7 @@ void GestionEnv_creerBalles(int nbBalles){
 	}
 }
 
-//Supprime toutes les balles créés
+// Supprime toutes les balles créés
 void GestionEnv_supprimerBalles(){
 	_Balle_foreach(Balle_supprimer);
 }
@@ -188,21 +191,40 @@ void GestionEnv_supprimerBalles(){
 //											Gestion de l'aléatoire
 //-------------------------------------------------------------------------------------------------------------
 
-//Retourne un nombre aléatoire entre min et max
+// Retourne un nombre aléatoire entre min et max
 static unsigned int _randMinMax(int min, int max){
-	return (rand() % (max-min)) + min;
+	return (rand() % (max - min + 1)) + min;
 }
 
-//Calcule une direction aléatoire
-/*
-static cpVect* directions = calloc(5, sizeof(cpVect));
-directions[0] = cpv(-20,-40); directions[1] = cpv(-40,-40); directions[2] = cpvzero;
-directions[3] = cpv(40,-40); directions[4] = cpv(20,40);
-
+// Calcule une direction aléatoire
 static cpVect _randDirection(){
-	return directions[_randMinMax(0, sizeof(directions)/sizeof(cpVect))];
+	int x = _randMinMax(0,80);
+	int dirGauche = _randMinMax(0,1);
+
+	if(dirGauche){
+		return cpv(-x,0);
+	}
+	else {
+		return cpv(x,0);
+	}
 }
-*/
+
+
+// Retourne une couleur (en RRGGBBAA) aléatoires
+// voir http://fr.wikipedia.org/wiki/Liste_de_couleurs
+static Uint32 couleurs [] = { 
+							   0xE67E30FF, /* Abricot */
+							   0x74C0F1FF, /* Azur clair */
+							   0xFFE436FF, /* Jaune Impérial */
+							   0xD2CAECFF, /* Gris de lin */
+							   0xC60800FF, /* Coquelicot */
+							   0x26619CFF, /* Lapis-lazulli */
+							   0x3A9D23FF  /* Vert gazon */
+						    };
+
+static Uint32 _randCouleur(){
+	return couleurs[_randMinMax(0,6)];
+}
 
 //-------------------------------------------------------------------------------------------------------------
 //						Fonctions debug (laisser pour compiler testDroiteGauche & testGaucheDroite)

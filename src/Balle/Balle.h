@@ -20,7 +20,7 @@ struct _Balle {
 	cpShape* zoneCollision;
 
 	int cx, cy;
-	Uint32 couleur;
+	Uint32 couleur; /* RRGGBBAA */
 
 	char lettre;
 };
@@ -31,6 +31,7 @@ extern void Balle_supprimer(Balle* balle);
 
 extern cpVect Balle_donneCoordonnees(Balle* balle);
 extern float Balle_donneAngleDeg(Balle* balle);
+extern int Balle_estImmobile(Balle* balle);
 
 extern void Balle_afficher(Balle* balle);
 extern void Balle_effacer(Balle* balle);
