@@ -19,12 +19,11 @@ TTF_Init();
 		Balle* balle = Balle_creer(ecran, espace, cpv(100,100), cpvzero, 50, 0x00FF00FF, l);
 		SDL_Flip(ecran);
 		getchar();	
+		Balle_supprimer(balle);
 	}
 TTF_Quit();
 
 /* FIN TEST */
-
-	pause();
 
 	cpSpaceFree(espace);
 	SDL_FreeSurface(ecran);

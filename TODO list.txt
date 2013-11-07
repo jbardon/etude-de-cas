@@ -9,21 +9,13 @@ TestSDL:
 	
 ====> Chipmunk <====
 
-Balle:
-	- problème dans Balle_estImmobile 0==0 ne fonctionne pas (voir testBalle)
 
-GestionEnv:
-	- dans evoluer() arrêter quand les balles ne bougent plus
 
 ====> Algorithmes sur les mots <====
 
 	- Création d'un répertoire Algo avec la bibliothèque, tests, différentes versions
 
 ====> Bugs connus <====
-
-	- L'effacement des balles ne fonctionne pas parfaitement (voir Balle2)
-
-	- Quelques fois les balles rentrent un peu dans les murs ou le sol (réglage chipmunk, voir Balle2)
 
 OK	- Les balles ne s'arrêtent jamais de rouler sur un sol plat (pas géré par chipmunk)
 			-> pas vraiment un problème les balles se bloquent entre elles
@@ -35,4 +27,22 @@ OK	- Le premier caractère de la première balle s'affiche mal
 OK	- Core dump lors du cpSpaceFree alors que le pointeur n'est pas nul
 			-> utiliser les fonctions cpSpaceRemoveBody et cpSpaceRemoveShape pour les balles (pas dans l'exemple chipmunk)
 
-Quand la fenêtre reste ouverte : kill -9 $(ps -e | grep test | cut -d ' ' -f1)
+OK	- Un même mot issu du dictionnaire et du découpage d'une chaine donnée ne donne pas le même hash
+			-> lecture du dictionnaire ligne par ligne avec fgets qui conserve le caractère de fin de ligne
+			-> les caractères de fin de ligne diffèrent selon l'OS : Windows donne \n et Linux \r\n
+
+OK	- Core dump ou pas lors de la création d'une balle selon le PC 
+			-> la fonction TTF_OpenFont génére cette erreur si le fichier .ttf n'est pas trouvé
+
+BC	- Problème dans Balle_estImmobile vitesse.y == 0 ne fonctionne pas
+			-> bricolage avec vitesse.y < 0.0001 && vitesse.y > -0.0001
+
+	- L'effacement des balles ne fonctionne pas parfaitement (voir Balle2)
+
+	- Quelques fois les balles rentrent un peu dans les murs ou le sol (réglage chipmunk, voir Balle2)
+
+====> Astuces pratiques <====
+
+	- Si la fenêtre SDL ne veut pas se fermer
+			-> Ctrl+Z puis kill -9 $(ps -e | grep test | cut -d ' ' -f1), changer test selon le nom de l'executable
+

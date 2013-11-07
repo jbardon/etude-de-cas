@@ -99,6 +99,10 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	int h = 0;
 	int e = 10; // Epaisseur du trait (SDL)
 
+cpBodySetMoment(espace->staticBody, INFINITY);
+cpBodySetMass(espace->staticBody, INFINITY);
+cpBodySetForce(espace->staticBody, cpv(1,1));
+
 	// Création du sol qui est un élément statique
 	panier[0] = cpSegmentShapeNew(espace->staticBody, cpv(0,y), cpv(LARGUEUR_ECRAN,y), 0);
 	cpShapeSetFriction(panier[0], FRICTION);
@@ -186,6 +190,18 @@ void GestionEnv_creerBalles(int nbBalles){
 void GestionEnv_supprimerBalles(){
 	_Balle_foreach(Balle_supprimer);
 	free(balles);
+}
+
+// Retourne vrai si toutes les balles sont immobiles
+int GestionEnv_ballesImmobiles(){
+
+	int ballesImmobiles = 1, i = 0;
+	
+	while(ballesImmobiles && i < nbBallesCrees){
+		ballesImmobiles = Balle_estImmobile(balles[i++]);
+	}	
+
+	return ballesImmobiles;	
 }
 
 //-------------------------------------------------------------------------------------------------------------

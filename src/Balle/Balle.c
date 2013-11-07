@@ -3,9 +3,11 @@
 //-------------------------------------------------------------------------------------------------------------
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
+
 static unsigned int Balle_donneRayon(Balle* balle);
 static void _Balle_dessiner(Balle* balle, Uint32 couleur);
 static void _Balle_dessiner_lettre(Balle* balle);
+
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation et suppression
 //-------------------------------------------------------------------------------------------------------------
@@ -123,8 +125,7 @@ cpVect Balle_donneCoordonnees(Balle* balle){
 
 int Balle_estImmobile(Balle* balle){
 	cpVect vitesse = cpBodyGetVel(cpShapeGetBody(balle->zoneCollision));
-	printf("%f %d\n", vitesse.y, (vitesse.y == 0.0));
-	return (vitesse.y == 0.0);
+	return (vitesse.y < 0.0001 && vitesse.y > -0.0001);
 }
 
 //-------------------------------------------------------------------------------------------------------------

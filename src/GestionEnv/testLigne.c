@@ -12,10 +12,12 @@ int main(void){
 
 /* DEBUT TEST */
 // Trace une ligne est vérifie quelles balles sont traversées
+// La boucle s'arrête lorsque toutes les balles sont immobiles
 
-	for(float i = 0; i < 30; i+=uniteTemps){
+	do {		
 		GestionEnv_evoluer();
 	}
+	while(!GestionEnv_ballesImmobiles());
 
 	int x1 = OFFSET + 100, y1 = HAUTEUR_ECRAN - OFFSET - 150;
 	int x2 = LARGUEUR_ECRAN - OFFSET - 100, y2 = HAUTEUR_ECRAN - OFFSET - 50;
