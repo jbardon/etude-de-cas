@@ -13,7 +13,14 @@ TestSDL:
 
 ====> Algorithmes sur les mots <====
 
-	- Création d'un répertoire Algo avec la bibliothèque, tests, différentes versions
+	
+
+====> Autres <====
+
+Balle, AlgoRecherche :
+	- Chargement de fichiers ressource avec cmake
+
+- Les bibliothèques dans res marchent sans installer chipmunk, glib, sdl... ?
 
 ====> Bugs connus <====
 
