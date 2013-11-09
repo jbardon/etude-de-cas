@@ -1,3 +1,16 @@
+/*
+	Version ou l'affichage fonctionne comme suit :
+		- affichage du cercle sur la surface
+		- écriture de la lettre sur la surface
+		- rotation et affichage de la surface
+
+	Version en fonctionnement :
+		- affichage du cercle sur la surface
+		- écriture et rotation de la lettre sur la surface
+		- affichage de la surface
+*/
+
+
 #include "Balle.h"
 
 //-------------------------------------------------------------------------------------------------------------
@@ -38,7 +51,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 	if(balle){
 
 		// Créé la zone de dessin de la balle
-		balle->canvas = SDL_CreateRGBSurface(/*SDL_HWSURFACE*/SDL_SRCALPHA, (rayon+1)*2, (rayon+1)*2, 32, 0, 0, 0, 0);
+		balle->canvas = SDL_CreateRGBSurface(/*SDL_HWSURFACE*/SDL_SRCALPHA, rayon*2, rayon*2, 32, 0, 0, 0, 0);
 
 		if(balle->canvas){
 
@@ -48,7 +61,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 
 			// Caractéristiques physiques de la balle
 			cpFloat masse = rayon;
-			cpFloat moment = cpMomentForCircle(masse, 0, rayon - 1, cpvzero);
+			cpFloat moment = cpMomentForCircle(masse, 0, rayon, cpvzero);
 
 			// Créé une balle dont la position initiale est cx cy
 			cpBody* corpsBalle = cpSpaceAddBody(espace, cpBodyNew(masse, moment));
@@ -86,7 +99,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 void Balle_supprimer(Balle* balle){
 
 	// Supprime la balle graphiquement
-	Balle_effacer(balle); 	
+	Balle_effacer(balle);
 	SDL_FreeSurface(balle->canvas);
 	SDL_Flip(balle->ecranJeu);
 
@@ -147,13 +160,23 @@ static void _Balle_dessiner(Balle* balle, Uint32 couleur){
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
 
 	//Dessine le cercle puis la lettre
-	filledCircleColor(balle->canvas, rayon, rayon, rayon, couleur);
+	filledCircleColor(balle->canvas, rayon , rayon, rayon, couleur);
 	_Balle_dessiner_lettre(balle, couleur);
 
+	// Effectue la rotation de la balle
+	SDL_Surface* balleTourne = Balle_rotation(balle);
+
+	// Informations pour l'affichage
+	const int delta = balleTourne->w - balle->canvas->w;
+	SDL_Rect masque = { delta/2, delta/2, balle->canvas->h, balle->canvas->w };
+
 	// Affiche la balle
-	SDL_BlitSurface(balle->canvas, NULL, balle->ecranJeu, &position);
+	SDL_BlitSurface(balleTourne, &masque, balle->ecranJeu, &position);
 	//!\\ Pas de SDL_Flip pour éviter les problèmes lorsque plusieurs balles sont
 	//!\\ déplacées dans une même fenêtre
+
+	// Calcul la surface pour supprimer
+	SDL_FreeSurface(balleTourne);
 }	
 
 static void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur){
@@ -181,20 +204,16 @@ static void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur){
 	char lettre [2] = { balle->lettre, 0 }; // Ajoute un zero terminal
 	SDL_Surface* texte = TTF_RenderText_Solid(police, lettre, couleurPolice);
 
-	// Effectue la rotation de la balle
-	const float angle = Balle_donneAngleDeg(balle);	
-	SDL_Surface* texteTourne = rotozoomSurface(texte, angle, 1, 0);
-	SDL_FreeSurface(texte);
-
 	// Calcul la position de la lettre en fonction de sa taille
-	SDL_Rect position = {rayon - texteTourne->w/2, rayon - texteTourne->h/2};
+	int longueurPolice = 0, hauteurPolice = 0;
+	TTF_SizeText(police, lettre, &longueurPolice, &hauteurPolice);
+	SDL_Rect position = {rayon - longueurPolice/2, rayon - hauteurPolice/2};
 
 	// Affichage du caractère
-	SDL_BlitSurface(texteTourne, NULL, balle->canvas, &position);
-	TTF_CloseFont(police);
+	SDL_BlitSurface(texte, NULL, balle->canvas, &position);
 
-	// Calcul la surface pour supprimer
-	SDL_FreeSurface(texteTourne);
+	TTF_CloseFont(police);
+	SDL_FreeSurface(texte);
 }
 
 void Balle_deplacer(Balle* balle){

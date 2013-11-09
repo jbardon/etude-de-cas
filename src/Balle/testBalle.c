@@ -21,7 +21,7 @@ int main(void){
 
 TTF_Init();
 	Balle* balle = Balle_creer(ecran, espace, cpv(100,100), cpvzero, 50, 0x00FF00FF, 'A');
-TTF_Quit();
+
 
 	//Affichage de la balle
 	SDL_Flip(ecran);
@@ -35,8 +35,9 @@ TTF_Quit();
 	SDL_Flip(ecran); 
 	printf("Balle_effacer...fait\n");
 
-	//Deplacement de la balle
+	//Deplacement de la balle et rotation
 	sleep(1);
+	cpBodySetAngle(cpShapeGetBody(balle->zoneCollision), M_PI/4);
 	cpBodySetPos(cpShapeGetBody(balle->zoneCollision), cpv(200, 200));
 	Balle_deplacer(balle);
 	SDL_Flip(ecran);
@@ -67,7 +68,7 @@ TTF_Quit();
 	pause();
 
 	Balle_supprimer(balle);
-
+TTF_Quit();
 	cpSpaceFree(espace);
 	SDL_FreeSurface(ecran);
 	SDL_Quit();
