@@ -2,8 +2,8 @@
 #include <unistd.h> //pause
 
 #include <config.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_gfxPrimitives.h>
+#include <SDL.h>
+#include <SDL_gfxPrimitives.h>
 
 int main(void){
 

@@ -162,7 +162,7 @@ static void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur){
 	const unsigned int rayon = Balle_donneRayon(balle);
 	const unsigned int taillePolice = floor((2 * rayon) * 0.65);
 	SDL_Color couleurPolice;
-	TTF_Font* police = TTF_OpenFont("/usr/share/fonts/truetype/msttcorefonts/arial.ttf", taillePolice);
+	TTF_Font* police = TTF_OpenFont(RES("/Balle/arial.ttf"), taillePolice);
 
 	// Choix de la couleur
 	if(couleur == 0xFFFFFFFF){

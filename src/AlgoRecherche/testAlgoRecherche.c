@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <config.h>
 
 #include "AlgoRecherche.h"
 
@@ -7,7 +8,7 @@ int main()
 {	
 	printf("----> Test de la HashTable <---- \n");
 	//création de la table de hashage pour ranger le dico
-		GHashTable* dico = chargerDico("dico.txt");
+		GHashTable* dico = chargerDico(RES("/AlgoRecherche/dico.txt"));
 
 //**** AFFICHAGE DE LA TABLE ****//
 /*		//Variable de l'iterateur pour la table de hashage

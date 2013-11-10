@@ -1,0 +1,17 @@
+Configurer le répertoire des ressources :
+	
+	exemple avec le dossier res dans
+		/home/jeremy/Documents/projet/etude-de-cas/res
+
+	Dans le fichier: src/main/config.h
+		changer: #define RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res"
+
+	Dans le fichier: src/CMakeLists.txt
+		changer: set(RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res")
+
+Ajouter des fichiers ressource et les ouvrir
+
+	exemple avec un fichier dico.txt utilisé dans src/AlgoRecherche
+
+	Copier le fichier dico.txt dans: res/AlgoRecherche
+	Ouvrir le fichier: fopen(RES("/AlgoRecherche/dico.txt"), "r");

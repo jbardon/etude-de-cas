@@ -4,7 +4,7 @@
 #include <time.h>
 
 #include <chipmunk.h>
-#include <SDL/SDL_gfxPrimitives.h>
+#include <SDL_gfxPrimitives.h>
 #include <config.h>
 #include <Balle.h>
 

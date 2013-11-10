@@ -2,9 +2,9 @@
 #include <unistd.h> //pause
 
 #include <config.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_gfxPrimitives.h>
-#include <SDL/SDL_rotozoom.h>
+#include <SDL.h>
+#include <SDL_gfxPrimitives.h>
+#include <SDL_rotozoom.h>
 
 int main(void){
 

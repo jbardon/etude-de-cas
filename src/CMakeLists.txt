@@ -36,15 +36,12 @@ include(CPack)
 
 enable_testing()
 
+set(RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res")
+
 include_directories(
-#	"/usr/include/glib-2.0"
-#	"/usr/include/glib-2.0/glib"
-#	"/usr/lib/i386-linux-gnu/glib-2.0/include/"
-#	"/usr/include/chipmunk"
-#	"/usr/include/SDL"
-	"${CMAKE_CURRENT_SOURCE_DIR}/../res/chipmunk/include"
-	"${CMAKE_CURRENT_SOURCE_DIR}/../res/sdl/include"
-	"${CMAKE_CURRENT_SOURCE_DIR}/../res/glib/include"
+	"${RES_PATH}/chipmunk/include"
+	"${RES_PATH}/sdl/include"
+	"${RES_PATH}/glib/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Balle"
 	"${CMAKE_CURRENT_SOURCE_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_SOURCE_DIR}/main"
@@ -54,10 +51,9 @@ include_directories(
 )
 
 link_directories(
-#	"/usr/lib/i386-linux-gnu"
-	"${CMAKE_CURRENT_BINARY_DIR}/../res/chipmunk/lib"
-	"${CMAKE_CURRENT_BINARY_DIR}/../res/sdl/lib"
-	"${CMAKE_CURRENT_BINARY_DIR}/../res/glib/lib"
+	"${RES_PATH}/chipmunk/lib"
+	"${RES_PATH}/sdl/lib"
+	"${RES_PATH}/glib/lib"
 	"${CMAKE_CURRENT_BINARY_DIR}/Balle"
 	"${CMAKE_CURRENT_BINARY_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_BINARY_DIR}/main"
