@@ -22,12 +22,12 @@ GHashTable* chargerDico(char* nomFichier){
 			{
 				_supprimer_retour_ligne(line);
 				printf("ligne %s, gstrh %d , taille %d \n", line, g_str_hash(line), strlen(line));
-				valhash=g_str_hash(line); //récupère la valeur de la fonction de hashage
+				valhash = g_str_hash(line); //récupère la valeur de la fonction de hashage
 
-				int* tmpval=malloc(sizeof(int)); //création d'une nouvelle variable à chaque tour de boucle...
-				*tmpval=valhash; //...qui contient la valeur de hashage
+				int* tmpval = malloc(sizeof(int)); //création d'une nouvelle variable à chaque tour de boucle...
+				*tmpval = valhash; //...qui contient la valeur de hashage
 			
-				char* tmp=malloc(strlen(line)+1); //création d'une variable à chaque tour de boucle...
+				char* tmp = malloc(strlen(line)+1); //création d'une variable à chaque tour de boucle...
 				strcpy(tmp,line); //...qui contient la valeur de la ligne lue
 
 				g_hash_table_insert(DicoHash, tmpval, tmp); //Insertion dans le hashtable
@@ -97,9 +97,11 @@ char* version1(char* chaine, GHashTable* table)
 	{
 		for(int j=i; j<strlen(chaine); j++)
 		{
-			substring=_str_sub(chaine,i,j);
-			const int h = g_str_hash(substring);		
+			substring = _str_sub(chaine,i,j);
+			const int h = g_str_hash(substring);
+		
 			printf("Sous-chaine : %s , valeur de hash : %d , taille de la chaine %d \n",substring, h, strlen(substring));	
+
 			if(g_hash_table_contains(table, &h))
 			{
 				printf("OK");

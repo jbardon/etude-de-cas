@@ -11,4 +11,8 @@ set_target_properties(
 add_executable(testAlgoRecherche testAlgoRecherche.c)
 target_link_libraries(testAlgoRecherche AlgoRecherche glib-2.0)
 
+add_executable(testGlib testGlib.c)
+target_link_libraries(testGlib glib-2.0)
+
 add_test(testAlgoRecherche ./testAlgoRecherche)
+add_test(testGlib ./testGlib)
