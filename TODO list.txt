@@ -47,6 +47,10 @@ BC	- Problème dans Balle_estImmobile vitesse.y == 0 ne fonctionne pas
 OK	- L'effacement des balles ne fonctionne pas parfaitement (laisse des traces)
 			-> rotation de la lettre et non de tout le balle
 
+OK - Impossible de retrouver des éléments dans un GHashTable
+			-> les clés sont des entiers (g_str_hash) donc lorsque la table est créée, il faut founir des fonctions
+			   pour hacher et comparer des entier (et non des chaînes de caractères)
+
 	- Quelques fois les balles rentrent un peu dans les murs ou le sol (réglage chipmunk)
 
 ====> Astuces pratiques <====

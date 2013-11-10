@@ -4,6 +4,7 @@
 
 #include "AlgoRecherche.h"
 
+
 int main()
 {	
 
@@ -20,10 +21,10 @@ int main()
 	} 
 
 	// Insertion des données dans une table
-	GHashTable* table = g_hash_table_new(g_str_hash, g_str_equal);
+	GHashTable* table = g_hash_table_new(g_int_hash, g_int_equal);
 
 	for(int i = 0; i < sizeData; i++){
-		g_hash_table_insert(table, &hash[i], data[i]);
+		g_hash_table_insert(table, &hash[i], g_strdup(data[i]));
 	}
 
 	// Affichage de la table
@@ -40,16 +41,18 @@ int main()
 	// Recherche un élément dans la table
 	char* mot = "World";
 	int hashMot = g_str_hash(mot);
-	printf("mot: %s, hashMot: %d\n", mot, hashMot);
-	if(g_hash_table_contains(table, &hashMot)){
-		printf("Trouvé\n");
+	printf("mot: %s ---> hashMot: %d \n", mot, hashMot);
+
+	void* motTrouve = g_hash_table_lookup(table, &hashMot);
+	if(motTrouve){
+		printf("Trouvé: %s\n", (char*)motTrouve);
 	}	
 	else {
 		printf("Pas trouvé\n");	
 	}
 
+	g_hash_table_destroy(table);
+
 	return EXIT_SUCCESS;
 }
-
-
 

@@ -6,7 +6,7 @@ static void _supprimer_retour_ligne(char *chaine);
 
 GHashTable* chargerDico(char* nomFichier){
 	
-	GHashTable* DicoHash = g_hash_table_new(g_str_hash, g_str_equal);
+	GHashTable* DicoHash = g_hash_table_new(g_int_hash, g_int_equal);
 
 	if(DicoHash){
 		int valhash = 0; //valeur de la fonction de hashage
