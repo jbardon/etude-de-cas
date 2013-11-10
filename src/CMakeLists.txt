@@ -36,7 +36,7 @@ include(CPack)
 
 enable_testing()
 
-set(RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res")
+set(RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res/lib")
 
 include_directories(
 	"${RES_PATH}/chipmunk/include"

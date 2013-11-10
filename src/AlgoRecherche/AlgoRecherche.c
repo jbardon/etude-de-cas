@@ -5,7 +5,7 @@ static char *_str_sub (const char *s, unsigned int start, unsigned int end);
 static void _supprimer_retour_ligne(char *chaine);
 
 GHashTable* chargerDico(char* nomFichier){
-
+	
 	GHashTable* DicoHash = g_hash_table_new(g_str_hash, g_str_equal);
 
 	if(DicoHash){
@@ -21,7 +21,7 @@ GHashTable* chargerDico(char* nomFichier){
 			while(fgets(line, sizeof line, fichier)!=NULL) //lire une ligne
 			{
 				_supprimer_retour_ligne(line);
-				printf("gstrh %d , taille %d \n",g_str_hash(line), strlen(line));
+				printf("ligne %s, gstrh %d , taille %d \n", line, g_str_hash(line), strlen(line));
 				valhash=g_str_hash(line); //récupère la valeur de la fonction de hashage
 
 				int* tmpval=malloc(sizeof(int)); //création d'une nouvelle variable à chaque tour de boucle...
@@ -30,7 +30,6 @@ GHashTable* chargerDico(char* nomFichier){
 				char* tmp=malloc(strlen(line)+1); //création d'une variable à chaque tour de boucle...
 				strcpy(tmp,line); //...qui contient la valeur de la ligne lue
 
-				printf("key %d ---> %s \n", valhash, line);
 				g_hash_table_insert(DicoHash, tmpval, tmp); //Insertion dans le hashtable
 			}
 	
@@ -93,7 +92,7 @@ char* version1(char* chaine, GHashTable* table)
 		
 	}*/
 	char* substring;
-	printf("Chaine de départ : %s \n",chaine);
+	printf("Chaine de depart : %s \n",chaine);
 	for(int i=0; i<strlen(chaine); i++)
 	{
 		for(int j=i; j<strlen(chaine); j++)
