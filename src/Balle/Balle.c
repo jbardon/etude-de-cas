@@ -1,29 +1,51 @@
+/**
+ * \file Balle.c
+ * \brief Gestion d'une balle d'un point de vue graphique et physique
+ * \author Jérémy.B
+ * \version 1.0
+ * \date 10 novembre 2013
+ *
+ * Bibliothèque pour la gestion d'une balle avec la SDL et chipmunk
+ *
+ */
+
 #include "Balle.h"
 
 //-------------------------------------------------------------------------------------------------------------
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
 
+/**
+ * \fn unsigned int Balle_donneRayon(Balle* balle)
+ * \brief Fonction qui donne le rayon d'une balle
+ *
+ * \param balle Balle dont on veut connaître le rayon
+ *
+ * \return rayon de la balle
+ */
 static unsigned int Balle_donneRayon(Balle* balle);
+
+/**
+ * \fn void _Balle_dessiner(Balle* balle, Uint32 couleur)
+ * \brief Fonction qui dessine une balle sur la fenêtre SDL donnée 
+ * lors de la création de la balle dans une couleur donnée
+ *
+ * \param balle Balle que l'on veut dessiner
+ * \param couleur Couleur de la balle
+ */
 static void _Balle_dessiner(Balle* balle, Uint32 couleur);
+
+/**
+ * \fn void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur)
+ * \brief Fonction qui dessine la lettre de la balle sur son centre
+ *
+ * \param balle Balle dont on veut dessiner la lettre
+ * \param couleur Couleur de la balle
+ */
 static void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur);
 
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation et suppression
-//-------------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------------------------
-// Créé une nouvelle balle (en 2D) et l'affiche
-//	Entrée
-//  	surf: écran de jeu
-// 		espace: monde chipmunk
-// 		centre: coordonées du centre de la balle
-//		direction: direction initiale de la balle
-// 		rayon: rayon de la balle
-// 		couleur: couleur de la balle
-// 		lettre: lettre de l'alphabet attaché à cette balle
-//	Sortie
-//		balle créée
 //-------------------------------------------------------------------------------------------------------------
 Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect direction, 
 					int rayon, Uint32 couleur, char lettre)
@@ -209,10 +231,5 @@ void Balle_deplacer(Balle* balle){
 
 	// Affiche la balle
 	Balle_afficher(balle);
-}
-
-SDL_Surface* Balle_rotation(Balle* balle){
-	const float angle = Balle_donneAngleDeg(balle);	
-	return rotozoomSurface(balle->canvas, angle, 1, 0);
 }
 
