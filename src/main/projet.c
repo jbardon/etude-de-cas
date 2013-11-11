@@ -1,3 +1,19 @@
+/**
+ * @file projet.c
+ * @brief Programme principal du jeu
+ * @author Jérémy.B
+ * @version 1.0
+ *
+ * Synopsis :
+ *   Affiche l'environnement à l'aide de la bibliothèque GestonEnv
+ *   Créé et fait tomber des balles qui sont chacune associé à une lettre
+ *   Attent que toutes les balles soient immobiles
+ *   L'utilisateur trace une ligne en 2 clic pour sélectionner des balles (et donc des lettres)
+ *   Le système affiche le mot le plus grand qui peut être constituer avec les lettres sélectionnées
+ *   Suppression des balles sélectionnées
+ *
+ */
+
 #include <stdio.h>
 #include <math.h>
 

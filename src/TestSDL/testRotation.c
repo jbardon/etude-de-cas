@@ -1,3 +1,20 @@
+/**
+ * @file testRotation.c
+ * @brief Test sur la rotation d'une surface SDL
+ * @author Jérémy.B
+ * @version 1.0
+ * @date 10 novembre 2013
+ *
+ * Rotation d'une surface SDL avec la fonction rotozoomSurface
+ * de la bibliothèque SDL_gfx
+ *
+ * Rotation d'un cercle de 90 degrés puis de -90 degrés
+ *
+ * Il faut obligatoirement donner la surface d'origine s et non s2 
+ * lors de la seconde rotation, sinon ça ne fonctionne pas
+ * 
+ */
+
 #include <stdio.h>
 #include <unistd.h> //pause
 
@@ -32,8 +49,6 @@ int main(void){
 	SDL_Flip(ecran);
 
 	//Rotation de -90 degrés (par raport à la surface initiale)
-	//!\\ Il faut obligatoirement donner la surface d'origine s et non s2
-	//!\\ Sinon ça ne marche pas ...
 	SDL_Surface* s3 = rotozoomSurface(s, -90, 1, 0); 
 	position.x += 150;
 	SDL_BlitSurface(s3, NULL, ecran, &position); 

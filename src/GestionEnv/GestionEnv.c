@@ -39,10 +39,10 @@ static cpSpace* espace = NULL;
 /**
  * @var cpShape* panier[3]
  * @brief Limitations physique du saladier ou tombent
- * les balle
+ * les balles
  *
- * Initialisation: @see GestionEnv_creerPanier
- * Destruction: @see GestionEnv_supprimerPanier
+ * @see GestionEnv_creerPanier
+ * @see GestionEnv_supprimerPanier
  *
  * Ce tableau contient dans l'ordre le sol et les 2 murs (gauche, droite) 
  *
@@ -54,7 +54,9 @@ static cpShape* panier[3];
  * @brief Temps dans le monde chipmunk
  *
  * Temps qui s'écoule dans le monde chipmunk à 
- * chaque appel de la fonction @see GestionEnv_evoluer
+ * chaque appel de la fonction GestionEnv_evoluer
+ *
+ * @see GestionEnv_evoluer
  *
  */ 
 static double temps = 0;
@@ -63,8 +65,8 @@ static double temps = 0;
  * @var SDL_Surface* ecran
  * @brief Ecran principal de fenêtre SDL
  *
- * Initialisation: @see GestionEnv_initSDL
- * Destruction: @see GestionEnv_quitSDL
+ * @see GestionEnv_initSDL
+ * @see GestionEnv_quitSDL
  *
  */ 
 static SDL_Surface* ecran = NULL;
@@ -72,9 +74,11 @@ static SDL_Surface* ecran = NULL;
 /**
  * @var Balle** balles
  * @brief Tableau des balles présentent dans l'environnement
+ * Balles créées avec la fonction _creerUneBalle
  *
- * Initialisation: @see GestionEnv_creerBalles
- * Balles créées avec la fonction @see _creerUneBalle
+ * @see GestionEnv_creerBalles
+ * @see _creerUneBalle
+ *
  *
  */ 
 static Balle** balles = NULL;
@@ -99,11 +103,13 @@ static int nbBallesCrees = 0;
  * @var int timerLancement
  * @brief Compteur de temps pour lancer les balles
  *
- * Le temps évolue avec @see GestionEnv_evoluer à travers
- * la variable @see temps. Une fois le compteur à son maximum
- * @see DELAI_APPARITION (config.h) une balle est créée et
- * le timer est remis à zéro
+ * Le temps évolue avec GestionEnv_evoluer à travers
+ * la variable temps. Une fois le compteur à son maximum (DELAI_APPARITION)
+ * une balle est créée et le timer est remis à zéro
  *
+ * @see temps
+ * @see GestionEnv_evoluer
+ * @see DELAI_APPARITION (config.h)
  */ 
 static int timerLancement = 0;
 

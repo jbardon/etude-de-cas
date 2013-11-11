@@ -1,3 +1,15 @@
+/**
+ * @file testTranslation.c
+ * @brief Test sur la translation d'une surface SDL
+ * @author Jérémy.B
+ * @version 1.0
+ * @date 10 novembre 2013
+ *
+ * Déplacement d'une surface SDL de 150px en abscisse 
+ * et de 100px en ordonnée
+ * 
+ */
+
 #include <stdio.h>
 #include <unistd.h> //pause
 

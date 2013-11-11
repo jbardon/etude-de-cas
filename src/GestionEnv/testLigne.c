@@ -7,8 +7,8 @@
  * @version 1.0
  *
  * Test pour les fonctions:
- *   @see GestionEnv_donnerCaracteresLigne
- *   @see GestionEnv_ballesImmobiles
+ *   GestionEnv_donnerCaracteresLigne
+ *   GestionEnv_ballesImmobiles
  *
  * Trace une ligne est vérifie quelles balles sont traversées
  * Les lettres des balles traversées sont affichées dans le terminal
@@ -16,6 +16,8 @@
  * La boucle d'évilution de l'environnement s'arrête lorsque 
  * toutes les balles sont immobiles
  *
+ *  @see GestionEnv_donnerCaracteresLigne
+ *  @see GestionEnv_ballesImmobiles
  */
 
 #include <stdio.h>
