@@ -1,3 +1,20 @@
+/**
+ * @file testBalle.c
+ * @brief Test complet de la bibliothèque Balle
+ * @author Jérémy.B
+ * @version 1.0
+ * @date 10 novembre 2013
+ *
+ * Liste des fonctions testés :
+ * 	 @see Balle_creer
+ *   @see Balle_effacer
+ *   @see Balle_deplacer
+ *   @see Balle_donneCoordonnees
+ *   @see Balle_estImmobile
+ *   @see Balle_supprimer
+ *
+ */
+
 #include <unistd.h> //pause
 #include <Balle.h>
 
@@ -23,19 +40,19 @@ TTF_Init();
 	Balle* balle = Balle_creer(ecran, espace, cpv(100,100), cpvzero, 50, 0x00FF00FF, 'A');
 
 
-	//Affichage de la balle
+	// Affichage de la balle
 	SDL_Flip(ecran);
 	printf("Balle_creer...fait\n");
 
-	//Effacement de la balle
+	// Effacement de la balle
 	sleep(1);
 	Balle_effacer(balle);
-	//Par défaut effacer ne met pas à jour l'affichage
-	//Sinon la balle clignote lors du déplacement
+	// Par défaut effacer ne met pas à jour l'affichage
+	// Sinon la balle clignote lors du déplacement
 	SDL_Flip(ecran); 
 	printf("Balle_effacer...fait\n");
 
-	//Deplacement de la balle et rotation
+	// Deplacement de la balle et rotation
 	sleep(1);
 	cpBodySetAngle(cpShapeGetBody(balle->zoneCollision), M_PI/4);
 	cpBodySetPos(cpShapeGetBody(balle->zoneCollision), cpv(200, 200));
@@ -43,7 +60,7 @@ TTF_Init();
 	SDL_Flip(ecran);
 	printf("Balle_deplacer...fait\n");
 
-	//Balle immobile
+	// Balle immobile
 	cpFloat temps = 0, uniteTemps = 1.0/60.0;
 	do {		
 		cpVect pos = Balle_donneCoordonnees(balle);

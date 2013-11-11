@@ -1,8 +1,21 @@
+/**
+ * @file GestionEnv.c
+ * @brief Gestion de l'environnement graphique et physique du jeu
+ * @author Jérémy.B
+ * @version 1.0
+ * @date 10 novembre 2013
+ *
+ * Bibliothèque pour la gestion de la SDL, chipmunk, des balles et
+ * du tracé des lignes pour sélectionner des balles
+ *
+ */
+
 #include "GestionEnv.h"
 
 //-------------------------------------------------------------------------------------------------------------
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
+
 static unsigned int _randMinMax(int min, int max);
 static void _Balle_foreach(Balle_Fonction fonction);
 static void _creerUneBalle();
@@ -13,20 +26,99 @@ static cpVect _randDirection();
 //										Variables liées à l'environnement
 //-------------------------------------------------------------------------------------------------------------
 
+/**
+ * @var cpSpace* espace
+ * @brief Espace physique au sens de chipmunk
+ *
+ * Initialisation: @see GestionEnv_initChipmunk
+ * Destruction: @see GestionEnv_quitChipmunk
+ *
+ */ 
 static cpSpace* espace = NULL;
-static cpShape* panier[3]; // Contient les 2 murs et le sol du panier
-static double temps = 0;   // Temps qui s'écoule dans l'espace de jeu (gestion avec chipmunk, voir GestionEnv_evoluer)
 
+/**
+ * @var cpShape* panier[3]
+ * @brief Limitations physique du saladier ou tombent
+ * les balle
+ *
+ * Initialisation: @see GestionEnv_creerPanier
+ * Destruction: @see GestionEnv_supprimerPanier
+ *
+ * Ce tableau contient dans l'ordre le sol et les 2 murs (gauche, droite) 
+ *
+ */ 
+static cpShape* panier[3]; 
+
+/**
+ * @var double temps
+ * @brief Temps dans le monde chipmunk
+ *
+ * Temps qui s'écoule dans le monde chipmunk à 
+ * chaque appel de la fonction @see GestionEnv_evoluer
+ *
+ */ 
+static double temps = 0;
+
+/**
+ * @var SDL_Surface* ecran
+ * @brief Ecran principal de fenêtre SDL
+ *
+ * Initialisation: @see GestionEnv_initSDL
+ * Destruction: @see GestionEnv_quitSDL
+ *
+ */ 
 static SDL_Surface* ecran = NULL;
 
+/**
+ * @var Balle** balles
+ * @brief Tableau des balles présentent dans l'environnement
+ *
+ * Initialisation: @see GestionEnv_creerBalles
+ * Balles créées avec la fonction @see _creerUneBalle
+ *
+ */ 
 static Balle** balles = NULL;
-static int nbBallesTotal = 0;  // Taille de de la variables du tableau de balles
-static int nbBallesCrees = 0;  // Nombre de balles déjà crées
-static int timerLancement = 0; // Timer qui sert créer des balles à un intervalle de temps régulier
+
+/**
+ * @var int nbBallesTotal
+ * @brief Taille du tableau de balles
+ *
+ * @see balles
+ */ 
+static int nbBallesTotal = 0;  
+
+/**
+ * @var int nbBallesCrees
+ * @brief Nombre de balles réélement créées dans l'environnement
+ *
+ * @see GestionEnv_creerBalles
+ */ 
+static int nbBallesCrees = 0; 
+
+/**
+ * @var int timerLancement
+ * @brief Compteur de temps pour lancer les balles
+ *
+ * Le temps évolue avec @see GestionEnv_evoluer à travers
+ * la variable @see temps. Une fois le compteur à son maximum
+ * @see DELAI_APPARITION (config.h) une balle est créée et
+ * le timer est remis à zéro
+ *
+ */ 
+static int timerLancement = 0;
 
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation de l'environnement
 //-------------------------------------------------------------------------------------------------------------
+
+/**
+ * @fn cpSpace* GestionEnv_initChipmunk()
+ * @brief Fonction qui initialise le monde chipmunk
+ * 
+ * @see espace
+ *
+ * @return L'espace physique créé
+ */
 cpSpace* GestionEnv_initChipmunk(){
 
 	srand(time(NULL));	/* A VOIR */
@@ -40,6 +132,15 @@ cpSpace* GestionEnv_initChipmunk(){
 	return espace;
 }
 
+/**
+ * @fn SDL_Surface* GestionEnv_initSDL()
+ * @brief Fonction qui initialise la bibliothèque SDL 
+ * et la fenêtre de jeu SDL
+ * 
+ * @see ecran
+ *
+ * @return La fenêtre SDL
+ */
 SDL_Surface* GestionEnv_initSDL(){
 
 	SDL_Init(SDL_INIT_VIDEO);
@@ -57,10 +158,26 @@ SDL_Surface* GestionEnv_initSDL(){
 //-------------------------------------------------------------------------------------------------------------
 //										Suppression de l'environnement
 //-------------------------------------------------------------------------------------------------------------
+
+/**
+ * @fn void GestionEnv_quitChipmunk()
+ * @brief Fonction qui détruit le monde chipmunk
+ * 
+ * @see GestionEnv_initChipmunk
+ * @see espace
+ */
 void GestionEnv_quitChipmunk(){
 	cpSpaceFree(espace);
 }
 
+/**
+ * @fn Svoid GestionEnv_quitSDL()
+ * @brief Fonction qui détruit la fenêtre de jeu SDL
+ * et quitte la bibliothèque SDL 
+ * 
+ * @see GestionEnv_initSDL
+ * @see ecran
+ */
 void GestionEnv_quitSDL(){
 	SDL_FreeSurface(ecran);
 	TTF_Quit();
@@ -70,6 +187,13 @@ void GestionEnv_quitSDL(){
 //-------------------------------------------------------------------------------------------------------------
 //									Evolution de l'environnement (dans le temps)
 //-------------------------------------------------------------------------------------------------------------
+
+/**
+ * @fn void GestionEnv_evoluer()
+ * @brief Fonction qui fait evoluer l'environnement
+ * physique et graphique du jeu avec notamment les balles 
+ * qui se déplacent
+ */
 void GestionEnv_evoluer(){
 
 	// Fait évoluer les balles, applique le déplacement et maj de l'affichage
@@ -91,6 +215,15 @@ void GestionEnv_evoluer(){
 //-------------------------------------------------------------------------------------------------------------
 //										Gestion du panier
 //-------------------------------------------------------------------------------------------------------------
+
+/**
+ * @fn void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf)
+ * @brief Fonction qui créé le panier au sens physique (chipmunk)
+ * et affiche ces contours sur la fenêtre SDL
+ *
+ * @param espace Espace physique chipmunk @see espace
+ * @param surf Ecran principal de la fenêtre SDL @see ecran
+ */
 void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
  
 	int x = OFFSET;
@@ -138,6 +271,10 @@ cpBodySetForce(espace->staticBody, cpv(1,1));
 
 }
 
+/**
+ * @fn void GestionEnv_supprimerPanier()
+ * @brief Fonction qui supprime le panier au sens physique (chipmunk)
+ */
 void GestionEnv_supprimerPanier(){
 	for(int i = 0; i < 3; i++){
 		cpShapeFree(panier[i]);
@@ -148,14 +285,35 @@ void GestionEnv_supprimerPanier(){
 //										Gestion des balles
 //-------------------------------------------------------------------------------------------------------------
 
-// Exécute la fonction donnée en paramètre pour toutes les balles
+/**
+ * @fn static void _Balle_foreach(Balle_Fonction fonction)
+ * @brief Fonction qui applique une fonction sur toutes
+ * les balles présentes dans l'environnement
+ *
+ * @param fonction Fonction provenant de la bibliothèque Balle
+ * ayant aucun retour et pour seul paramètre une balle
+ */
 static void _Balle_foreach(Balle_Fonction fonction){
 	for(unsigned int i = 0; i < nbBallesCrees; i++){
 		fonction(balles[i]);
 	}
 }
 
-// Créé une balle dans l'environnement
+/**
+ * @fn static void _creerUneBalle()
+ * @brief Fonction qui créé une balle dans l'environnement 
+ * avec des paramètres aléatoires :
+ *
+ * @see Balle_creer
+ * rayon: 30 -> 50
+ * centre: x (dans les panier), y (juste au dessus de la fenêtre)
+ * direction: (0,-80) -> (0,80)
+ * couleur: @see couleurs
+ * lettre: A -> Z
+ *
+ * @param fonction Fonction provenant de la bibliothèque Balle
+ * ayant aucun retour et pour seul paramètre une balle
+ */
 static void _creerUneBalle(){
 
 	if(nbBallesCrees < nbBallesTotal){
@@ -173,8 +331,17 @@ static void _creerUneBalle(){
 	}			
 }
 
-// Créé une balle et configuration pour créé les n-1 autres balles
-// à intervalle de temps donnée (voir config.h)
+/**
+ * @fn void GestionEnv_creerBalles(int nbBalles)
+ * @brief Fonction qui demande à l'environnement de créé n balles.
+ *
+ * A l'appel de cette fonction une seule balle est réélement créée (@see nbBallesCrees)
+ * Les suivantes sont créés toutes les n secondes (@see timerLancement, 
+ * @see DELAI_APPARITION dans config.h) par la fonction @see GestionEnv_evoluer
+ *
+ * @param fonction Fonction provenant de la bibliothèque Balle
+ * ayant aucun retour et pour seul paramètre une balle
+ */
 void GestionEnv_creerBalles(int nbBalles){
 
 	balles = calloc(nbBalles, sizeof(Balle*));
@@ -186,13 +353,21 @@ void GestionEnv_creerBalles(int nbBalles){
 	}
 }
 
-// Supprime toutes les balles créés
+/**
+ * @fn void GestionEnv_supprimerBalles()
+ * @brief Fonction qui supprime toutes les balles
+ * présentent dans l'environnement
+ */
 void GestionEnv_supprimerBalles(){
 	_Balle_foreach(Balle_supprimer);
 	free(balles);
 }
 
-// Retourne vrai si toutes les balles sont immobiles
+/**
+ * @fn int GestionEnv_ballesImmobiles()
+ * @brief Fonction qui retourne 1 si toutes les balles 
+ * de l'environnement sont immobiles (@see Balle_estImmobile), 0 sinon
+ */
 int GestionEnv_ballesImmobiles(){
 
 	int ballesImmobiles = 1, i = 0;
@@ -207,6 +382,21 @@ int GestionEnv_ballesImmobiles(){
 //-------------------------------------------------------------------------------------------------------------
 //								Gestion tracer ligne & récupération des caractères
 //-------------------------------------------------------------------------------------------------------------
+
+/**
+ * @fn char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2)
+ * @brief Fonction qui affiche une ligne de (x1,y1) à (x2,y2) et renvoie
+ * la chaine de caractères formée par les lettres des balles traversés
+ * par cette ligne
+ *
+ * @param x1 Abscisse du point de départ de la ligne
+ * @param y1 Ordonnée du point de départ de la ligne
+ * @param x2 Abscisse du point final de la ligne
+ * @param y2 Ordonnée du point final de la ligne
+ *
+ * @return Chaîne de caractère formée par les lettres des balles 
+ * traversés par la ligne
+ */
 char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 	// Dessine la ligne
@@ -242,12 +432,27 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 //											Gestion de l'aléatoire
 //-------------------------------------------------------------------------------------------------------------
 
-// Retourne un nombre aléatoire entre min et max
+/**
+ * @fn static unsigned int _randMinMax(int min, int max)
+ * @brief Fonction qui retourne un nombre aléatoire 
+ * compris entre un minimum et un maximum
+ *
+ * @param min Valeur minimale de la valeur à renvoyer
+ * @param max Valeur maximale de la valeur à renvoyer
+ *
+ * @return Valeur aléatoire comprise entre min et max
+ */
 static unsigned int _randMinMax(int min, int max){
 	return (rand() % (max - min + 1)) + min;
 }
 
-// Calcule une direction aléatoire
+/**
+ * @fn static cpVect _randDirection()
+ * @brief Fonction qui retourne une direction aléatoire
+ * comprise entre (0,-80) et (0,80)
+ *
+ * @return Direction aléatoire sous forme de vecteur
+ */
 static cpVect _randDirection(){
 	int x = _randMinMax(0,80);
 	int dirGauche = _randMinMax(0,1);
@@ -261,8 +466,14 @@ static cpVect _randDirection(){
 }
 
 
-// Retourne une couleur (en RRGGBBAA) aléatoires
-// voir http://fr.wikipedia.org/wiki/Liste_de_couleurs
+/**
+ * @var static Uint32 couleurs []
+ * @brief Tableau de couleurs codées en RRGGBBAA
+ *
+ * Utilisé par @see _randCouleur
+ * voir http://fr.wikipedia.org/wiki/Liste_de_couleurs
+ * pour plus de couleurs
+ */ 
 static Uint32 couleurs [] = { 
 							   0xE67E30FF, /* Abricot */
 							   0x74C0F1FF, /* Azur clair */
@@ -273,6 +484,13 @@ static Uint32 couleurs [] = {
 							   0x3A9D23FF  /* Vert gazon */
 						    };
 
+/**
+ * @fn static Uint32 _randCouleur()
+ * @brief Fonction qui retourne couleur aléatoire
+ * prise dans le tableau @see couleurs
+ *
+ * @return Couleur aléatoire sous la forme RRGGBBAA
+ */
 static Uint32 _randCouleur(){
 	return couleurs[_randMinMax(0,6)];
 }
@@ -280,6 +498,17 @@ static Uint32 _randCouleur(){
 //-------------------------------------------------------------------------------------------------------------
 //						Fonctions debug (laisser pour compiler testDroiteGauche & testGaucheDroite)
 //-------------------------------------------------------------------------------------------------------------
+
+/**
+ * @fn cpShape** donnerSol()
+ * @brief Fonction qui retourne le sol du panier
+ * pour tester le comportement de balle avec chipmunk
+ * 
+ * @see testDroiteGauche
+ * @see testGaucheDroite
+ *
+ * @return Pointeur sur le sol du panier
+ */
 cpShape** donnerSol(){
 	return panier;
 }

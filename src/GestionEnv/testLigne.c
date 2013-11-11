@@ -1,3 +1,23 @@
+/**
+ * @file testLigne.c
+ * @brief Fait evoluer un environnement avec la bibliothèque
+ * GestionEnv et trace une ligne pour récupérer les lettres 
+ * des balles traversées
+ * @author Jérémy.B
+ * @version 1.0
+ *
+ * Test pour les fonctions:
+ *   @see GestionEnv_donnerCaracteresLigne
+ *   @see GestionEnv_ballesImmobiles
+ *
+ * Trace une ligne est vérifie quelles balles sont traversées
+ * Les lettres des balles traversées sont affichées dans le terminal
+ *
+ * La boucle d'évilution de l'environnement s'arrête lorsque 
+ * toutes les balles sont immobiles
+ *
+ */
+
 #include <stdio.h>
 #include <unistd.h> //pause
 #include <GestionEnv.h>
@@ -11,8 +31,6 @@ int main(void){
 	GestionEnv_creerBalles(20);
 
 /* DEBUT TEST */
-// Trace une ligne est vérifie quelles balles sont traversées
-// La boucle s'arrête lorsque toutes les balles sont immobiles
 
 	do {		
 		GestionEnv_evoluer();

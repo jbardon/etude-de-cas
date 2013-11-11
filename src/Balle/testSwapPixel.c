@@ -1,3 +1,17 @@
+/**
+ * @file testSwapPixel.c
+ * @brief Affichage d'une surface et modification de sa couleur (avec SDL)
+ * @author Jérémy.B
+ * @version 1.0
+ *
+ * Test de recherches pour la bibliothèque Balle afin d'effacer
+ * la balle efficacement car avec la rotation des petites
+ * trace sont visibles.
+ *
+ * Change la couleur des pixels d'une surface un à un.
+ *
+ */
+
 #include <stdio.h>
 #include <SDL.h>
 

@@ -1,9 +1,9 @@
 /**
- * \file Balle.c
- * \brief Gestion d'une balle d'un point de vue graphique et physique
- * \author Jérémy.B
- * \version 1.0
- * \date 10 novembre 2013
+ * @file Balle.c
+ * @brief Gestion d'une balle d'un point de vue graphique et physique
+ * @author Jérémy.B
+ * @version 1.0
+ * @date 10 novembre 2013
  *
  * Bibliothèque pour la gestion d'une balle avec la SDL et chipmunk
  *
@@ -15,38 +15,30 @@
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
 
-/**
- * \fn unsigned int Balle_donneRayon(Balle* balle)
- * \brief Fonction qui donne le rayon d'une balle
- *
- * \param balle Balle dont on veut connaître le rayon
- *
- * \return rayon de la balle
- */
 static unsigned int Balle_donneRayon(Balle* balle);
-
-/**
- * \fn void _Balle_dessiner(Balle* balle, Uint32 couleur)
- * \brief Fonction qui dessine une balle sur la fenêtre SDL donnée 
- * lors de la création de la balle dans une couleur donnée
- *
- * \param balle Balle que l'on veut dessiner
- * \param couleur Couleur de la balle
- */
 static void _Balle_dessiner(Balle* balle, Uint32 couleur);
-
-/**
- * \fn void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur)
- * \brief Fonction qui dessine la lettre de la balle sur son centre
- *
- * \param balle Balle dont on veut dessiner la lettre
- * \param couleur Couleur de la balle
- */
 static void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur);
 
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation et suppression
 //-------------------------------------------------------------------------------------------------------------
+
+/**
+ * @fn Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect direction, 
+ *						  int rayon, Uint32 couleur, char lettre)
+ *
+ * @brief Fonction de création d'une nouvelle balle
+ *
+ * @param surf Ecran principal de la fenêtre SDL
+ * @param espace Espace physique (chipmunk) ou est la balle
+ * @param centre Coordonnées du centre de la balle
+ * @param direction Direction initiale vers laquelle la balle sera lancée
+ * @param rayon Rayon de la balles
+ * @param couleur Couleur de la balle sous la forme 0xRRGGBBAA
+ * @param lettre Lettre liée à la balle (dessinée au centre)
+ *
+ * @return Nouvelle balle créée ou NULL si la création a échoué
+ */
 Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect direction, 
 					int rayon, Uint32 couleur, char lettre)
 {
@@ -105,6 +97,12 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 	return balle;
 }
 
+/**
+ * @fn void Balle_supprimer(Balle* balle)
+ * @brief Fonction de suppression d'une balle au niveau graphique et physique
+ *
+ * @param balle Balle à supprimer
+ */
 void Balle_supprimer(Balle* balle){
 
 	// Supprime la balle graphiquement
@@ -128,10 +126,25 @@ void Balle_supprimer(Balle* balle){
 //												Accesseurs 
 //-------------------------------------------------------------------------------------------------------------
 
+/**
+ * @fn unsigned int Balle_donneRayon(Balle* balle)
+ * @brief Fonction qui donne le rayon d'une balle
+ *
+ * @param balle Balle dont on veut connaître le rayon
+ *
+ * @return rayon de la balle
+ */
 static unsigned int Balle_donneRayon(Balle* balle){
 	return cpCircleShapeGetRadius(balle->zoneCollision);
 }
 
+/**
+ * @fn float Balle_donneAngleDeg(Balle* balle)
+ * @brief Accesseur sui renvoie l'angle de balle
+ *
+ * @param balle Balle dont on veut l'angle
+ * @return Angle de la balle
+ */
 float Balle_donneAngleDeg(Balle* balle){
 
 	float angleRad =  cpBodyGetAngle(cpShapeGetBody(balle->zoneCollision));
@@ -141,10 +154,24 @@ float Balle_donneAngleDeg(Balle* balle){
 	return (nbTours - (int)nbTours) * 360; 
 }
 
+/**
+ * @fn cpVect Balle_donneCoordonnees(Balle* balle)
+ * @brief Accesseur qui renvoie les coordonnées d'une balle
+ *
+ * @param balle Balle dont on veut les coordonnées
+ * @return Coordonnées de la balle
+ */
 cpVect Balle_donneCoordonnees(Balle* balle){
 	return cpBodyGetPos(cpShapeGetBody(balle->zoneCollision));
 }
 
+/**
+ * @fn int Balle_estImmobile(Balle* balle)
+ * @brief Fonction qui renvoie 0 si la balle est en mouvement, 1 sinon
+ *
+ * @param balle Balle dont on veut savoir si elle est immobile
+ * @return 0 si la balle est en mouvement, 1 sinon
+ */
 int Balle_estImmobile(Balle* balle){
 	cpVect vitesse = cpBodyGetVel(cpShapeGetBody(balle->zoneCollision));
 	return (vitesse.y < 0.0001 && vitesse.y > -0.0001);
@@ -154,14 +181,45 @@ int Balle_estImmobile(Balle* balle){
 //										Affichage et évolution de la balle
 //-------------------------------------------------------------------------------------------------------------
 
+/**
+ * @fn void Balle_afficher(Balle* balle)
+ * @brief Fonction qui affiche une balle sur la fenêtre SDL donnée 
+ * lors de la création de la balle
+ *
+ * @warning Pas de SDL_Flip pour éviter les problèmes lorsque plusieurs balles sont
+ * déplacées dans une même fenêtre (clignotement)
+ *
+ * @param balle Balle que l'on veut afficher
+ */
 void Balle_afficher(Balle* balle){
 	_Balle_dessiner(balle, balle->couleur);
 }
 
+/**
+ * @fn void Balle_effacer(Balle* balle)
+ * @brief Fonction qui efface une balle sur la fenêtre SDL donnée 
+ * lors de la création de la balle
+ *
+ * @warning Pas de SDL_Flip pour éviter les problèmes lorsque plusieurs balles sont
+ * déplacées dans une même fenêtre (clignotement)
+ *
+ * @param balle Balle que l'on veut effacer
+ */
 void Balle_effacer(Balle* balle){
 	_Balle_dessiner(balle, 0xFFFFFFFF);
 }
 
+/**
+ * @fn void _Balle_dessiner(Balle* balle, Uint32 couleur)
+ * @brief Fonction qui dessine une balle sur la fenêtre SDL donnée 
+ * lors de la création de la balle dans une couleur donnée
+ *
+ * @warning Pas de SDL_Flip pour éviter les problèmes lorsque plusieurs balles sont
+ * déplacées dans une même fenêtre (clignotement)
+ *
+ * @param balle Balle que l'on veut dessiner
+ * @param couleur Couleur de la balle
+ */
 static void _Balle_dessiner(Balle* balle, Uint32 couleur){
 
 	// Informations sur la balle
@@ -174,10 +232,15 @@ static void _Balle_dessiner(Balle* balle, Uint32 couleur){
 
 	// Affiche la balle
 	SDL_BlitSurface(balle->canvas, NULL, balle->ecranJeu, &position);
-	//!\\ Pas de SDL_Flip pour éviter les problèmes lorsque plusieurs balles sont
-	//!\\ déplacées dans une même fenêtre
 }	
 
+/**
+ * @fn void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur)
+ * @brief Fonction qui dessine la lettre de la balle sur son centre
+ *
+ * @param balle Balle dont on veut dessiner la lettre
+ * @param couleur Couleur de la balle
+ */
 static void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur){
 
 	// Chargement de la police et création de la lettre
@@ -219,6 +282,16 @@ static void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur){
 	SDL_FreeSurface(texteTourne);
 }
 
+/**
+ * @fn void Balle_deplacer(Balle* balle)
+ * @brief Fonction qui efface la balle, met à jour les coordonnées
+ *  de la balle avec chipmunk et affiche la balle
+ *
+ * @warning Pas de SDL_Flip pour éviter les problèmes lorsque plusieurs balles sont
+ * déplacées dans une même fenêtre (clignotement)
+ *
+ * @param balle Balle que l'on veut deplacer
+ */
 void Balle_deplacer(Balle* balle){
 
 	// Efface l'ancienne balle

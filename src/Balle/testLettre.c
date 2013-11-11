@@ -1,3 +1,20 @@
+/**
+ * @file testLettre.c
+ * @brief Affichage de tout les caractères un à un sur une Balle
+ * @author Jérémy.B
+ * @version 1.0
+ *
+ * Test pour la bibliothèque Balle pour corriger les bugs suivants
+ * 	  - la première balle affiche mal son caractère
+ *	  - certains caractères ne sont pas au centre de la balle
+ *
+ * Voir la section bug connus pour trouver la solution
+ *
+ * Pour faire avancer le test, appuyer sur une touche du clavier 
+ * dans le terminal.
+ *
+ */
+
 #include <unistd.h> //pause
 #include <Balle.h>
 

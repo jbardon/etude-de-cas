@@ -1,3 +1,15 @@
+/**
+ * @file GestionEnv.h
+ * @brief Gestion de l'environnement graphique et physique du jeu
+ * @author Jérémy.B
+ * @version 1.0
+ * @date 10 novembre 2013
+ *
+ * Bibliothèque pour la gestion de la SDL, chipmunk, des balles et
+ * du tracé des lignes pour sélectionner des balles
+ *
+ */
+
 #ifndef __GESTION_ENV_H__
 #define __GESTION_ENV_H__
 
@@ -8,8 +20,23 @@
 #include <config.h>
 #include <Balle.h>
 
+/**
+ * @var cpFloat uniteTemps
+ * @brief Unite de temps dans chipmunk (en s)
+ *
+ * Le temps dans chipmunk sera avancé de ce temps
+ * à chaque appel à la fonction GestionEnv_evoluer
+ *
+ */ 
 const cpFloat uniteTemps = 1.0/60.0;
 
+/**
+ * Fonction générique pour appliquer plus facilement
+ * des fonctions de la bibliothèque balle à toutes
+ * les balles de l'environnement
+ *
+ * @see _Balle_foreach
+ */
 typedef void (*Balle_Fonction)(Balle*);
 
 extern cpSpace* GestionEnv_initChipmunk();
