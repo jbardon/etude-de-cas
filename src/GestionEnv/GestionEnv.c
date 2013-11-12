@@ -16,11 +16,13 @@
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
 
-static unsigned int _randMinMax(int min, int max);
 static void _Balle_foreach(Balle_Fonction fonction);
 static void _creerUneBalle();
+
+static unsigned int _randMinMax(int min, int max);
 static Uint32 _randCouleur();
 static cpVect _randDirection();
+static char _randLettre();
 
 //-------------------------------------------------------------------------------------------------------------
 //										Variables liées à l'environnement
@@ -329,7 +331,7 @@ static void _creerUneBalle(){
 		const cpVect centre = cpv(_randMinMax(OFFSET + rayon, LARGUEUR_ECRAN - 2*OFFSET - rayon), -rayon);
 		const cpVect direction = _randDirection();
 		const Uint32 couleur = _randCouleur();
-		const char lettre = (char) _randMinMax(65,90);
+		const char lettre = /*(char) _randMinMax(65,90)*/_randLettre();
 
 		// Création de la balle
 		balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
@@ -493,12 +495,67 @@ static Uint32 couleurs [] = {
 /**
  * @fn static Uint32 _randCouleur()
  * @brief Fonction qui retourne couleur aléatoire
- * prise dans le tableau @see couleurs
+ * prise dans le tableau couleurs
+ *
+ * @see couleurs
  *
  * @return Couleur aléatoire sous la forme RRGGBBAA
  */
 static Uint32 _randCouleur(){
 	return couleurs[_randMinMax(0,6)];
+}
+
+/**
+ * @var static const int lettres []
+ * @brief Tableau de probabilités d'apparition
+ * d'un caractère le dictionnaire
+ *
+ * L'indice correspond à la position de la lettre 
+ * dans l'alphabet. Les probabilités sont ajoutés.
+ *
+ */
+static const float lettres [] = {
+									 9.78,
+									11.16,
+									14.53,
+									16.87,
+									31.56,
+									32.89,
+									34.47,
+									35.62,
+									45.13,
+									45.31,
+									45.36,
+									49.35,
+									51.88,
+									59.32,
+									65.18,
+									67.51,
+									68.01,
+									76.69,
+									86.92,
+									93.80,
+									97.36,
+									98.31,
+									98.32,
+									98.57,
+									98.91,
+								   100.00,
+							    };
+
+/**
+ * @fn static char _randLettre()
+ * @brief Fonction qui retourne une lettre majuscule
+ * de l'alphabet aléatoirement en suivant les probabilités
+ * d'apparition listés dans le tableau lettres
+ *
+ * @see lettres
+ *
+ * @return Couleur aléatoire sous la forme RRGGBBAA
+ */
+static char _randLettre(){
+	const float proba = (rand() * max);
+	printf("%f\n",proba);
 }
 
 //-------------------------------------------------------------------------------------------------------------
