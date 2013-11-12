@@ -1,9 +1,11 @@
 #!/bin/bash
 
+#
 # Ce script permet d'afficher les proportions de chaques
 # lettre de l'alphabet (minuscules) dans un fichier donné
 #
-# Utilisation: ./occurLettre cheminVersFichier
+# Utilisation: ./AnalyseCaracFichier.sh cheminVersFichier
+#
 
 export LC_NUMERIC=C #printf
 

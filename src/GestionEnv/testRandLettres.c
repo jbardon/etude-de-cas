@@ -34,26 +34,19 @@ int main(void){
 
 	srand(time(NULL));
 	const float proba = (rand()%10000)/100.0;
+	printf("proba: %2.2f\n", proba);
 
 	const unsigned int sizeLettres =  sizeof(lettres)/sizeof(float);
 	char lettre = 0;
-	unsigned int i = sizeLettres/2;
-	while(lettre == 0){
-		printf("%2.2f %3.2f %3.2f ", proba, lettres[i], lettres[i+1]);
-		if(proba >= lettres[i] && proba < lettres[i+1]){
-			lettre = (char)(65 + i);		
-		}
-		else if(proba <= lettres[i]){
-			i /= 2;
-			printf("inf\n");
-		}
-		else {
-			i += i/2;
-			printf("sup\n");
+
+	unsigned int i = 0;
+	while(lettre == 0 && i < sizeLettres){	
+		if(proba <= lettres[i++]){
+			lettre = (char)(65 + i - 1); //à cause du ++ dans le if		
 		}
 	}	
 	
-	printf("\nlettre: %c\n", lettre);
+	printf("lettre: %c\n", lettre);
 
 	return 0;
 }
