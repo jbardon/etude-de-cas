@@ -55,7 +55,7 @@ static char _randLettre(){
 
 	// Génération d'un nombre réél aléatoire entre 0 et 100
 	const float proba = (rand()%10000)/100.0;
-printf("proba: %2.2f\n", proba);
+//printf("proba: %2.2f\n", proba);
 
 	// Cherche la lettre à renvoyer en fonction 
     // du nombre généré
@@ -75,13 +75,11 @@ printf("proba: %2.2f\n", proba);
 	// Ou si le ratio voyelles/consonnes n'est pas correct (à 10% près)
     // ==> il faut générer un nouveau caractère
 
-	float ratioVoyelles = 0.0;
-	ratioVoyelles += lettresGeneres['A'] + lettresGeneres['E'];
-	ratioVoyelles += lettresGeneres['I'] +lettresGeneres['O'] + lettresGeneres['U'];
-	ratioVoyelles /= lettresTotal;
+	float ratioVoyelles = (lettresGeneres['A'] + lettresGeneres['E'] 
+							+ lettresGeneres['I'] +lettresGeneres['O'] + lettresGeneres['U']) / (float)lettresTotal;
 
-printf("%c %d %2.2f\n",lettre,lettresTotal, ratioVoyelles);
-	if(lettresTotal > 20){
+//printf("%c %d %2.2f\n",lettre,lettresTotal, ratioVoyelles);
+	if(lettresTotal > 10 && lettresGeneres[lettre] > 2){
 		if(((lettresGeneres[lettre]/lettresTotal) > lettres[lettre]) 
 	   		|| ratioVoyelles < RATIO_VOYELLES)
 		{
@@ -98,7 +96,7 @@ int main(void){
 
 	srand(time(NULL));
 	
-	for(int i = 0; i < 25; i++){
+	for(int i = 0; i < 30; i++){
 		printf("%c ", _randLettre());
 	}
 
