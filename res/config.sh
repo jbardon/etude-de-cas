@@ -12,8 +12,8 @@
 #
 init_dir=$(pwd); ## Pour revenir dans le répertoire courant
 
-src_dir=$1;
-res_dir="/salut/tt/uu";
+src_dir="$1";
+res_dir=$(pwd);
 
 cd $src_dir;
 

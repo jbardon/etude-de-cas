@@ -130,6 +130,26 @@ char* version1(char* chaine, GHashTable* table)
 	//strcmp
 }
 
+char* version2(char* chaine, GHashTable* table)
+{
+	char* chaine_retour=NULL;
+	char* sub2=NULL;
+	for(int i=0; i<strlen(chaine); i++)
+	{
+		for(int j=0; j<strlen(chaine)-1; j++)
+		{
+			if(i!=0 && j!=0)
+			{
+				chaine_retour=_str_sub(chaine,0,j-1);
+				sub2=_str_sub(chaine,j+1,strlen(chaine)-1);
+				strcat(chaine_retour,sub2);
+				printf("Chaine de retour : %s\n",chaine_retour);
+			}
+		}
+	}
+	return chaine_retour;
+}
+
 /*
 * Permet la suppression du retour chariot d'une chaine de caractere
 * Paramètres :
