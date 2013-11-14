@@ -43,6 +43,11 @@ int main()
 		printf("Aucun mot trouvé\n");
 	}
 
+
+	printf("\n----> Test de la Version 2 <---- \n");
+	char* resultat2 = "abcde";
+	char* substring2 = version2(resultat2, dico);
+	
 	return EXIT_SUCCESS;
 }
 

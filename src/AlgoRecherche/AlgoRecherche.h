@@ -6,5 +6,7 @@
 
 extern GHashTable* chargerDico(char* nomFichier);
 extern char* version1(char* chaine, GHashTable* table);
+extern char* version2(char* chaine, GHashTable* table);
+
 
 extern void supprimer_retour_ligne(char *chaine);
