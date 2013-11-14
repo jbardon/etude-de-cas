@@ -1,9 +1,16 @@
 #include "AlgoRecherche.h"
 
-//Fonctions locales
+/*
+* Fonctions locales
+*/
 static char *_str_sub (const char *s, unsigned int start, unsigned int end);
 static void _supprimer_retour_ligne(char *chaine);
 
+/*
+* Permet la création du dictionnaire
+* Paramètres :
+* 	nomFichier, e fichier contenant le dictionnaire.txt
+*/
 GHashTable* chargerDico(char* nomFichier){
 	
 	GHashTable* DicoHash = g_hash_table_new(g_int_hash, g_int_equal);
@@ -20,8 +27,8 @@ GHashTable* chargerDico(char* nomFichier){
 			char line[128];
 			while(fgets(line, sizeof line, fichier)!=NULL) //lire une ligne
 			{
-				_supprimer_retour_ligne(line);
-				printf("ligne %s, gstrh %d , taille %d \n", line, g_str_hash(line), strlen(line));
+				_supprimer_retour_ligne(line); //suppression du retour à la ligne
+//printf("ligne %s, gstrh %d , taille %d \n", line, g_str_hash(line), strlen(line));
 				valhash = g_str_hash(line); //récupère la valeur de la fonction de hashage
 
 				int* tmpval = malloc(sizeof(int)); //création d'une nouvelle variable à chaque tour de boucle...
@@ -76,6 +83,13 @@ static char *_str_sub (const char *s, unsigned int start, unsigned int end)
 	return new_s;
 }
 
+/*
+* Permet la recherche de la plus longue sous-chaine dans une chaine
+* sous-chaine est contenue dans le dico
+* Paramètres :
+* 	table, hashtable contenant le dico
+*	chaine, les lettres de départ
+*/
 char* version1(char* chaine, GHashTable* table)
 {
 	/*int valhash =0;
@@ -91,38 +105,56 @@ char* version1(char* chaine, GHashTable* table)
 	{
 		
 	}*/
-	char* substring;
-	printf("Chaine de depart : %s \n",chaine);
-	for(int i=0; i<strlen(chaine); i++)
+	char* chaine_retour = NULL; //variable qui contient le chaine à retourner
+	char* substring; //variable qui contiendra chaque sous-chaine
+	int taille=0;
+//printf("Chaine de depart : %s \n",chaine);
+	for(int i=0; i<strlen(chaine); i++) //on parcourt la chaine
 	{
-		for(int j=i; j<strlen(chaine); j++)
+		for(int j=i; j<strlen(chaine); j++) //on parcourt la chaine à partir de i
 		{
-			substring = _str_sub(chaine,i,j);
-			const int h = g_str_hash(substring);
-		
-			printf("Sous-chaine : %s , valeur de hash : %d , taille de la chaine %d \n",substring, h, strlen(substring));	
-
-			if(g_hash_table_contains(table, &h))
-			{
-				printf("OK");
-			}
+			substring = _str_sub(chaine,i,j); //on extrait la sous chaine entre i et j
+			const int h = g_str_hash(substring); //on recupère la valeur de hash de la sous-chaine ...
 			
+			if(g_hash_table_contains(table, &h)) //... on regarde si cette valeur est dans la hashtable
+			{
+				if(strlen(substring) > taille) //si la taille est plus grande que celui trouver avant
+				{
+					taille=strlen(substring); //la taille change
+					chaine_retour=substring; //la chaine de retour est cette nouvelle chaine
+				}
+			}
 		}
 	}
-	return substring;
+	return chaine_retour;
 	//strcmp
 }
 
+/*
+* Permet la suppression du retour chariot d'une chaine de caractere
+* Paramètres :
+* 	chaine, la chaine de caractere à traiter
+*/
 static void _supprimer_retour_ligne(char *chaine)
 {
-	char *p = strchr(chaine, '\r');
+	char *p = strchr(chaine, '\r'); //on cherche le retour à la ligne
+	if (p)
+	{
+		*p = 0; //et on l'échange contre un 0 (fin de chaine)
+	}
+	p = strchr(chaine, '\n');
 	if (p)
 	{
 		*p = 0;
 	}
-	/*p = strchr(chaine, '\r');
+	p = strchr(chaine, '\f');
 	if (p)
 	{
-		*p = '8';
-	}*/
+		*p = 0;
+	}
+	p = strchr(chaine, '\v');
+	if (p)
+	{
+		*p = 0;
+	}
 }

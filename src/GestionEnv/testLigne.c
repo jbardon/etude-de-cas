@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <unistd.h> //pause
 #include <GestionEnv.h>
+#include <AlgoRecherche.h>
 
 int main(void){
 
@@ -30,7 +31,7 @@ int main(void){
 	cpSpace* espace = GestionEnv_initChipmunk();
 
 	GestionEnv_creerPanier(espace, ecran);
-	GestionEnv_creerBalles(20);
+	GestionEnv_creerBalles(35);
 
 /* DEBUT TEST */
 
@@ -39,11 +40,26 @@ int main(void){
 	}
 	while(!GestionEnv_ballesImmobiles());
 
-	int x1 = OFFSET + 100, y1 = HAUTEUR_ECRAN - OFFSET - 150;
-	int x2 = LARGUEUR_ECRAN - OFFSET - 100, y2 = HAUTEUR_ECRAN - OFFSET - 50;
+	int x1 = OFFSET + 10, y1 = OFFSET - 10;
+	int x2 = LARGUEUR_ECRAN - OFFSET - 10, y2 = HAUTEUR_ECRAN - OFFSET - 10;
 	char* lettres = GestionEnv_donnerCaracteresLigne(x1, y1, x2, y2);
 
 	printf("Lettres sélectionnées: %s\n", lettres);
+
+	GHashTable* dico = chargerDico(RES("/AlgoRecherche/dicofinal.txt"));
+
+	for(int i = 0; i < strlen(lettres); i++){
+	  lettres[i] = tolower(lettres[i]);
+	}
+
+
+	char* result = version1(lettres, dico);
+	if(result){
+		printf("Mot trouvé ! %s (%d pts)\n", result, strlen(result));
+	}
+	else {
+		printf("Aucun mot trouvé =(\n");
+	}
 
 /* FIN TEST */
 

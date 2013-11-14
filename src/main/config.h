@@ -7,7 +7,7 @@
 
 #define COULEUR_FOND 0xFFFFFFFF // Fond de la fenêtre (blanche)
 #define OFFSET 50               // Décalage du panier par rapport au bord de la fenêtre
-#define REBOND 0.85             // Elasticité balle & murs
+#define REBOND 0.95             // Elasticité balle & murs
 #define FRICTION 1
 #define DELAI_APPARITION 60     // Délai d'apparition des balles (60(FPS) -> 1 seconde)
 

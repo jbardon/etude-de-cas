@@ -69,8 +69,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 			cpBodySetPos(corpsBalle, cpv(centre.x, HAUTEUR_ECRAN - centre.y));
 			
 			// Pour donner l'impression que les plus grandes balles tombent plus vite
-			cpBodySetVelLimit(corpsBalle, rayon * 10); 
-
+			//cpBodySetVelLimit(corpsBalle, rayon * 15); 
 			cpBodyApplyImpulse(corpsBalle, direction, cpvzero);
 
 			// Zone de zoneCollision de la balle
@@ -174,7 +173,7 @@ cpVect Balle_donneCoordonnees(Balle* balle){
  */
 int Balle_estImmobile(Balle* balle){
 	cpVect vitesse = cpBodyGetVel(cpShapeGetBody(balle->zoneCollision));
-	return (vitesse.y < 0.0001 && vitesse.y > -0.0001);
+	return (vitesse.y < 0.001 && vitesse.y > -0.001);
 }
 
 //-------------------------------------------------------------------------------------------------------------

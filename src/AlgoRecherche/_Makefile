@@ -5,7 +5,7 @@ LDLIBS=-lglib-2.0
 LOADLIBS= -L/usr/lib/x86_64-linux-gnu
 
 EXEC_NAME=hash
-OBJ_FILES=main.o
+OBJ_FILES=AlgoRecherche.o testAlgoRecherche.o
 
 all : $(EXEC_NAME)
 

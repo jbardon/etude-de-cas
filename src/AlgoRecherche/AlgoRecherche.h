@@ -1,6 +1,6 @@
 #include <stdio.h> /* DEBUG */
 #include <string.h>
-//#include <stdint.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <glib.h>
 
