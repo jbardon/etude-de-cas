@@ -11,7 +11,7 @@
 #define FRICTION 1
 #define DELAI_APPARITION 60     // Délai d'apparition des balles (60(FPS) -> 1 seconde)
 
-#define RES_PATH "/home/mickael/Bureau/Perso/Scolaire/L3info/S1/Etude_de_cas/etude-de-cas/res/fichiers"
+#define RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res/fichiers"
 #define RES(file) RES_PATH file
 
 #endif /* __CONFIG_H__ */

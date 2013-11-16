@@ -405,13 +405,25 @@ int GestionEnv_ballesImmobiles(){
  * @return Chaîne de caractère formée par les lettres des balles 
  * traversés par la ligne
  */
+typedef int (*FonctionComparer)(const void *, const void *);
+
+#define DROITE -1
+#define GAUCHE 1
+
+static int sensLigne = GAUCHE;
+static int _comparerBalles(const Balle** a, const Balle** b){
+	return ((sensLigne == DROITE) ?  (*a)->cx -  (*b)->cx :  (*b)->cx -  (*a)->cx);
+}
+
 char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 	// Dessine la ligne
 	lineColor(ecran, x1, y1, x2, y2, 0x000000FF);
 
-	// Cherche les lettres
-	char* lettres = calloc(nbBallesCrees + 1, sizeof(char));
+	// Cherche les balles touchées
+	// diamètre min = 60, largeur panier = 540 soit 540/60 = 10 (au cas ou +1)
+	unsigned int nbBallesTouches = 0;	
+	Balle** ballesTouches = calloc(10, sizeof(Balle*));
 	
 	for(unsigned int i = 0; i < nbBallesCrees; i++){
 		
@@ -423,11 +435,24 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 						   NULL
 		);
 
-		// La balle est bien touchée
+		// Sauvegarde la balle touchée
 		if(touche){
-			char l [2] = { balles[i]->lettre, 0 }; // Ajoute zéro terminal
-			strcat(lettres, l);
+			ballesTouches[nbBallesTouches] = balles[i];
+			nbBallesTouches++;
 		}
+	}
+
+	// Met les balles dans l'ordre suivant le tracé de la ligne
+	// pour avoir les caractères dans le bon ordre (pour version 1 & 2 de l'algo de recherche)
+	sensLigne = ((x1 < x2) ? DROITE : GAUCHE);
+	qsort(ballesTouches, nbBallesTouches, sizeof(Balle*), (FonctionComparer) _comparerBalles);
+
+	// Construit la chaine de caractères
+	char* lettres = calloc(nbBallesTouches + 1, sizeof(char));
+	for(unsigned int i = 0; i < nbBallesTouches; i++){
+		printf("#%d: %d\n", i, ballesTouches[i]->cx);
+		char l [2] = { ballesTouches[i]->lettre, 0 }; // Ajoute zéro terminal
+		strcat(lettres, l);
 	}
 
 	// Met à jour l'affichage
