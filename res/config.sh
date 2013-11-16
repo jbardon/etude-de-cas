@@ -19,9 +19,25 @@ cd $src_dir;
 
 # Modifie la ligne: set(RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res/lib")
 # du fichier src/CMakeLists.txt
-sed -r -i "s:^(set\(RES_PATH \")[^\"]*:\1"$res_dir"/lib:g" CMakeLists.txt;
+#sed -r -i "s:^(set\(RES_PATH \")[^\"]*:\1"$res_dir"/lib:g" CMakeLists.txt;
 
 # Modifie la ligne: #define RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res/fichiers"
-sed -r -i "s:^(#define RES_PATH \")[^\"]*:\1"$res_dir"/fichiers:g" main/config.h;
+#sed -r -i "s:^(#define RES_PATH \")[^\"]*:\1"$res_dir"/fichiers:g" main/config.h;
+
+# Indications pour modifier src/CMakeLists.txt
+echo -e "A ajouter dans le fichier src/CMakeLists\n"
+
+echo "Configuration chipmunk"
+echo -e "\tinclude_directories: "$(locate chipmunk.h)
+echo -e "\tlink_directories: "$(locate libchipmunk.a)
+
+echo "Configuration SDL"
+echo -e "\tinclude_directories: "$(locate SDL.h)
+echo -e "\tlink_directories: "$(locate libSDL.a)
+
+echo "Configuration glib"
+echo -e "\tinclude_directories: "$(locate /glib.h)" et "$(locate glibconfig.h)
+echo -e "\tlink_directories: "$(locate libglib-2.0.a)
+echo
 
 cd $init_dir; ## Pour revenir dans le répertoire courant

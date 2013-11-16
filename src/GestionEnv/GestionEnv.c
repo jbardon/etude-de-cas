@@ -450,7 +450,6 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	// Construit la chaine de caractères
 	char* lettres = calloc(nbBallesTouches + 1, sizeof(char));
 	for(unsigned int i = 0; i < nbBallesTouches; i++){
-		printf("#%d: %d\n", i, ballesTouches[i]->cx);
 		char l [2] = { ballesTouches[i]->lettre, 0 }; // Ajoute zéro terminal
 		strcat(lettres, l);
 	}

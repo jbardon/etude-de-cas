@@ -173,7 +173,7 @@ cpVect Balle_donneCoordonnees(Balle* balle){
  */
 int Balle_estImmobile(Balle* balle){
 	cpVect vitesse = cpBodyGetVel(cpShapeGetBody(balle->zoneCollision));
-	return (vitesse.y < 0.001 && vitesse.y > -0.001);
+	return (vitesse.y < 0.01 && vitesse.y > -0.01);
 }
 
 //-------------------------------------------------------------------------------------------------------------

@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 
 project(EtudeDeCas C)
 
-###
-
-###
-
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "EtudeDeCas")
 
 set(PGCD_VERSION_MAJOR 0)
@@ -36,12 +32,13 @@ include(CPack)
 
 enable_testing()
 
-set(RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res/lib")
+#set(RES_PATH "/home/jeremy/Documents/projet/etude-de-cas/res/lib")
 
 include_directories(
-	"${RES_PATH}/chipmunk/include"
-	"${RES_PATH}/sdl/include"
-	"${RES_PATH}/glib/include"
+	"/usr/include/chipmunk"
+	"/usr/include/SDL"
+	"/usr/include/glib-2.0/"
+	"/usr/lib/i386-linux-gnu/glib-2.0/include/" #glibconfig.h
 	"${CMAKE_CURRENT_SOURCE_DIR}/Balle"
 	"${CMAKE_CURRENT_SOURCE_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_SOURCE_DIR}/main"
@@ -51,9 +48,7 @@ include_directories(
 )
 
 link_directories(
-	"${RES_PATH}/chipmunk/lib"
-	"${RES_PATH}/sdl/lib"
-	"${RES_PATH}/glib/lib"
+	"/usr/lib/i386-linux-gnu/"
 	"${CMAKE_CURRENT_BINARY_DIR}/Balle"
 	"${CMAKE_CURRENT_BINARY_DIR}/GestionEnv"
 	"${CMAKE_CURRENT_BINARY_DIR}/main"

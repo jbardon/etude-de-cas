@@ -66,12 +66,13 @@ int main(void){
     while(nbClic < 2){
         UpdateEvents(&in);
         if (in.mousebuttons[SDL_BUTTON_LEFT]){
-			pixelColor(ecran, in.mousex, in.mousey, 0x000000FF);
+			filledCircleColor(ecran, in.mousex, in.mousey, 5, 0x000000FF);
 //printf("Clic %d: %d,%d\n", nbClic, in.mousex, in.mousey);
             in.mousebuttons[SDL_BUTTON_LEFT] = 0;
 //printf("x: %d, y: %d\n", in.mousex, in.mousey);
 			coord[nbClic] = cpv(in.mousex, in.mousey);
-			nbClic++;			
+			nbClic++;
+			SDL_Flip(ecran);			
         }            
     }
 

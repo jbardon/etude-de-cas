@@ -28,7 +28,7 @@
  * à chaque appel à la fonction GestionEnv_evoluer
  *
  */ 
-const cpFloat uniteTemps = 1.0/20.0; /* DEBUG VRAI VAL 1.0/60.0 */
+const cpFloat uniteTemps = 1.0/60.0; 
 
 /**
  * Fonction générique pour appliquer plus facilement
