@@ -3,16 +3,23 @@
 #include <GestionEnv.h>
 #include <AlgoRecherche.h>
 
+char* majuscules(char* chaine){
+	for(unsigned int i = 0; i < strlen(chaine); i++){
+		chaine[i] = (char) toupper(chaine[i]);
+	}
+	return chaine;
+}
+
 typedef struct
 {
     char key[SDLK_LAST];
     int mousex,mousey;
     int mousexrel,mouseyrel;
     char mousebuttons[8];
-        char quit;
+    char quit;
 } Input;
 
-void UpdateEvents(Input* in)
+void MiseAJourEvenements(Input* in)
 {
 
     SDL_Event event;
@@ -48,7 +55,9 @@ int main(void){
 	cpSpace* espace = GestionEnv_initChipmunk();
 
 	GestionEnv_creerPanier(espace, ecran);
-	GestionEnv_creerBalles(35);
+	GestionEnv_creerBalles(32);
+
+	char message[50];
 
 /* DEBUT TEST */
 
@@ -57,16 +66,18 @@ int main(void){
 	}
 	while(!GestionEnv_ballesImmobiles());
 
-	printf("Cliquez dans la fenêtre pour tracer une ligne\n");
+	sprintf(message, "Cliquez dans la fenetre pour tracer une ligne");
+	GestionEnv_afficherMessage(message, 80, 20, 20);
+
+	int nbClic = 0;
 	cpVect coord[2];
 	Input in;
-	int nbClic = 0;
-
     memset(&in, 0, sizeof(in));
+
     while(nbClic < 2){
-        UpdateEvents(&in);
+        MiseAJourEvenements(&in);
         if (in.mousebuttons[SDL_BUTTON_LEFT]){
-			filledCircleColor(ecran, in.mousex, in.mousey, 5, 0x000000FF);
+			filledCircleColor(ecran, in.mousex, in.mousey, 4, 0x000000FF);
 //printf("Clic %d: %d,%d\n", nbClic, in.mousex, in.mousey);
             in.mousebuttons[SDL_BUTTON_LEFT] = 0;
 //printf("x: %d, y: %d\n", in.mousex, in.mousey);
@@ -78,7 +89,9 @@ int main(void){
 
 	char* lettres = GestionEnv_donnerCaracteresLigne(coord[0].x, coord[0].y, coord[1].x, coord[1].y);
 
-	printf("Lettres sélectionnées: %s\n", lettres);
+	GestionEnv_viderZoneMessage();
+	sprintf(message, "Lettres selectionnees: %s", majuscules(lettres));
+	GestionEnv_afficherMessage(message, OFFSET, 20, 20);
 
 	GHashTable* dico = chargerDico(RES("/AlgoRecherche/dicofinal.txt"));
 
@@ -86,13 +99,15 @@ int main(void){
 	  lettres[i] = tolower(lettres[i]);
 	}
 
-
 	char* result = version1(lettres, dico);
+	
 	if(result){
-		printf("Mot trouvé ! %s (%d pts)\n", result, strlen(result));
+		sprintf(message, "Mot trouve ! %s (%d pts)", majuscules(result), strlen(result));
+		GestionEnv_afficherMessage(message, OFFSET, 50, 20);
 	}
 	else {
-		printf("Aucun mot trouvé =(\n");
+		sprintf(message, "Aucun mot trouve =(");
+		GestionEnv_afficherMessage(message, OFFSET, 50, 20);
 	}
 
 /* FIN TEST */

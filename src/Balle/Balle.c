@@ -173,7 +173,7 @@ cpVect Balle_donneCoordonnees(Balle* balle){
  */
 int Balle_estImmobile(Balle* balle){
 	cpVect vitesse = cpBodyGetVel(cpShapeGetBody(balle->zoneCollision));
-	return (vitesse.y < 0.01 && vitesse.y > -0.01);
+	return (vitesse.y < 0.7 && vitesse.y > -0.7);
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -296,10 +296,12 @@ void Balle_deplacer(Balle* balle){
 	// Efface l'ancienne balle
 	Balle_effacer(balle);
 
-	// Récupère les nouvelles coordonées de la balle
-	const cpVect pos = Balle_donneCoordonnees(balle);
-	balle->cx = pos.x;
-	balle->cy = HAUTEUR_ECRAN - pos.y;
+	if(!Balle_estImmobile(balle)){
+		// Récupère les nouvelles coordonées de la balle
+		const cpVect pos = Balle_donneCoordonnees(balle);
+		balle->cx = pos.x;
+		balle->cy = HAUTEUR_ECRAN - pos.y;
+	}
 
 	// Affiche la balle
 	Balle_afficher(balle);

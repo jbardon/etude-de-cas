@@ -460,6 +460,25 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	return lettres;
 }
 
+void GestionEnv_afficherMessage(char* message, int x, int y, int taille){
+
+	SDL_Color couleur = {20, 50, 50};
+	TTF_Font* police = TTF_OpenFont(RES("/Balle/arial.ttf"), taille);
+	TTF_SetFontStyle(police, TTF_STYLE_BOLD);
+
+	SDL_Surface* texte = TTF_RenderText_Solid(police, message, couleur);
+	SDL_Rect position = {x, y};
+
+	SDL_BlitSurface(texte, NULL, ecran, &position);
+	TTF_CloseFont(police);
+	SDL_Flip(ecran);
+}
+
+void GestionEnv_viderZoneMessage(){
+	SDL_Rect zoneMessage = {0, 0, LARGUEUR_ECRAN, 2*OFFSET-10};
+	SDL_FillRect(ecran, &zoneMessage, COULEUR_FOND);
+}
+
 //-------------------------------------------------------------------------------------------------------------
 //											Gestion de l'aléatoire
 //-------------------------------------------------------------------------------------------------------------

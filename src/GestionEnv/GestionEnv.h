@@ -56,6 +56,8 @@ extern void GestionEnv_supprimerBalles();
 extern int GestionEnv_ballesImmobiles();
 
 extern char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2);
+extern void GestionEnv_afficherMessage(char* message, int x, int y, int taille);
+extern void GestionEnv_viderZoneMessage();
 
 /* DEBUG */
 extern cpShape** donnerSol();
