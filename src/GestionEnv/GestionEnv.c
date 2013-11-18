@@ -15,6 +15,7 @@
 //-------------------------------------------------------------------------------------------------------------
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
+static void _dessinerPanier();
 
 static void _Balle_foreach(Balle_Fonction fonction);
 static void _creerUneBalle();
@@ -207,7 +208,8 @@ void GestionEnv_evoluer(){
 
 	// Fait évoluer les balles, applique le déplacement et maj de l'affichage
 	cpSpaceStep(espace, uniteTemps);	
-	_Balle_foreach(Balle_deplacer);  
+	_Balle_foreach(Balle_deplacer); 
+	_dessinerPanier(); 
 	SDL_Flip(ecran);
 
 	// Créé une balle à chaque intervalle de temps, max = nombre de balles donnée dans GestionEnv_creerBalles
@@ -235,11 +237,8 @@ void GestionEnv_evoluer(){
  */
 void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
  
-	int x = OFFSET;
+	int x = OFFSET + 2;
 	int y = OFFSET;
-	int l = LARGUEUR_ECRAN - 2*OFFSET;
-	int h = 0;
-	int e = 10; // Epaisseur du trait (SDL)
 
 cpBodySetMoment(espace->staticBody, INFINITY);
 cpBodySetMass(espace->staticBody, INFINITY);
@@ -251,32 +250,48 @@ cpBodySetForce(espace->staticBody, cpv(1,1));
 	cpShapeSetElasticity(panier[0], REBOND);
 	cpSpaceAddShape(espace, panier[0]);
 
-	y = HAUTEUR_ECRAN - y + e/2;
-	thickLineColor(surf, x - e, y, x + l + e, y, e, 0x000000FF);
-
 	// Création du mur gauche
-	x = OFFSET;
 	panier[1] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
 	cpShapeSetFriction(panier[1], FRICTION);
 	cpShapeSetElasticity(panier[1], REBOND);
 	cpSpaceAddShape(espace, panier[1]);
 
-	x = OFFSET - e/2;
-	y = HAUTEUR_ECRAN - OFFSET;
-	h = 2 * OFFSET;
-	thickLineColor(surf, x, y + e, x, h, e, 0x00000FF);
-
 	// Création du mur droit
-	x = LARGUEUR_ECRAN - OFFSET;
+	x = LARGUEUR_ECRAN - OFFSET - 2;
 	panier[2] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
 	cpShapeSetFriction(panier[2], FRICTION);
 	cpShapeSetElasticity(panier[2], REBOND);
 	cpSpaceAddShape(espace, panier[2]);
 
-	x = x + e/2;
+	// Dessine le panier sur l'écran
+	_dessinerPanier();
+}
+
+static void _dessinerPanier(){
+
+	static const unsigned int e = 10; // Epaisseur du trait (SDL)
+	static unsigned int x;
+	static unsigned int y;
+	static unsigned int l;
+	static unsigned int h;
+
+	// Initialisations
+	x = OFFSET;
+	l = LARGUEUR_ECRAN - 2*OFFSET;
+
+	// Affichage du sol
+	y = HAUTEUR_ECRAN - OFFSET + e/2;
+	thickLineColor(ecran, x - e, y, x + l + e, y, e, 0x000000FF);
+
+	// Affichage du mur gauche
+	x = OFFSET - e/2;
 	y = HAUTEUR_ECRAN - OFFSET;
 	h = 2 * OFFSET;
-	thickLineColor(surf, x, y + e, x, h, e, 0x000000FF);
+	thickLineColor(ecran, x, y + e, x, h, e, 0x00000FF);
+
+	// Affichage du mur droit
+	x = LARGUEUR_ECRAN - OFFSET + e/2;
+	thickLineColor(ecran, x, y + e, x, h, e, 0x000000FF);
 
 }
 
@@ -472,12 +487,14 @@ void GestionEnv_afficherMessage(char* message, int x, int y, int taille){
 
 	SDL_BlitSurface(texte, NULL, ecran, &position);
 	TTF_CloseFont(police);
+
 	SDL_Flip(ecran);
 }
 
 void GestionEnv_viderZoneMessage(){
-	SDL_Rect zoneMessage = {0, 0, LARGUEUR_ECRAN, 2*OFFSET};
-	SDL_FillRect(ecran, &zoneMessage, COULEUR_FOND);
+	boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET, COULEUR_FOND);
+	boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, 0x74C0F177);
+	SDL_Flip(ecran);
 }
 
 //-------------------------------------------------------------------------------------------------------------

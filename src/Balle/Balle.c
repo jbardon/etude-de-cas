@@ -52,7 +52,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 	if(balle){
 
 		// Créé la zone de dessin de la balle
-		balle->canvas = SDL_CreateRGBSurface(/*SDL_HWSURFACE*/SDL_SRCALPHA, (rayon+1)*2, (rayon+1)*2, 32, 0, 0, 0, 0);
+		balle->canvas = SDL_CreateRGBSurface(/*SDL_HWSURFACE*/SDL_SRCALPHA, rayon*2, rayon*2, 32, 0, 0, 0, 0);
 
 		if(balle->canvas){
 
@@ -62,7 +62,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 
 			// Caractéristiques physiques de la balle
 			cpFloat masse = rayon;
-			cpFloat moment = cpMomentForCircle(masse, 0, rayon - 1, cpvzero);
+			cpFloat moment = cpMomentForCircle(masse, 0, rayon, cpvzero);
 
 			// Créé une balle dont la position initiale est cx cy
 			cpBody* corpsBalle = cpSpaceAddBody(espace, cpBodyNew(masse, moment));
@@ -173,7 +173,7 @@ cpVect Balle_donneCoordonnees(Balle* balle){
  */
 int Balle_estImmobile(Balle* balle){
 	cpVect vitesse = cpBodyGetVel(cpShapeGetBody(balle->zoneCollision));
-	return (vitesse.y < 0.7 && vitesse.y > -0.7);
+	return (vitesse.y < 0.67 && vitesse.y > -0.67);
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -226,7 +226,7 @@ static void _Balle_dessiner(Balle* balle, Uint32 couleur){
 	SDL_Rect position = { balle->cx - rayon, balle->cy - rayon };
 
 	//Dessine le cercle puis la lettre
-	filledCircleColor(balle->canvas, rayon, rayon, rayon, couleur);
+	filledCircleColor(balle->canvas, rayon, rayon, rayon - 1, couleur);
 	_Balle_dessiner_lettre(balle, couleur);
 
 	// Affiche la balle
