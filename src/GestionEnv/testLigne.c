@@ -46,7 +46,7 @@ int main(void){
 
 	printf("Lettres sélectionnées: %s\n", lettres);
 
-	GHashTable* dico = chargerDico(RES("/AlgoRecherche/dicofinal.txt"));
+	GHashTable* dico = chargerDico("dicofinal.txt");
 
 	for(int i = 0; i < strlen(lettres); i++){
 	  lettres[i] = tolower(lettres[i]);

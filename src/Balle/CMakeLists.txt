@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-#configure_file(arial.ttf arial.ttf COPYONLY)
+configure_file(arial.ttf arial.ttf COPYONLY)
 
 add_library(BalleShared SHARED Balle.c)
 add_library(BalleStatic STATIC Balle.c)

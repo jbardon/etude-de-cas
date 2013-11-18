@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+configure_file(arial.ttf arial.ttf COPYONLY)
+
 add_executable(testTranslation testTranslation.c)
 target_link_libraries(testTranslation SDLmain SDL SDL_gfx)
 

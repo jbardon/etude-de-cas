@@ -10,7 +10,7 @@ int main()
 
 	//création de la table de hashage pour ranger le dico
 	printf("\n----> Test chargerDico <---- \n");
-	GHashTable* dico = chargerDico(RES("/AlgoRecherche/dicofinal.txt"));
+	GHashTable* dico = chargerDico("dicofinal.txt");
 
 	//**** AFFICHAGE DE LA TABLE ****//
 	//Variable de l'iterateur pour la table de hashage
@@ -47,7 +47,10 @@ int main()
 	printf("\n----> Test de la Version 2 <---- \n");
 	char* resultat2 = "abcde";
 	char* substring2 = version2(resultat2, dico);
-	
+
+	free(result);
+	g_hash_table_destroy(dico);	
+
 	return EXIT_SUCCESS;
 }
 

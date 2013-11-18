@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
+configure_file(dico.txt dico.txt COPYONLY)
+configure_file(dicofinal.txt dicofinal.txt COPYONLY)
+
 add_library(AlgoRechercheShared SHARED AlgoRecherche.c)
 add_library(AlgoRechercheStatic STATIC AlgoRecherche.c)
 

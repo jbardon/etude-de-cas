@@ -13,7 +13,7 @@ add_custom_target(debug
 	COMMAND make
 	COMMENT "Building debug version..."
 )
-set(CMAKE_C_FLAGS_DEBUG "-g -Wall -pedantic -std=c99")
+set(CMAKE_C_FLAGS_DEBUG "-g -pg -Wall -pedantic -std=c99")
 
 add_custom_target(release
 	cmake ${CMAKE_CURRENT_SOURCE_DIR} -DCMAKE_BUILD_TYPE=Release

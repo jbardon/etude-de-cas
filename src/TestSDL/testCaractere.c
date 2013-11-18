@@ -31,7 +31,7 @@ if(TTF_Init() == -1)
 }
 
 SDL_Color couleurNoire = {0, 0, 0};
-police = TTF_OpenFont(RES("/Balle/arial.ttf"), 65);
+police = TTF_OpenFont("arial.ttf", 65);
 
 texte = TTF_RenderText_Blended(police, "T", couleurNoire);
 

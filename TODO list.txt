@@ -53,8 +53,15 @@ OK - Impossible de retrouver des éléments dans un GHashTable
 
 	- Quelques fois les balles rentrent un peu dans les murs ou le sol (réglage chipmunk)
 
+OK	- L'executable ne trouve pas les fichiers dans le répertoire local
+			-> dans le terminal ce positionner dans le répertoire de l'executable, pas de rep/exe
+
 ====> Astuces pratiques <====
 
 	- Si la fenêtre SDL ne veut pas se fermer
 			-> Ctrl+Z puis kill -9 $(ps -e | grep test | cut -d ' ' -f1), changer test selon le nom de l'executable
+	- valgrind --tool=memcheck --leak-check=summary --leak-resolution=high main/projet
+	- valgrind --tool=callgrind main/projet
+	- ffmpeg -f image2 -i image_%04d.bmp -vcodec mpeg4 -b 8000k video.avi
+
 

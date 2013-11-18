@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+configure_file(arial.ttf arial.ttf COPYONLY)
+configure_file(dicofinal.txt dicofinal.txt COPYONLY)
 configure_file(test.txt test.txt COPYONLY)
 
 add_executable(projet projet.c)

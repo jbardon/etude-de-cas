@@ -58,16 +58,27 @@ int main(void){
 	GestionEnv_creerBalles(34);
 
 	char message[50];
-
+	long int screen = 0;
 /* DEBUT TEST */
 
 	do {		
 		GestionEnv_evoluer();
+/*
+sprintf(message, "/home/jeremy/Images/projet/projet2/image_%04ld.bmp", screen);
+SDL_SaveBMP(ecran, message);
+screen++;
+*/
 	}
 	while(!GestionEnv_ballesImmobiles());
 
 	sprintf(message, "Cliquez dans la fenetre pour tracer une ligne");
 	GestionEnv_afficherMessage(message, 80, 20, 20);
+
+/*
+sprintf(message, "/home/jeremy/Images/projet/projet2/image_%04ld.bmp", screen);
+SDL_SaveBMP(ecran, message);
+screen++;
+*/
 
 	int nbClic = 0;
 	cpVect coord[2];
@@ -83,7 +94,10 @@ int main(void){
 //printf("x: %d, y: %d\n", in.mousex, in.mousey);
 			coord[nbClic] = cpv(in.mousex, in.mousey);
 			nbClic++;
-			SDL_Flip(ecran);			
+			SDL_Flip(ecran);	
+sprintf(message, "/home/jeremy/Images/projet/projet2/image_%04ld.bmp", screen);
+SDL_SaveBMP(ecran, message);
+screen++;		
         }            
     }
 
@@ -93,7 +107,13 @@ int main(void){
 	sprintf(message, "Lettres selectionnees: %s", majuscules(lettres));
 	GestionEnv_afficherMessage(message, OFFSET, 20, 20);
 
-	GHashTable* dico = chargerDico(RES("/AlgoRecherche/dicofinal.txt"));
+/*
+sprintf(message, "/home/jeremy/Images/projet/projet2/image_%04ld.bmp", screen);
+SDL_SaveBMP(ecran, message);
+screen++;
+*/
+
+	GHashTable* dico = chargerDico("dicofinal.txt");
 
 	for(int i = 0; i < strlen(lettres); i++){
 	  lettres[i] = tolower(lettres[i]);
@@ -109,6 +129,12 @@ int main(void){
 		sprintf(message, "Aucun mot trouve =(");
 		GestionEnv_afficherMessage(message, OFFSET, 50, 20);
 	}
+
+/*
+sprintf(message, "/home/jeremy/Images/projet/projet2/image_%04ld.bmp", screen);
+SDL_SaveBMP(ecran, message);
+screen++;
+*/
 
 /* FIN TEST */
 

@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
+configure_file(arial.ttf arial.ttf COPYONLY)
+configure_file(dicofinal.txt dicofinal.txt COPYONLY)
+
 add_library(GestionEnvShared SHARED GestionEnv.c)
 add_library(GestionEnvStatic STATIC GestionEnv.c)
 

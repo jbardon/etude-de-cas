@@ -13,7 +13,7 @@ static void _supprimer_retour_ligne(char *chaine);
 */
 GHashTable* chargerDico(char* nomFichier){
 	
-	GHashTable* DicoHash = g_hash_table_new(g_int_hash, g_int_equal);
+	GHashTable* DicoHash = g_hash_table_new_full(g_int_hash, g_int_equal, free, free);
 
 	if(DicoHash){
 		int valhash = 0; //valeur de la fonction de hashage
@@ -34,7 +34,7 @@ GHashTable* chargerDico(char* nomFichier){
 				int* tmpval = malloc(sizeof(int)); //création d'une nouvelle variable à chaque tour de boucle...
 				*tmpval = valhash; //...qui contient la valeur de hashage
 			
-				char* tmp = malloc(strlen(line)+1); //création d'une variable à chaque tour de boucle...
+				char* tmp = g_strdup(line); //création d'une variable à chaque tour de boucle...
 				strcpy(tmp,line); //...qui contient la valeur de la ligne lue
 
 				g_hash_table_insert(DicoHash, tmpval, tmp); //Insertion dans le hashtable
