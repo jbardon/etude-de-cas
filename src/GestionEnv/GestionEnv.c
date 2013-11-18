@@ -23,6 +23,7 @@ static unsigned int _randMinMax(int min, int max);
 static Uint32 _randCouleur();
 static cpVect _randDirection();
 static char _randLettre();
+static cpVect _randPosition(int rayon);
 
 //-------------------------------------------------------------------------------------------------------------
 //										Variables liées à l'environnement
@@ -328,10 +329,10 @@ static void _creerUneBalle(){
 
 		// Caractéritiques aléatoires pour les balles
 		const int rayon = _randMinMax(30,40);
-		const cpVect centre = cpv(_randMinMax(OFFSET + rayon, LARGUEUR_ECRAN - 2*OFFSET - rayon), -rayon);
+		const cpVect centre = _randPosition(rayon);
 		const cpVect direction = _randDirection();
 		const Uint32 couleur = _randCouleur();
-		const char lettre = /*(char) _randMinMax(65,90)*/_randLettre();
+		const char lettre = _randLettre();
 
 		// Création de la balle
 		balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
@@ -421,9 +422,9 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	lineColor(ecran, x1, y1, x2, y2, 0x000000FF);
 
 	// Cherche les balles touchées
-	// diamètre min = 60, largeur panier = 540 soit 540/60 = 10 (au cas ou +1)
+	// diamètre min = 60, diagonale panier = sqrt((480-3*50)² + (640-2*50)²)/60 = 11
 	unsigned int nbBallesTouches = 0;	
-	Balle** ballesTouches = calloc(10, sizeof(Balle*));
+	Balle** ballesTouches = calloc(11, sizeof(Balle*));
 	
 	for(unsigned int i = 0; i < nbBallesCrees; i++){
 		
@@ -475,7 +476,7 @@ void GestionEnv_afficherMessage(char* message, int x, int y, int taille){
 }
 
 void GestionEnv_viderZoneMessage(){
-	SDL_Rect zoneMessage = {0, 0, LARGUEUR_ECRAN, 2*OFFSET-10};
+	SDL_Rect zoneMessage = {0, 0, LARGUEUR_ECRAN, 2*OFFSET};
 	SDL_FillRect(ecran, &zoneMessage, COULEUR_FOND);
 }
 
@@ -650,6 +651,22 @@ static char _randLettre(){
 	lettresTotal++;
 
 	return lettre;
+}
+
+static cpVect _randPosition(int rayon){
+
+	static char p = 1;	
+	p ^= 0x01;
+
+	const unsigned int max = LARGUEUR_ECRAN - 2*OFFSET - rayon;
+
+	if(p){ // 1 fois sur 2 dans la partie gauche du panier
+		return cpv(_randMinMax(OFFSET + rayon, max/2), -rayon);
+	}
+	else { // partie droite du panier
+		return cpv(_randMinMax(max/2, max), -rayon);
+	}
+
 }
 
 //-------------------------------------------------------------------------------------------------------------

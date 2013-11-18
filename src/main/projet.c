@@ -55,7 +55,7 @@ int main(void){
 	cpSpace* espace = GestionEnv_initChipmunk();
 
 	GestionEnv_creerPanier(espace, ecran);
-	GestionEnv_creerBalles(32);
+	GestionEnv_creerBalles(34);
 
 	char message[50];
 
