@@ -76,7 +76,7 @@ static double temps = 0;
 static SDL_Surface* ecran = NULL;
 
 /**
- * @var Balle** balles
+ * @var GSList balles
  * @brief Tableau des balles présentent dans l'environnement
  * Balles créées avec la fonction _creerUneBalle
  *
@@ -85,7 +85,7 @@ static SDL_Surface* ecran = NULL;
  *
  *
  */ 
-static Balle** balles = NULL;
+static GPtrArray* balles = NULL;
 
 /**
  * @var int nbBallesTotal
@@ -286,7 +286,7 @@ static void _dessinerPanier(){
 	// Affichage du mur gauche
 	x = OFFSET - e/2;
 	y = HAUTEUR_ECRAN - OFFSET;
-	h = 2 * OFFSET;
+	h = 3 * OFFSET;
 	thickLineColor(ecran, x, y + e, x, h, e, 0x00000FF);
 
 	// Affichage du mur droit
@@ -305,6 +305,10 @@ void GestionEnv_supprimerPanier(){
 	}
 }
 
+void GestionEnv_effacerPanier(){
+	boxColor(ecran, 0, 2*OFFSET, LARGUEUR_ECRAN, HAUTEUR_ECRAN - 2*OFFSET, COULEUR_FOND);
+}
+
 //-------------------------------------------------------------------------------------------------------------
 //										Gestion des balles
 //-------------------------------------------------------------------------------------------------------------
@@ -318,9 +322,10 @@ void GestionEnv_supprimerPanier(){
  * ayant aucun retour et pour seul paramètre une balle
  */
 static void _Balle_foreach(Balle_Fonction fonction){
-	for(unsigned int i = 0; i < nbBallesCrees; i++){
-		fonction(balles[i]);
-	}
+	/*for(unsigned int i = 0; i < nbBallesCrees; i++){
+		fonction(g_ptr_array_index(balles, i));
+	}*/
+	g_ptr_array_foreach(balles, (GFunc)fonction, NULL);
 }
 
 /**
@@ -329,7 +334,7 @@ static void _Balle_foreach(Balle_Fonction fonction){
  * avec des paramètres aléatoires :
  *
  * @see Balle_creer
- * rayon: 30 -> 50
+ * rayon: 28 -> 36
  * centre: x (dans les panier), y (juste au dessus de la fenêtre)
  * direction: (0,-80) -> (0,80)
  * couleur: @see couleurs
@@ -343,14 +348,15 @@ static void _creerUneBalle(){
 	if(nbBallesCrees < nbBallesTotal){
 
 		// Caractéritiques aléatoires pour les balles
-		const int rayon = _randMinMax(30,40);
+		const int rayon = _randMinMax(28,36);
 		const cpVect centre = _randPosition(rayon);
 		const cpVect direction = _randDirection();
 		const Uint32 couleur = _randCouleur();
 		const char lettre = _randLettre();
 
 		// Création de la balle
-		balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
+		//balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
+		g_ptr_array_add(balles, Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre));
 		nbBallesCrees++;
 	}			
 }
@@ -368,7 +374,8 @@ static void _creerUneBalle(){
  */
 void GestionEnv_creerBalles(int nbBalles){
 
-	balles = calloc(nbBalles, sizeof(Balle*));
+	//balles = calloc(nbBalles, sizeof(Balle*));
+	balles = g_ptr_array_sized_new(nbBalles);
 
 	if(balles){
 		nbBallesTotal = nbBalles;	
@@ -384,7 +391,8 @@ void GestionEnv_creerBalles(int nbBalles){
  */
 void GestionEnv_supprimerBalles(){
 	_Balle_foreach(Balle_supprimer);
-	free(balles);
+	//free(balles);
+	 g_ptr_array_free(balles, 0);
 }
 
 /**
@@ -397,7 +405,7 @@ int GestionEnv_ballesImmobiles(){
 	int ballesImmobiles = 1, i = 0;
 	
 	while(ballesImmobiles && i < nbBallesCrees){
-		ballesImmobiles = Balle_estImmobile(balles[i++]);
+		ballesImmobiles = Balle_estImmobile(g_ptr_array_index(balles, i++));
 	}	
 
 	return ballesImmobiles;	
@@ -437,15 +445,18 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	lineColor(ecran, x1, y1, x2, y2, 0x000000FF);
 
 	// Cherche les balles touchées
-	// diamètre min = 60, diagonale panier = sqrt((480-3*50)² + (640-2*50)²)/60 = 11
+	// 80 = diamètre max d'une balle (voir _creerUneBalle)
+	const unsigned int nbBallesMaxDiag = sqrt(pow((HAUTEUR_ECRAN-4*OFFSET),2) + 
+										      pow((LARGUEUR_ECRAN-2*OFFSET),2))/80;
+
 	unsigned int nbBallesTouches = 0;	
-	Balle** ballesTouches = calloc(11, sizeof(Balle*));
+	Balle** ballesTouches = calloc(nbBallesMaxDiag, sizeof(Balle*));
 	
 	for(unsigned int i = 0; i < nbBallesCrees; i++){
 		
 		// Vérifie si la balle est touchée par la ligne
 		int touche =  cpShapeSegmentQuery(
-						   balles[i]->zoneCollision, 
+						   ((Balle*)g_ptr_array_index(balles, i))->zoneCollision, 
 						   cpv(x1, HAUTEUR_ECRAN - y1), 
 						   cpv(x2, HAUTEUR_ECRAN - y2),
 						   NULL
@@ -453,8 +464,10 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 		// Sauvegarde la balle touchée
 		if(touche){
-			ballesTouches[nbBallesTouches] = balles[i];
+			ballesTouches[nbBallesTouches] = (Balle*)g_ptr_array_remove_index(balles, i);
 			nbBallesTouches++;
+			nbBallesCrees--;
+			i--;
 		}
 	}
 
@@ -469,6 +482,12 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 		char l [2] = { ballesTouches[i]->lettre, 0 }; // Ajoute zéro terminal
 		strcat(lettres, l);
 	}
+
+	// Supprime les balles touchées du tableau global
+	for(unsigned int i = 0; i < nbBallesTouches; i++){
+		Balle_supprimer(ballesTouches[i]);	
+	}
+	free(ballesTouches);
 
 	// Met à jour l'affichage
 	SDL_Flip(ecran);
@@ -492,7 +511,7 @@ void GestionEnv_afficherMessage(char* message, int x, int y, int taille){
 }
 
 void GestionEnv_viderZoneMessage(){
-	boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET, COULEUR_FOND);
+	boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, COULEUR_FOND);
 	boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, 0x74C0F177);
 	SDL_Flip(ecran);
 }

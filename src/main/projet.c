@@ -73,7 +73,7 @@ int main(void){
 
 	// Créé le panier et les balles
 	GestionEnv_creerPanier(espace, ecran);
-	GestionEnv_creerBalles(34);
+	GestionEnv_creerBalles(50);
 
 	// Buffer pour afficher des messages sur la fenêtre
 	char message[50];
@@ -95,8 +95,9 @@ int main(void){
 
 
 	// Attent les 2 clic de l'utilisateur pour tracer la ligne
+	GestionEnv_viderZoneMessage();
 	sprintf(message, "Cliquez dans la fenetre pour tracer une ligne");
-	GestionEnv_afficherMessage(message, 80, 20, 20);
+	GestionEnv_afficherMessage(message, 105, 35, 20);
 
 	int nbClic = 0;
 	cpVect coord[2]; // Les extrémités de la ligne
@@ -145,6 +146,19 @@ int main(void){
 		sprintf(message, "Aucun mot trouve =(");
 		GestionEnv_afficherMessage(message, OFFSET, 50, 20);
 	}
+
+
+	// Supprime les balles sélectionneés
+	GestionEnv_effacerPanier();
+	do {		
+		GestionEnv_evoluer();
+	}
+	while(!GestionEnv_ballesImmobiles());	
+
+	// Demande de recommencer
+	GestionEnv_viderZoneMessage();
+	sprintf(message, "Appuyez sur [Q] pour quitter ou [R] pour rejouer");
+	GestionEnv_afficherMessage(message, 80, 35, 20);
 
 	// Attent que l'utilisateur ferme la fenêtre
 	attendreFermeture();
