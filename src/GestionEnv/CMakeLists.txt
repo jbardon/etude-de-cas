@@ -23,7 +23,11 @@ target_link_libraries(testLigne GestionEnv Balle AlgoRecherche SDL SDLmain SDL_g
 add_executable(testCompareBalle testCompareBalle.c)
 target_link_libraries(testCompareBalle GestionEnv Balle SDL SDLmain SDL_gfx SDL_image SDL_ttf chipmunk glib-2.0)
 
+add_executable(testRandLettres testRandLettres.c)
+target_link_libraries(testRandLettres GestionEnv Balle SDL SDLmain SDL_gfx SDL_image SDL_ttf chipmunk glib-2.0)
+
 add_test(testPanier ./testPanier)
 add_test(testBalles ./testBalles)
 add_test(testLigne ./testLigne)
 add_test(testCompareBalle ./testCompareBalle)
+add_test(testRandLettres ./testRandLettres)

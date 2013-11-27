@@ -23,6 +23,7 @@ static void _creerUneBalle();
 static unsigned int _randMinMax(int min, int max);
 static Uint32 _randCouleur();
 static cpVect _randDirection();
+static char __randLettre(int nbRecursions);
 static char _randLettre();
 static cpVect _randPosition(int rayon);
 
@@ -213,7 +214,7 @@ void GestionEnv_evoluer(){
 	SDL_Flip(ecran);
 
 	// Créé une balle à chaque intervalle de temps, max = nombre de balles donnée dans GestionEnv_creerBalles
-	if(nbBallesCrees < nbBallesTotal && timerLancement == DELAI_APPARITION){
+	if(nbBallesCrees < nbBallesTotal && timerLancement >= DELAI_APPARITION){
 		_creerUneBalle();
 		timerLancement = 0;	
 	}
@@ -374,7 +375,6 @@ static void _creerUneBalle(){
  */
 void GestionEnv_creerBalles(int nbBalles){
 
-	//balles = calloc(nbBalles, sizeof(Balle*));
 	balles = g_ptr_array_sized_new(nbBalles);
 
 	if(balles){
@@ -391,7 +391,6 @@ void GestionEnv_creerBalles(int nbBalles){
  */
 void GestionEnv_supprimerBalles(){
 	_Balle_foreach(Balle_supprimer);
-	//free(balles);
 	 g_ptr_array_free(balles, 0);
 }
 
@@ -403,7 +402,7 @@ void GestionEnv_supprimerBalles(){
 int GestionEnv_ballesImmobiles(){
 
 	int ballesImmobiles = 1, i = 0;
-	
+
 	while(ballesImmobiles && i < nbBallesCrees){
 		ballesImmobiles = Balle_estImmobile(g_ptr_array_index(balles, i++));
 	}	
@@ -446,12 +445,12 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 	// Cherche les balles touchées
 	// 80 = diamètre max d'une balle (voir _creerUneBalle)
-	const unsigned int nbBallesMaxDiag = sqrt(pow((HAUTEUR_ECRAN-4*OFFSET),2) + 
-										      pow((LARGUEUR_ECRAN-2*OFFSET),2))/80;
+	const unsigned int nbBallesMaxDiag = ceil(sqrt(pow((HAUTEUR_ECRAN-4*OFFSET),2) + 
+										      pow((LARGUEUR_ECRAN-2*OFFSET),2))/80) + 1;
 
 	unsigned int nbBallesTouches = 0;	
-	Balle** ballesTouches = calloc(nbBallesMaxDiag, sizeof(Balle*));
-	
+	Balle** ballesTouches = calloc(nbBallesMaxDiag, sizeof(Balle*));	
+
 	for(unsigned int i = 0; i < nbBallesCrees; i++){
 		
 		// Vérifie si la balle est touchée par la ligne
@@ -464,10 +463,8 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 		// Sauvegarde la balle touchée
 		if(touche){
-			ballesTouches[nbBallesTouches] = (Balle*)g_ptr_array_remove_index(balles, i);
+			ballesTouches[nbBallesTouches] = (Balle*)g_ptr_array_index(balles, i);
 			nbBallesTouches++;
-			nbBallesCrees--;
-			i--;
 		}
 	}
 
@@ -485,6 +482,7 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 	// Supprime les balles touchées du tableau global
 	for(unsigned int i = 0; i < nbBallesTouches; i++){
+		g_ptr_array_remove(balles, ballesTouches[i]);
 		Balle_supprimer(ballesTouches[i]);	
 	}
 	free(ballesTouches);
@@ -637,6 +635,10 @@ static const float lettres [] = {
  * @return Couleur aléatoire sous la forme RRGGBBAA
  */
 static char _randLettre(){
+	return __randLettre(0);
+}
+
+static char __randLettre(int nbRecursions){
 	
 	/**
 	 * Nombre total de lettres générées
@@ -676,12 +678,12 @@ static char _randLettre(){
 	float ratioVoyelles = (lettresGeneres['A'] + lettresGeneres['E'] 
 							+ lettresGeneres['I'] +lettresGeneres['O'] + lettresGeneres['U']) / (float)lettresTotal;
 
-	if(lettresTotal > 10 && lettresGeneres[l] > 2){
+	if(nbRecursions < 5 && lettresTotal > 10 && lettresGeneres[l] > 2){
 		if(((lettresGeneres[l]/lettresTotal) > lettres[l]) 
 	   		|| ratioVoyelles < RATIO_VOYELLES)
 		{
 			lettresGeneres[l]--;
-			return _randLettre();	
+			return __randLettre(++nbRecursions);	
 		}
 	}
 	lettresTotal++;

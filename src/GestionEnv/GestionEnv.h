@@ -39,7 +39,7 @@ const cpFloat uniteTemps = 1.0/60.0;
  * @see _Balle_foreach
  */
 typedef void (*Balle_Fonction)(Balle*);
-
+int step = 0;
 extern cpSpace* GestionEnv_initChipmunk();
 extern SDL_Surface* GestionEnv_initSDL();
 

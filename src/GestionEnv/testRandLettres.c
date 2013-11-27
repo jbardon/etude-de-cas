@@ -5,7 +5,7 @@
 #include <time.h>
 
 #define TAILLE_TAB_LETTRES 26
-#define RATIO_VOYELLES 43,41
+#define RATIO_VOYELLES 43.41
 
 static const float lettres [] = {
 									 9.78,
@@ -36,7 +36,11 @@ static const float lettres [] = {
 								   100.00,
 							    };
 
+static char __randLettre(int recur);
 static char _randLettre(){
+	return __randLettre(0);
+}
+static char __randLettre(int recur){
 	
 	/**
 	 * Nombre total de lettres générées
@@ -74,17 +78,18 @@ static char _randLettre(){
 	// de lettres générés est trop grande
 	// Ou si le ratio voyelles/consonnes n'est pas correct (à 10% près)
     // ==> il faut générer un nouveau caractère
-
 	float ratioVoyelles = (lettresGeneres['A'] + lettresGeneres['E'] 
 							+ lettresGeneres['I'] +lettresGeneres['O'] + lettresGeneres['U']) / (float)lettresTotal;
-
+			printf("a\n");
 //printf("%c %d %2.2f\n",lettre,lettresTotal, ratioVoyelles);
-	if(lettresTotal > 10 && lettresGeneres[lettre] > 2){
-		if(((lettresGeneres[lettre]/lettresTotal) > lettres[lettre]) 
+	if(lettresTotal > 10 && lettresGeneres[l] > 2 && recur < 5){
+
+		if(((lettresGeneres[l]/lettresTotal) > lettres[l]) 
 	   		|| ratioVoyelles < RATIO_VOYELLES)
 		{
-			lettresGeneres[lettre]--;
-			return _randLettre();	
+			printf("b\n");
+			lettresGeneres[l]--;
+			return __randLettre(++recur);	
 		}
 	}
 	lettresTotal++;
@@ -96,7 +101,7 @@ int main(void){
 
 	srand(time(NULL));
 	
-	for(int i = 0; i < 30; i++){
+	for(int i = 0; i < 1000; i++){
 		printf("%c ", _randLettre());
 	}
 
