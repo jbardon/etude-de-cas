@@ -21,6 +21,9 @@
 #include <Balle.h>
 #include <glib.h>
 
+/* Pour la fonction GestionEnv_afficherMessage (paramètre x) */
+#define ALIGN_CENTRE -1
+
 /**
  * @var cpFloat uniteTemps
  * @brief Unite de temps dans chipmunk (en s)
@@ -39,7 +42,7 @@ const cpFloat uniteTemps = 1.0/60.0;
  * @see _Balle_foreach
  */
 typedef void (*Balle_Fonction)(Balle*);
-int step = 0;
+
 extern cpSpace* GestionEnv_initChipmunk();
 extern SDL_Surface* GestionEnv_initSDL();
 

@@ -13,7 +13,7 @@
  * Trace une ligne est vérifie quelles balles sont traversées
  * Les lettres des balles traversées sont affichées dans le terminal
  *
- * La boucle d'évilution de l'environnement s'arrête lorsque 
+ * La boucle d'évolution de l'environnement s'arrête lorsque 
  * toutes les balles sont immobiles
  *
  *  @see GestionEnv_donnerCaracteresLigne
@@ -46,14 +46,13 @@ int main(void){
 
 	printf("Lettres sélectionnées: %s\n", lettres);
 
-	GHashTable* dico = chargerDico("dicofinal.txt");
+	GHashTable* dico = chargerDicoV1_V2("dicofinal.txt");
 
 	for(int i = 0; i < strlen(lettres); i++){
 	  lettres[i] = tolower(lettres[i]);
 	}
 
-
-	char* result = version1(lettres, dico);
+	char* result = version1(dico, lettres);
 	if(result){
 		printf("Mot trouvé ! %s (%d pts)\n", result, strlen(result));
 	}

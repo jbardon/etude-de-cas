@@ -1,58 +1,82 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-
 #include "../main/config.h"
 #include "AlgoRecherche.h"
 
 int main()
 {	
 
-	//création de la table de hashage pour ranger le dico
-	printf("\n----> Test chargerDico <---- \n");
-	GHashTable* dico = chargerDico("dicofinal.txt");
+	//******************************************* Création des dictionnaires *******************************************//
+	//création des dictionnaire avec la table de hashage
+	GHashTable* dicoV1_V2 = chargerDicoV1_V2("dicofinal.txt"); //pour la version 1 & 2
+	GHashTable* dicoV3 = chargerDicoV3("dicofinal.txt"); //pour la version 3
 
-	//**** AFFICHAGE DE LA TABLE ****//
-	//Variable de l'iterateur pour la table de hashage
-	printf("\n----> Affichage dico <---- \n");
-	GHashTableIter iter;
-	char *value;
-	int *key;
-	g_hash_table_iter_init(&iter,dico); //iterator pour afficher le hashtable
+	//********************************************** TEST DE LA VERSION 1 **********************************************//
+	printf("\n--------> Test de la Version 1 <-------- \n");
 
-	while (g_hash_table_iter_next (&iter, (gpointer)&key, (gpointer)&value))
+	char* resultatV1 = "abaissai"; //resultat du test
+	printf("Resultat attendu, value : %s, points : %d\n",resultatV1, (int)strlen(resultatV1));
+
+	char* ver1 = version1(dicoV1_V2, "zedabaissaidgf");
+	if(ver1)
 	{
-//		printf("key %d ---> %s \n", *key, value);
+		printf("Chaine la plus longue : %s, vous marquez %d points \n", ver1, (int)strlen(ver1)); 
+		printf("\n ===> TEST VERSION 1 .......... OK \n");
+	}
+	else 
+	{
+		printf("Aucun mot trouvé pour la version 1\n");
+		printf("\n ===> TEST VERSION 1 .......... KO \n");
 	}
 
-	printf("\n----> Test de la Version 1 <---- \n");
-	char* resultat = "ABAISSAI";
-	char* result = (char*) calloc(strlen(resultat) + 1, sizeof(char));
+	//********************************************** TEST DE LA VERSION 2 **********************************************//
+	printf("\n--------> Test de la Version 2 <-------- \n");
 
-	for(int i = 0; i < strlen(resultat); i++){
-	  result[i] = tolower(resultat[i]);
+	char* resultatV2 = "aluminium";
+	printf("Resultat attendu, value : %s, points : %d\n",resultatV2, (int)strlen(resultatV2));
+
+	char* ver2 = version2(dicoV1_V2,"zaluqpminiuwwm");
+	if(ver2)
+	{
+		printf("Chaine la plus longue : %s, vous marquez %d points \n", ver2, (int)strlen(ver2)); 
+		printf("\n ===> TEST VERSION 2 .......... OK \n");
+	}
+	else 
+	{
+		printf("Aucun mot trouvé pour la version 2\n");
+		printf("\n ===> TEST VERSION 2 .......... KO \n");
 	}
 
-	printf("Resultat a trouver: %d ---> %s %d\n", g_str_hash(result), result, strlen(result));
+	//********************************************** TEST DE LA VERSION 3 **********************************************//
+	printf("\n--------> Test de la Version 3 <-------- \n");
+	
+	/*
+	printf("--> Test de la recherche d'anagramme\n");
+	printf("Anagramme de argent : %s\n", RechercheAnagramme("argent",dicoV3));
+	printf("Anagramme de resurrection : %s\n\n", RechercheAnagramme("resurrection",dicoV3));
+	*/
 
-	char* substring = version1(result, dico);
-	if(substring){
-		printf("Chaine la plus longue : %s, vous marquez %d points \n", substring, strlen(substring)); 
+	char* resultatV3 = "derealisant";
+	printf("Resultat attendu, value : %s, points : %d\n",resultatV3, (int)strlen(resultatV3));
+
+	char* ver3=version3(dicoV3,"rstlneaiaed");
+	if(ver3)
+	{
+		printf("Chaine la plus longue : %s, vous marquez %d points \n", ver3, (int)strlen(ver3)); 
+		printf("\n ===> TEST VERSION 3 .......... OK \n");
 	}
-	else {
-		printf("Aucun mot trouvé\n");
+	else 
+	{
+		printf("Aucun mot trouvé pour la version 3\n");
+		printf("\n ===> TEST VERSION 3 .......... KO \n");
 	}
 
-
-	printf("\n----> Test de la Version 2 <---- \n");
-	char* resultat2 = "abcde";
-	char* substring2 = version2(resultat2, dico);
-
-	free(result);
-	g_hash_table_destroy(dico);	
+	//***************************************** Destruction des dictionnaires *****************************************//
+	g_hash_table_destroy(dicoV1_V2);
+	g_hash_table_destroy(dicoV3);
 
 	return EXIT_SUCCESS;
 }
+
+
 
 
 

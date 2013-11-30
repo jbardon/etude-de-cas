@@ -208,7 +208,8 @@ void GestionEnv_quitSDL(){
 void GestionEnv_evoluer(){
 
 	// Fait évoluer les balles, applique le déplacement et maj de l'affichage
-	cpSpaceStep(espace, uniteTemps);	
+	cpSpaceStep(espace, uniteTemps);
+//	GestionEnv_effacerPanier();	
 	_Balle_foreach(Balle_deplacer); 
 	_dessinerPanier(); 
 	SDL_Flip(ecran);
@@ -293,7 +294,6 @@ static void _dessinerPanier(){
 	// Affichage du mur droit
 	x = LARGUEUR_ECRAN - OFFSET + e/2;
 	thickLineColor(ecran, x, y + e, x, h, e, 0x000000FF);
-
 }
 
 /**
@@ -307,7 +307,7 @@ void GestionEnv_supprimerPanier(){
 }
 
 void GestionEnv_effacerPanier(){
-	boxColor(ecran, 0, 2*OFFSET, LARGUEUR_ECRAN, HAUTEUR_ECRAN - 2*OFFSET, COULEUR_FOND);
+	boxColor(ecran, 0, 2*OFFSET, LARGUEUR_ECRAN, HAUTEUR_ECRAN, COULEUR_FOND);
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -447,7 +447,7 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	// 80 = diamètre max d'une balle (voir _creerUneBalle)
 	const unsigned int nbBallesMaxDiag = ceil(sqrt(pow((HAUTEUR_ECRAN-4*OFFSET),2) + 
 										      pow((LARGUEUR_ECRAN-2*OFFSET),2))/80) + 1;
-
+	printf("nbBallesMaxDiag(%d)\n", nbBallesMaxDiag);
 	unsigned int nbBallesTouches = 0;	
 	Balle** ballesTouches = calloc(nbBallesMaxDiag, sizeof(Balle*));	
 
@@ -493,24 +493,35 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	return lettres;
 }
 
+static int nbMessages = 0;
 void GestionEnv_afficherMessage(char* message, int x, int y, int taille){
 
+	if(!nbMessages++){
+		boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, 0xA9EAFEFF);
+	}
+
 	SDL_Color couleur = {20, 50, 50};
+	
 	TTF_Font* police = TTF_OpenFont("arial.ttf", taille);
 	TTF_SetFontStyle(police, TTF_STYLE_BOLD);
+
+	if(x == ALIGN_CENTRE){
+		int w = 0;
+		TTF_SizeText(police, message, &w, NULL);
+		x = (LARGUEUR_ECRAN - w)/2;
+	}
 
 	SDL_Surface* texte = TTF_RenderText_Blended(police, message, couleur);
 	SDL_Rect position = {x, y};
 
 	SDL_BlitSurface(texte, NULL, ecran, &position);
-	TTF_CloseFont(police);
-
 	SDL_Flip(ecran);
+
 }
 
 void GestionEnv_viderZoneMessage(){
+	nbMessages = 0;
 	boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, COULEUR_FOND);
-	boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, 0x74C0F177);
 	SDL_Flip(ecran);
 }
 

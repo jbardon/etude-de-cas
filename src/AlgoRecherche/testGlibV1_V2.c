@@ -4,26 +4,28 @@
 
 #include "AlgoRecherche.h"
 
-
+//gcc testGlibV1_V2.c -std=c99 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include/ -lglib-2.0 && ./a.out
 int main()
 {	
 
 	//Données à entrer dans la table
-	char* data [] = {
+	char* data[]={
 		"Hello",
 		"World"
 	};
 	const int sizeData = sizeof(data)/sizeof(char*);
 
-	int hash [2];
-	for(int i = 0; i < sizeData; i++){
+	int hash[2];
+	for(int i = 0; i < sizeData; i++)
+	{
 		hash[i] = g_str_hash(data[i]);
 	} 
 
 	// Insertion des données dans une table
 	GHashTable* table = g_hash_table_new(g_int_hash, g_int_equal);
 
-	for(int i = 0; i < sizeData; i++){
+	for(int i = 0; i < sizeData; i++)
+	{
 		g_hash_table_insert(table, &hash[i], g_strdup(data[i]));
 	}
 
@@ -44,10 +46,12 @@ int main()
 	printf("mot: %s ---> hashMot: %d \n", mot, hashMot);
 
 	void* motTrouve = g_hash_table_lookup(table, &hashMot);
-	if(motTrouve){
+	if(motTrouve)
+	{
 		printf("Trouvé: %s\n", (char*)motTrouve);
 	}	
-	else {
+	else
+	{
 		printf("Pas trouvé\n");	
 	}
 

@@ -1,16 +1,17 @@
 #include <stdio.h>
-#include <unistd.h> //pause
 #include <GestionEnv.h>
 #include <AlgoRecherche.h>
+#include <MenuSDL.h>
 
-void attendreFermeture(){
+void attendreCommencer(){
 
     int continuer = 1;
     SDL_Event event;
  
     while (continuer){
         SDL_WaitEvent(&event);
-        if(event.type == SDL_QUIT){
+        if(event.type == SDL_KEYDOWN
+			&& event.key.keysym.sym == SDLK_SPACE){
 	        continuer = 0;
         }
     }
@@ -100,15 +101,27 @@ int main(void){
 
 	// Créé le panier et charge le dictionnaire
 	GestionEnv_creerPanier(espace, ecran);
-	GHashTable* dico = chargerDico("dicofinal.txt");
+	GestionEnv_effacerPanier(); /* A VOIR */
+	GHashTable* dicoV1 = chargerDicoV1_V2("dicofinal.txt");
+	GHashTable* dicoV3 = chargerDicoV3("dicofinal.txt");
 
 	// Buffer pour afficher des messages sur la fenêtre
 	char message[50];
+
+	// Mot trouvés par les 3 versions
+	Solution* motsTrouves[3] = { NULL };
 
 	unsigned int rejouer = 1;
 	while(rejouer){
 
 		GestionEnv_creerBalles(55);
+
+		// Attend que l'utilisateur appuis sur espace
+		GestionEnv_viderZoneMessage();
+		sprintf(message, "Appuyez sur [ESPACE] pour commencer");
+		GestionEnv_afficherMessage(message, ALIGN_CENTRE, 35, 20);
+		attendreCommencer();
+		GestionEnv_viderZoneMessage();
 
 		/*
 			long int screen = 0;
@@ -126,7 +139,7 @@ int main(void){
 		// Attent les 2 clic de l'utilisateur pour tracer la ligne
 		GestionEnv_viderZoneMessage();
 		sprintf(message, "Cliquez dans la fenetre pour tracer une ligne");
-		GestionEnv_afficherMessage(message, 105, 35, 20);
+		GestionEnv_afficherMessage(message, ALIGN_CENTRE, 35, 20);
 
 		int nbClic = 0;
 		cpVect coord[2]; // Les extrémités de la ligne
@@ -154,25 +167,35 @@ int main(void){
 		// Récupère les caractères des balles sélectionnées par l'utilisateur
 		char* lettres = GestionEnv_donnerCaracteresLigne(coord[0].x, coord[0].y, coord[1].x, coord[1].y);
 
-		GestionEnv_viderZoneMessage();
-		sprintf(message, "Lettres selectionnees: %s", majuscules(lettres));
-		GestionEnv_afficherMessage(message, OFFSET, 20, 20);
-
 		// Cherche un mot dans le dictionnaire
 		for(int i = 0; i < strlen(lettres); i++){
-		  lettres[i] = tolower(lettres[i]);
+			lettres[i] = tolower(lettres[i]);
 		}
+		
+		char* motsVersions [] = {
+			version1(dicoV1, lettres),
+			version2(dicoV1, lettres),
+			version3(dicoV3, lettres)
+		};
 
-		char* result = version1(lettres, dico);
-	
-		if(result){
-			sprintf(message, "Mot trouve ! %s (%d pts)", majuscules(result), strlen(result));
-			GestionEnv_afficherMessage(message, OFFSET, 50, 20);
+		lettres = majuscules(lettres);
+
+		// Définition des couples mot-score
+		for(int i = 0; i < 3; i++){
+			motsTrouves[i] = Solution_creer(majuscules(motsVersions[i]), strlen(motsVersions[i]));
 		}
-		else {
-			sprintf(message, "Aucun mot trouve =(");
-			GestionEnv_afficherMessage(message, OFFSET, 50, 20);
-		}
+		
+		SDL_Surface* menu = MenuSDL_creer(ecran, lettres, motsTrouves, 3);
+		SDL_Rect pos = { 0, 0 };
+		SDL_BlitSurface(menu, NULL, ecran, &pos);
+		SDL_Flip(ecran);
+
+		// Supprime le menu et les couples mot-score
+		Solution_supprimer(motsTrouves[0]);
+		Solution_supprimer(motsTrouves[1]);
+		Solution_supprimer(motsTrouves[2]);
+
+		SDL_FreeSurface(menu);
 
 		// Supprime les balles sélectionneés
 		GestionEnv_effacerPanier();
@@ -182,9 +205,8 @@ int main(void){
 		while(!GestionEnv_ballesImmobiles());	
 
 		// Demande de recommencer
-		GestionEnv_viderZoneMessage();
-		sprintf(message, "Appuyez sur [Q] pour quitter ou [R] pour rejouer");
-		GestionEnv_afficherMessage(message, 80, 35, 20);
+		sprintf(message, "(Appuyez sur [Q] pour quitter ou [R] pour rejouer)");
+		GestionEnv_afficherMessage(message, ALIGN_CENTRE, 45, 12);
 
 		// Attent réponse pour rejouer ou quitter
 		rejouer = attendreReponseQR();
@@ -194,11 +216,12 @@ int main(void){
 
 		// Efface tout l'écran
 		SDL_FillRect(ecran, NULL, COULEUR_FOND);
-step++;
+
 	}
 
 	// Libération du dictionnaire
-	g_hash_table_destroy(dico);	
+	g_hash_table_destroy(dicoV1);	
+	g_hash_table_destroy(dicoV3); /* A VOIR */
 	
 	// Libération du panier
 	GestionEnv_supprimerPanier();

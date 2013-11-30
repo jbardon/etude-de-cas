@@ -1,12 +1,17 @@
+#include <ctype.h>
+#include <glib.h>
 #include <stdio.h> /* DEBUG */
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <glib.h>
-
-extern GHashTable* chargerDico(char* nomFichier);
-extern char* version1(char* chaine, GHashTable* table);
-extern char* version2(char* chaine, GHashTable* table);
+#include <time.h>
 
 
-extern void supprimer_retour_ligne(char *chaine);
+extern GHashTable* chargerDicoV1_V2(char* nomFichier);
+extern GHashTable* chargerDicoV3(char* nomFichier);
+
+extern char* version1(GHashTable* table, char* chaine);
+extern char* version2(GHashTable* table, char* chaine);
+extern char* version3(GHashTable* table, char* chaine);
+
+extern char* RechercheAnagramme(char *chaine, GHashTable* table); //recherche l'anagramme d'un mot
