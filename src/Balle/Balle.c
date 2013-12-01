@@ -296,12 +296,10 @@ void Balle_deplacer(Balle* balle){
 	// Efface l'ancienne balle
 	Balle_effacer(balle);
 
-	if(!Balle_estImmobile(balle)){
-		// Récupère les nouvelles coordonées de la balle
-		const cpVect pos = Balle_donneCoordonnees(balle);
-		balle->cx = pos.x;
-		balle->cy = HAUTEUR_ECRAN - pos.y;
-	}
+	// Récupère les nouvelles coordonées de la balle
+	const cpVect pos = Balle_donneCoordonnees(balle);
+	balle->cx = pos.x;
+	balle->cy = HAUTEUR_ECRAN - pos.y;
 
 	// Affiche la balle
 	Balle_afficher(balle);

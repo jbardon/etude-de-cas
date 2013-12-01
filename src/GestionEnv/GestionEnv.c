@@ -447,7 +447,7 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	// 80 = diamètre max d'une balle (voir _creerUneBalle)
 	const unsigned int nbBallesMaxDiag = ceil(sqrt(pow((HAUTEUR_ECRAN-4*OFFSET),2) + 
 										      pow((LARGUEUR_ECRAN-2*OFFSET),2))/80) + 1;
-	printf("nbBallesMaxDiag(%d)\n", nbBallesMaxDiag);
+
 	unsigned int nbBallesTouches = 0;	
 	Balle** ballesTouches = calloc(nbBallesMaxDiag, sizeof(Balle*));	
 
@@ -474,9 +474,10 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	qsort(ballesTouches, nbBallesTouches, sizeof(Balle*), (FonctionComparer) _comparerBalles);
 
 	// Construit la chaine de caractères
-	char* lettres = calloc(nbBallesTouches + 1, sizeof(char));
+	char* lettres = (char*) calloc(nbBallesTouches + 1, sizeof(char));
+
 	for(unsigned int i = 0; i < nbBallesTouches; i++){
-		char l [2] = { ballesTouches[i]->lettre, 0 }; // Ajoute zéro terminal
+		char l [2] = { ballesTouches[i]->lettre, '\0' }; // Ajoute zéro terminal
 		strcat(lettres, l);
 	}
 

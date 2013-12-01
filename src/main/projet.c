@@ -172,30 +172,50 @@ int main(void){
 			lettres[i] = tolower(lettres[i]);
 		}
 		
-		char* motsVersions [] = {
-			version1(dicoV1, lettres),
-			version2(dicoV1, lettres),
-			version3(dicoV3, lettres)
-		};
+		int nbMotsTrouves = 0;
+		char* motsVersions [3] = { NULL };
+
+		motsVersions[nbMotsTrouves] = version1(dicoV1, lettres);
+		if(motsVersions[nbMotsTrouves] != NULL){
+			nbMotsTrouves++;
+		}
+
+		motsVersions[nbMotsTrouves] = version2(dicoV1, lettres);
+		if(motsVersions[nbMotsTrouves] != NULL && strcmp(motsVersions[nbMotsTrouves], "") != 0){
+			nbMotsTrouves++;
+		}
+
+		motsVersions[nbMotsTrouves] = version3(dicoV3, lettres);
+		if(motsVersions[nbMotsTrouves] != NULL && strcmp(motsVersions[nbMotsTrouves], "") != 0){
+			nbMotsTrouves++;
+		}
 
 		lettres = majuscules(lettres);
 
-		// Définition des couples mot-score
-		for(int i = 0; i < 3; i++){
-			motsTrouves[i] = Solution_creer(majuscules(motsVersions[i]), strlen(motsVersions[i]));
+		if(nbMotsTrouves > 0){
+
+			// Définition des couples mot-score
+			for(int i = 0; i < nbMotsTrouves; i++){
+				motsTrouves[i] = Solution_creer(majuscules(motsVersions[i]), strlen(motsVersions[i]));
+			}
+	
+			SDL_Surface* menu = MenuSDL_creer(ecran, lettres, motsTrouves, nbMotsTrouves);
+			SDL_Rect pos = { 0, 0 };
+			SDL_BlitSurface(menu, NULL, ecran, &pos);
+			SDL_Flip(ecran);
+
+			// Supprime le menu et les couples mot-score
+			for(int i = 0; i < nbMotsTrouves; i++){
+				Solution_supprimer(motsTrouves[i]);
+			}
+
+			SDL_FreeSurface(menu);
 		}
-		
-		SDL_Surface* menu = MenuSDL_creer(ecran, lettres, motsTrouves, 3);
-		SDL_Rect pos = { 0, 0 };
-		SDL_BlitSurface(menu, NULL, ecran, &pos);
-		SDL_Flip(ecran);
-
-		// Supprime le menu et les couples mot-score
-		Solution_supprimer(motsTrouves[0]);
-		Solution_supprimer(motsTrouves[1]);
-		Solution_supprimer(motsTrouves[2]);
-
-		SDL_FreeSurface(menu);
+		else {
+			GestionEnv_viderZoneMessage();
+			sprintf(message, "Aucun mot trouve avec %s", lettres);
+			GestionEnv_afficherMessage(message, ALIGN_CENTRE, 20, 20);			
+		}
 
 		// Supprime les balles sélectionneés
 		GestionEnv_effacerPanier();

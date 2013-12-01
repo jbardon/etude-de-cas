@@ -23,7 +23,9 @@ Solution* Solution_creer(char* mot, int score){
 }
 
 void Solution_supprimer(Solution* motTrouve){
+printf("z\n");
 	free(motTrouve->mot);
+printf("z\n");
 	free(motTrouve);
 }
 
