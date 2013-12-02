@@ -107,7 +107,7 @@ void Balle_supprimer(Balle* balle){
 	// Supprime la balle graphiquement
 //	Balle_effacer(balle); 	 /* VITESSE */
 	SDL_FreeSurface(balle->canvas);
-	SDL_Flip(balle->ecranJeu);
+//	SDL_Flip(balle->ecranJeu); /* VITESSE */
 
 	cpBody* tmp = cpShapeGetBody(balle->zoneCollision);
 

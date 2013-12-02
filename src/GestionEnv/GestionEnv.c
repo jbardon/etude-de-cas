@@ -413,8 +413,8 @@ void GestionEnv_creerBalles(int nbBalles){
  */
 void GestionEnv_supprimerBalles(){
 
-	GestionEnv_effacerPanier(); /* VITESSE */
-	GestionEnv_viderZoneMessage(); /* VITESSE */
+//	GestionEnv_effacerPanier(); /* VITESSE */
+//	GestionEnv_viderZoneMessage(); /* VITESSE */
 
 	_Balle_foreach(Balle_supprimer);
 	 g_ptr_array_free(balles, 0);
