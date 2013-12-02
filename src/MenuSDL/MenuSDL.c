@@ -23,9 +23,7 @@ Solution* Solution_creer(char* mot, int score){
 }
 
 void Solution_supprimer(Solution* motTrouve){
-printf("z\n");
 	free(motTrouve->mot);
-printf("z\n");
 	free(motTrouve);
 }
 
@@ -45,8 +43,8 @@ SDL_Surface* MenuSDL_creer(SDL_Surface* ecran, char* lettres, Solution** motsTro
 	SDL_FillRect(menu, &zoneSolutions, 0x74D0F1);
 
 	// Affiche les lettres
-	char* message = calloc(strlen(lettres) + strlen("Lettres selectionnees: ") + 1, sizeof(char));
-	sprintf(message, "Lettres selectionnees: %s", lettres);
+	char* message = calloc(strlen(lettres) + strlen("Lettres selectionnees (): ") + 2 + 1, sizeof(char));
+	sprintf(message, "Lettres selectionnees (%d): %s", strlen(lettres), lettres);
 	_afficherMessage(menu, message, CENTRER, 20, NULL);		
 	free(message);	
 

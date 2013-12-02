@@ -32,7 +32,7 @@
  * à chaque appel à la fonction GestionEnv_evoluer
  *
  */ 
-const cpFloat uniteTemps = 1.0/60.0; 
+const cpFloat uniteTemps = 1.0/30.0; 
 
 /**
  * Fonction générique pour appliquer plus facilement

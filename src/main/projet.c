@@ -111,10 +111,13 @@ int main(void){
 	// Mot trouvés par les 3 versions
 	Solution* motsTrouves[3] = { NULL };
 
+	// Score maximum
+	char* scoreMax = NULL;
+
 	unsigned int rejouer = 1;
 	while(rejouer){
 
-		GestionEnv_creerBalles(55);
+		GestionEnv_creerBalles(NB_BALLES);
 
 		// Attend que l'utilisateur appuis sur espace
 		GestionEnv_viderZoneMessage();
@@ -132,6 +135,7 @@ int main(void){
 
 		// Fait évoluer le système tant que toutes les boules sont en mouvement
 		do {	
+			SDL_FillRect(ecran, NULL, 0xFFFFFF);
 			GestionEnv_evoluer();
 		}
 		while(!GestionEnv_ballesImmobiles());
@@ -197,6 +201,17 @@ int main(void){
 			// Définition des couples mot-score
 			for(int i = 0; i < nbMotsTrouves; i++){
 				motsTrouves[i] = Solution_creer(majuscules(motsVersions[i]), strlen(motsVersions[i]));
+/*
+				if(scoreMax == NULL){
+					scoreMax = calloc(strlen(motsTrouves[i]) + 1, sizeof(char));	
+					strcpy(scoreMax, motsTrouves[i]);				
+				}
+				else if(strlen(motsTrouves[i]) > strlen(scoreMax)){
+					free(scoreMax);
+					scoreMax = calloc(strlen(motsTrouves[i]) + 1, sizeof(char));	
+					strcpy(scoreMax, motsTrouves[i]);					
+				}
+*/
 			}
 	
 			SDL_Surface* menu = MenuSDL_creer(ecran, lettres, motsTrouves, nbMotsTrouves);
@@ -213,13 +228,14 @@ int main(void){
 		}
 		else {
 			GestionEnv_viderZoneMessage();
-			sprintf(message, "Aucun mot trouve avec %s", lettres);
+			sprintf(message, "Aucun mot trouve pour: %s", lettres);
 			GestionEnv_afficherMessage(message, ALIGN_CENTRE, 20, 20);			
 		}
 
 		// Supprime les balles sélectionneés
 		GestionEnv_effacerPanier();
-		do {		
+		do {	
+			GestionEnv_effacerPanier();
 			GestionEnv_evoluer();
 		}
 		while(!GestionEnv_ballesImmobiles());	
@@ -241,6 +257,7 @@ int main(void){
 
 	// Libération du dictionnaire
 	g_hash_table_destroy(dicoV1);	
+//	supp(dicoV3);
 	g_hash_table_destroy(dicoV3); /* A VOIR */
 	
 	// Libération du panier

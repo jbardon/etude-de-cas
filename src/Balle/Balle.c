@@ -105,7 +105,7 @@ Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect dir
 void Balle_supprimer(Balle* balle){
 
 	// Supprime la balle graphiquement
-	Balle_effacer(balle); 	
+//	Balle_effacer(balle); 	 /* VITESSE */
 	SDL_FreeSurface(balle->canvas);
 	SDL_Flip(balle->ecranJeu);
 
@@ -294,7 +294,7 @@ static void _Balle_dessiner_lettre(Balle* balle, Uint32 couleur){
 void Balle_deplacer(Balle* balle){
 
 	// Efface l'ancienne balle
-	Balle_effacer(balle);
+//	Balle_effacer(balle); /* VITESSE */
 
 	// Récupère les nouvelles coordonées de la balle
 	const cpVect pos = Balle_donneCoordonnees(balle);

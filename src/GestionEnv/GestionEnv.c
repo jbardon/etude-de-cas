@@ -15,6 +15,7 @@
 //-------------------------------------------------------------------------------------------------------------
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
+static void _afficherProgression();
 static void _dessinerPanier();
 
 static void _Balle_foreach(Balle_Fonction fonction);
@@ -118,6 +119,16 @@ static int nbBallesCrees = 0;
  */ 
 static int timerLancement = 0;
 
+/**
+ * @var int ajouterBalles
+ * @brief Spécifie si l'on peut ajouter des balles
+ * Important dans le cas ou l'on laisse évoluer le système
+ * Une fois les lettres sélectionnées et supprimées
+ *
+ * @see GestionEnv_creerBalles
+ */ 
+static int ajouterBalles = 0;
+
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation de l'environnement
 //-------------------------------------------------------------------------------------------------------------
@@ -207,22 +218,36 @@ void GestionEnv_quitSDL(){
  */
 void GestionEnv_evoluer(){
 
-	// Fait évoluer les balles, applique le déplacement et maj de l'affichage
-	cpSpaceStep(espace, uniteTemps);
-//	GestionEnv_effacerPanier();	
-	_Balle_foreach(Balle_deplacer); 
-	_dessinerPanier(); 
-	SDL_Flip(ecran);
-
 	// Créé une balle à chaque intervalle de temps, max = nombre de balles donnée dans GestionEnv_creerBalles
-	if(nbBallesCrees < nbBallesTotal && timerLancement >= DELAI_APPARITION){
+	if(ajouterBalles && timerLancement >= DELAI_APPARITION){
 		_creerUneBalle();
 		timerLancement = 0;	
 	}
 
+	// Met à jour l'affichage du panneau de la fenêtre
+	char* message = calloc(strlen("Projet etude de cas - Balles 100") + 1, sizeof(char));
+	sprintf(message, "Projet etude de cas - Balles %d", nbBallesCrees);
+	SDL_WM_SetCaption(message, NULL);
+	free(message);
+
+	// Fait évoluer les balles, applique le déplacement et maj de l'affichage
+	cpSpaceStep(espace, uniteTemps);
+
+	_Balle_foreach(Balle_deplacer); 
+	_dessinerPanier(); 
+	_afficherProgression();
+
+	SDL_Flip(ecran);
+
 	// Gestion du temps
 	temps += uniteTemps;
 	timerLancement += 1;
+}
+
+static void _afficherProgression(){	
+	float longueur = ((float)nbBallesCrees/(float)nbBallesTotal) * LARGUEUR_ECRAN;
+	boxColor(ecran, 0, HAUTEUR_ECRAN - 5, LARGUEUR_ECRAN, HAUTEUR_ECRAN, COULEUR_FOND);
+	boxColor(ecran, 0, HAUTEUR_ECRAN - 5, ceil(longueur), HAUTEUR_ECRAN, 0xFF4040DD);
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -242,10 +267,6 @@ void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
 	int x = OFFSET + 2;
 	int y = OFFSET;
 
-cpBodySetMoment(espace->staticBody, INFINITY);
-cpBodySetMass(espace->staticBody, INFINITY);
-cpBodySetForce(espace->staticBody, cpv(1,1));
-
 	// Création du sol qui est un élément statique
 	panier[0] = cpSegmentShapeNew(espace->staticBody, cpv(0,y), cpv(LARGUEUR_ECRAN,y), 0);
 	cpShapeSetFriction(panier[0], FRICTION);
@@ -253,14 +274,14 @@ cpBodySetForce(espace->staticBody, cpv(1,1));
 	cpSpaceAddShape(espace, panier[0]);
 
 	// Création du mur gauche
-	panier[1] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
+	panier[1] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
 	cpShapeSetFriction(panier[1], FRICTION);
 	cpShapeSetElasticity(panier[1], REBOND);
 	cpSpaceAddShape(espace, panier[1]);
 
 	// Création du mur droit
 	x = LARGUEUR_ECRAN - OFFSET - 2;
-	panier[2] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN), 0);
+	panier[2] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
 	cpShapeSetFriction(panier[2], FRICTION);
 	cpShapeSetElasticity(panier[2], REBOND);
 	cpSpaceAddShape(espace, panier[2]);
@@ -323,9 +344,6 @@ void GestionEnv_effacerPanier(){
  * ayant aucun retour et pour seul paramètre une balle
  */
 static void _Balle_foreach(Balle_Fonction fonction){
-	/*for(unsigned int i = 0; i < nbBallesCrees; i++){
-		fonction(g_ptr_array_index(balles, i));
-	}*/
 	g_ptr_array_foreach(balles, (GFunc)fonction, NULL);
 }
 
@@ -349,7 +367,7 @@ static void _creerUneBalle(){
 	if(nbBallesCrees < nbBallesTotal){
 
 		// Caractéritiques aléatoires pour les balles
-		const int rayon = _randMinMax(28,36);
+		const int rayon = _randMinMax(BALLE_RAYON_MIN, BALLE_RAYON_MAX);
 		const cpVect centre = _randPosition(rayon);
 		const cpVect direction = _randDirection();
 		const Uint32 couleur = _randCouleur();
@@ -359,6 +377,9 @@ static void _creerUneBalle(){
 		//balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
 		g_ptr_array_add(balles, Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre));
 		nbBallesCrees++;
+	}
+	else {
+		ajouterBalles = 0;
 	}			
 }
 
@@ -376,6 +397,7 @@ static void _creerUneBalle(){
 void GestionEnv_creerBalles(int nbBalles){
 
 	balles = g_ptr_array_sized_new(nbBalles);
+	ajouterBalles = 1;
 
 	if(balles){
 		nbBallesTotal = nbBalles;	
@@ -390,6 +412,10 @@ void GestionEnv_creerBalles(int nbBalles){
  * présentent dans l'environnement
  */
 void GestionEnv_supprimerBalles(){
+
+	GestionEnv_effacerPanier(); /* VITESSE */
+	GestionEnv_viderZoneMessage(); /* VITESSE */
+
 	_Balle_foreach(Balle_supprimer);
 	 g_ptr_array_free(balles, 0);
 }
@@ -445,9 +471,9 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 	// Cherche les balles touchées
 	// 80 = diamètre max d'une balle (voir _creerUneBalle)
-	const unsigned int nbBallesMaxDiag = ceil(sqrt(pow((HAUTEUR_ECRAN-4*OFFSET),2) + 
-										      pow((LARGUEUR_ECRAN-2*OFFSET),2))/80) + 1;
-
+	const unsigned int nbBallesMaxDiag = ceil(sqrt(pow(HAUTEUR_ECRAN,2) + 
+										      pow(LARGUEUR_ECRAN,2))/(2*BALLE_RAYON_MAX)) * 2;
+/* DEBUG 	printf("max: %d\n", nbBallesMaxDiag); */
 	unsigned int nbBallesTouches = 0;	
 	Balle** ballesTouches = calloc(nbBallesMaxDiag, sizeof(Balle*));	
 
@@ -467,6 +493,7 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 			nbBallesTouches++;
 		}
 	}
+/* DEBUG 	printf("touches: %d\n", nbBallesTouches); */
 
 	// Met les balles dans l'ordre suivant le tracé de la ligne
 	// pour avoir les caractères dans le bon ordre (pour version 1 & 2 de l'algo de recherche)
@@ -482,6 +509,7 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	}
 
 	// Supprime les balles touchées du tableau global
+	nbBallesCrees -= nbBallesTouches;
 	for(unsigned int i = 0; i < nbBallesTouches; i++){
 		g_ptr_array_remove(balles, ballesTouches[i]);
 		Balle_supprimer(ballesTouches[i]);	
