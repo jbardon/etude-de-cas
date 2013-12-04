@@ -96,6 +96,9 @@ char* version1(GHashTable* table, char* chaine)
                     }
                 }
             }
+			if(chaine_retourV1 != substring){
+				free(substring);
+			}
         }
     }
     return chaine_retourV1;
@@ -129,7 +132,7 @@ char* version2_2(GHashTable* table, char* active, char* rest)
                 if(strlen(active) > strlen(chaine_retourV2)) //si la taille est plus grande que celui trouver avant
                 {
                     chaine_retourV2=active; //la chaine de retour est cette nouvelle chaine
-                    }
+                }
             }
         }
         return chaine_retourV2;
@@ -142,8 +145,12 @@ char* version2_2(GHashTable* table, char* active, char* rest)
  
         char tab[2] = {rest[0],'\0'};
         strcat(hash, tab); //on insère le premier élément et \0 à la fin de hash
-            version2_2(table,hash,sub1); //récursivité
-            return version2_2(table,active,sub1); //récursivité
+		version2_2(table,hash,sub1); //récursivité
+        version2_2(table,active,sub1);
+		
+		free(sub1);
+		free(hash);
+		return chaine_retourV2; //récursivité
     }
 }
 
@@ -198,22 +205,20 @@ void insert(GHashTable* table, char* data, char* key)
 }
 
 
-void supp(GHashTable* table)
+void supprimerDicoV3(GHashTable* table)
 {
 	GHashTableIter iter;
-	GSList *value;
+	GSList *list;
 	char* key;
 
 	g_hash_table_iter_init(&iter, table); //iterator pour afficher le hashtable
-	while(g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&value))
+	while(g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&list))
 	{
-		printf("i\n");
-		for (GSList* iterator = value; iterator; iterator = iterator->next) 
-		{
-			printf("%p\n", value->data);
-		}
+		g_slist_free_full(list,(GDestroyNotify)free); 
+		free(key);
 	}
 
+	g_hash_table_destroy(table);
 }
 
 
@@ -283,9 +288,12 @@ char* version3_2(GHashTable* table, char* active, char* rest)
 
 		char tab[2] = {rest[0],'\0'};
 		strcat(hash, tab); //on insère le premier élément et \0 à la fin de hash
-
-	    	version3_2(table,hash,sub1); //récursivité
-	    	return version3_2(table,active,sub1); //récursivité
+	    version3_2(table,hash,sub1); //récursivité
+		version3_2(table,active,sub1); //récursivité
+		free(sub1);
+		free(hash);
+		
+		return chaine_retourV3;
 	}
 }
 
@@ -310,6 +318,8 @@ char* RechercheAnagramme(char *chaine, GHashTable* table)
 	// Recherche une clé dans la table et renvoie un pointeur sur la donnée (une liste ici)
 	char* hash=hashage(chaine);
 	void* trouve = g_hash_table_lookup(table, hash);
+	free(hash);
+
 	if(trouve) //s'il y a des anagrammes
 	{
 		GSList* anag = (GSList*)trouve; //liste contenant les anagrammes

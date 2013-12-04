@@ -71,8 +71,7 @@ int main()
 
 	//***************************************** Destruction des dictionnaires *****************************************//
 	g_hash_table_destroy(dicoV1_V2);
-	supp(dicoV3);
-	g_hash_table_destroy(dicoV3);
+	supprimerDicoV3(dicoV3);
 
 	return EXIT_SUCCESS;
 }

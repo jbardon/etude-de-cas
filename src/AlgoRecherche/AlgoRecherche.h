@@ -14,5 +14,5 @@ extern char* version1(GHashTable* table, char* chaine);
 extern char* version2(GHashTable* table, char* chaine);
 extern char* version3(GHashTable* table, char* chaine);
 
-void supp(GHashTable* table);
+void supprimerDicoV3(GHashTable* table);
 extern char* RechercheAnagramme(char *chaine, GHashTable* table); //recherche l'anagramme d'un mot

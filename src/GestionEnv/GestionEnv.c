@@ -223,13 +223,13 @@ void GestionEnv_evoluer(){
 		_creerUneBalle();
 		timerLancement = 0;	
 	}
-
+/*
 	// Met à jour l'affichage du panneau de la fenêtre
 	char* message = calloc(strlen("Projet etude de cas - Balles 100") + 1, sizeof(char));
 	sprintf(message, "Projet etude de cas - Balles %d", nbBallesCrees);
 	SDL_WM_SetCaption(message, NULL);
 	free(message);
-
+*/
 	// Fait évoluer les balles, applique le déplacement et maj de l'affichage
 	cpSpaceStep(espace, uniteTemps);
 
@@ -245,9 +245,13 @@ void GestionEnv_evoluer(){
 }
 
 static void _afficherProgression(){	
-	float longueur = ((float)nbBallesCrees/(float)nbBallesTotal) * LARGUEUR_ECRAN;
+
 	boxColor(ecran, 0, HAUTEUR_ECRAN - 5, LARGUEUR_ECRAN, HAUTEUR_ECRAN, COULEUR_FOND);
-	boxColor(ecran, 0, HAUTEUR_ECRAN - 5, ceil(longueur), HAUTEUR_ECRAN, 0xFF4040DD);
+
+	if(ajouterBalles){
+		float longueur = ((float)nbBallesCrees/(float)nbBallesTotal) * LARGUEUR_ECRAN;
+		boxColor(ecran, 0, HAUTEUR_ECRAN - 5, ceil(longueur), HAUTEUR_ECRAN, 0xFF4040DD);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------
