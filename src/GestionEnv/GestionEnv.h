@@ -61,7 +61,7 @@ extern void GestionEnv_supprimerEnvironnement(Environnement* envJeu);
 extern void GestionEnv_rejouer(Environnement* envJeu);
 
 extern void GestionEnv_evoluer(Environnement* envJeu);
-extern int GestionEnv_ballesImmobiles();
+extern int GestionEnv_ballesImmobiles(Environnement* envJeu);
 
 extern char* GestionEnv_donnerCaracteresLigne(Environnement* envJeu, int x1, int y1, int x2, int y2);
 extern void GestionEnv_afficherMessage(Environnement* envJeu, char* message, int x, int y, int taille);

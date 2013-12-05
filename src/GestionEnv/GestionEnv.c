@@ -15,6 +15,7 @@
 //-------------------------------------------------------------------------------------------------------------
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
+
 static cpSpace* _initChipmunk();
 static SDL_Surface* _initSDL();
 
@@ -265,7 +266,12 @@ void GestionEnv_evoluer(Environnement* envJeu){
 
 	// Créé une balle à chaque intervalle de temps, max = nombre de balles donnée dans GestionEnv_creerBalles
 	if(envJeu->ajouterBalles && timerLancement >= DELAI_APPARITION){
-		_creerUneBalle(envJeu);
+		if(envJeu->nbBallesCrees < envJeu->nbBallesTotal){
+			_creerUneBalle(envJeu);
+		}
+		else {
+			envJeu->ajouterBalles = 0;
+		}
 		timerLancement = 0;	
 	}
 /*
@@ -323,14 +329,18 @@ static void _creerPanier(Environnement* envJeu){
 	cpSpaceAddShape(envJeu->espace, envJeu->panier[0]);
 
 	// Création du mur gauche
-	envJeu->panier[1] = cpSegmentShapeNew(envJeu->espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
+	envJeu->panier[1] = cpSegmentShapeNew(envJeu->espace->staticBody, cpv(x,0), 
+											cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
+
 	cpShapeSetFriction(envJeu->panier[1], FRICTION);
 	cpShapeSetElasticity(envJeu->panier[1], REBOND);
 	cpSpaceAddShape(envJeu->espace, envJeu->panier[1]);
 
 	// Création du mur droit
 	x = LARGUEUR_ECRAN - OFFSET - 2;
-	envJeu->panier[2] = cpSegmentShapeNew(envJeu->espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
+	envJeu->panier[2] = cpSegmentShapeNew(envJeu->espace->staticBody, cpv(x,0), 
+											cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
+
 	cpShapeSetFriction(envJeu->panier[2], FRICTION);
 	cpShapeSetElasticity(envJeu->panier[2], REBOND);
 	cpSpaceAddShape(envJeu->espace, envJeu->panier[2]);
@@ -413,23 +423,17 @@ static void _Balle_foreach(GPtrArray* balles, Balle_Fonction fonction){
  */
 static void _creerUneBalle(Environnement* envJeu){
 
-	if(envJeu->nbBallesCrees < envJeu->nbBallesTotal){
+	// Caractéritiques aléatoires pour les balles
+	const int rayon = Aleatoire_MinMax(BALLE_RAYON_MIN, BALLE_RAYON_MAX);
+	const cpVect centre = Aleatoire_Position(rayon);
+	const cpVect direction = Aleatoire_Direction();
+	const Uint32 couleur = Aleatoire_Couleur();
+	const char lettre = Aleatoire_Lettre();
 
-		// Caractéritiques aléatoires pour les balles
-		const int rayon = Aleatoire_MinMax(BALLE_RAYON_MIN, BALLE_RAYON_MAX);
-		const cpVect centre = Aleatoire_Position(rayon);
-		const cpVect direction = Aleatoire_Direction();
-		const Uint32 couleur = Aleatoire_Couleur();
-		const char lettre = Aleatoire_Lettre();
-
-		// Création de la balle
-		//balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
-		g_ptr_array_add(envJeu->balles, Balle_creer(envJeu->ecran, envJeu->espace, centre, direction, rayon, couleur, lettre));
-		envJeu->nbBallesCrees++;
-	}
-	else {
-		envJeu->ajouterBalles = 0;
-	}			
+	// Création de la balle
+	//balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
+	g_ptr_array_add(envJeu->balles, Balle_creer(envJeu->ecran, envJeu->espace, centre, direction, rayon, couleur, lettre));
+	envJeu->nbBallesCrees++;		
 }
 
 /**
