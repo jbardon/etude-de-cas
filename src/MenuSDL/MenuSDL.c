@@ -43,8 +43,8 @@ SDL_Surface* MenuSDL_creer(SDL_Surface* ecran, char* lettres, Solution** motsTro
 	SDL_FillRect(menu, &zoneSolutions, 0x74D0F1);
 
 	// Affiche les lettres
-	char* message = calloc(strlen(lettres) + strlen("Lettres selectionnees:  - ") + 2 + 1, sizeof(char));
-	sprintf(message, "Lettres selectionnees: %s - %d", lettres, strlen(lettres));
+	char* message = calloc(strlen(lettres) + strlen("Lettres selectionnees:  \\") + 2 + 1, sizeof(char));
+	sprintf(message, "Lettres selectionnees: %s \\%d", lettres, strlen(lettres));
 	_afficherMessage(menu, message, CENTRER, 20, NULL);		
 	free(message);	
 

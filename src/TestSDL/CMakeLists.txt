@@ -12,7 +12,7 @@ add_executable(testRotationTranslation testRotationTranslation.c)
 target_link_libraries(testRotationTranslation SDLmain SDL SDL_gfx)
 
 add_executable(testCaractere testCaractere.c)
-target_link_libraries(testCaractere SDLmain SDL SDL_gfx SDL_image SDL_ttf)
+target_link_libraries(testCaractere SDLmain SDL SDL_gfx SDL_ttf)
 
 add_executable(testClic testClic.c)
 target_link_libraries(testClic SDLmain SDL)

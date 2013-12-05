@@ -21,13 +21,6 @@ static void _dessinerPanier();
 static void _Balle_foreach(Balle_Fonction fonction);
 static void _creerUneBalle();
 
-static unsigned int _randMinMax(int min, int max);
-static Uint32 _randCouleur();
-static cpVect _randDirection();
-static char __randLettre(int nbRecursions);
-static char _randLettre();
-static cpVect _randPosition(int rayon);
-
 //-------------------------------------------------------------------------------------------------------------
 //										Variables liées à l'environnement
 //-------------------------------------------------------------------------------------------------------------
@@ -143,7 +136,6 @@ static int ajouterBalles = 0;
  */
 cpSpace* GestionEnv_initChipmunk(){
 
-	srand(time(NULL));	/* A VOIR */
 	espace = cpSpaceNew();
 
 	if(espace){
@@ -164,14 +156,14 @@ cpSpace* GestionEnv_initChipmunk(){
  * @return La fenêtre SDL
  */
 SDL_Surface* GestionEnv_initSDL(){
-
+	Aleatoire_init();
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
 	ecran = SDL_SetVideoMode(LARGUEUR_ECRAN, HAUTEUR_ECRAN, SCREEN_BPP, SDL_HWSURFACE);
 
 	if(ecran){
 		SDL_FillRect(ecran, NULL, COULEUR_FOND);
-		SDL_WM_SetCaption("Projet etude de cas", NULL);
+		SDL_WM_SetCaption("Petanque 2000", NULL);
 	}
 
 	return ecran;	
@@ -371,11 +363,11 @@ static void _creerUneBalle(){
 	if(nbBallesCrees < nbBallesTotal){
 
 		// Caractéritiques aléatoires pour les balles
-		const int rayon = _randMinMax(BALLE_RAYON_MIN, BALLE_RAYON_MAX);
-		const cpVect centre = _randPosition(rayon);
-		const cpVect direction = _randDirection();
-		const Uint32 couleur = _randCouleur();
-		const char lettre = _randLettre();
+		const int rayon = Aleatoire_MinMax(BALLE_RAYON_MIN, BALLE_RAYON_MAX);
+		const cpVect centre = Aleatoire_Position(rayon);
+		const cpVect direction = Aleatoire_Direction();
+		const Uint32 couleur = Aleatoire_Couleur();
+		const char lettre = Aleatoire_Lettre();
 
 		// Création de la balle
 		//balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
@@ -559,199 +551,6 @@ void GestionEnv_viderZoneMessage(){
 	nbMessages = 0;
 	boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, COULEUR_FOND);
 	SDL_Flip(ecran);
-}
-
-//-------------------------------------------------------------------------------------------------------------
-//											Gestion de l'aléatoire
-//-------------------------------------------------------------------------------------------------------------
-
-/**
- * @fn static unsigned int _randMinMax(int min, int max)
- * @brief Fonction qui retourne un nombre aléatoire 
- * compris entre un minimum et un maximum
- *
- * @param min Valeur minimale de la valeur à renvoyer
- * @param max Valeur maximale de la valeur à renvoyer
- *
- * @return Valeur aléatoire comprise entre min et max
- */
-static unsigned int _randMinMax(int min, int max){
-	return (rand() % (max - min + 1)) + min;
-}
-
-/**
- * @fn static cpVect _randDirection()
- * @brief Fonction qui retourne une direction aléatoire
- * comprise entre (0,-80) et (0,80)
- *
- * @return Direction aléatoire sous forme de vecteur
- */
-static cpVect _randDirection(){
-	int x = _randMinMax(0,80);
-	int dirGauche = _randMinMax(0,1);
-
-	if(dirGauche){
-		return cpv(-x,0);
-	}
-	else {
-		return cpv(x,0);
-	}
-}
-
-
-/**
- * @var static Uint32 couleurs []
- * @brief Tableau de couleurs codées en RRGGBBAA
- *
- * Utilisé par @see _randCouleur
- * voir http://fr.wikipedia.org/wiki/Liste_de_couleurs
- * pour plus de couleurs
- */ 
-static Uint32 couleurs [] = { 
-							   0xE67E30FF, /* Abricot */
-							   0x74C0F1FF, /* Azur clair */
-							   0xFFE436FF, /* Jaune Impérial */
-							   0xD2CAECFF, /* Gris de lin */
-							   0xC60800FF, /* Coquelicot */
-							   0x26619CFF, /* Lapis-lazulli */
-							   0x3A9D23FF  /* Vert gazon */
-						    };
-
-/**
- * @fn static Uint32 _randCouleur()
- * @brief Fonction qui retourne couleur aléatoire
- * prise dans le tableau couleurs
- *
- * @see couleurs
- *
- * @return Couleur aléatoire sous la forme RRGGBBAA
- */
-static Uint32 _randCouleur(){
-	return couleurs[_randMinMax(0,6)];
-}
-
-/**
- * @var static const int lettres []
- * @brief Tableau de probabilités d'apparition
- * d'un caractère le dictionnaire
- *
- * L'indice correspond à la position de la lettre 
- * dans l'alphabet. Les probabilités sont ajoutés.
- *
- */
-#define TAILLE_TAB_LETTRES 26
-#define RATIO_VOYELLES 43.41
-
-static const float lettres [] = {
-									 9.78,
-									11.16,
-									14.53,
-									16.87,
-									31.56,
-									32.89,
-									34.47,
-									35.62,
-									45.13,
-									45.31,
-									45.36,
-									49.35,
-									51.88,
-									59.32,
-									65.18,
-									67.51,
-									68.01,
-									76.69,
-									86.92,
-									93.80,
-									97.36,
-									98.31,
-									98.32,
-									98.57,
-									98.91,
-								   100.00,
-							    };
-
-/**
- * @fn static char _randLettre()
- * @brief Fonction qui retourne une lettre majuscule
- * de l'alphabet aléatoirement en suivant les probabilités
- * d'apparition listés dans le tableau lettres
- *
- * @see lettres
- *
- * @return Couleur aléatoire sous la forme RRGGBBAA
- */
-static char _randLettre(){
-	return __randLettre(0);
-}
-
-static char __randLettre(int nbRecursions){
-	
-	/**
-	 * Nombre total de lettres générées
-	 */
-	static unsigned int lettresTotal = 0;
-
-	/**
-	 * Nombre de fois que chaque lettre de l'alphabet
-     * a été générée
-	 *
-	 * nb_Lettres permet d'accéder aux statistique comme suit :
-	 *   	nbLettre['A'] => nbLettre['Z']
-	 */
-	static unsigned int _lettresGeneres[26] = {0};
-	static unsigned int* lettresGeneres = _lettresGeneres - 65;
-
-	// Génération d'un nombre réél aléatoire entre 0 et 100
-	const float proba = (rand()%10000)/100.0;
-
-	// Cherche la lettre à renvoyer en fonction 
-    // du nombre généré
-	char lettre = 0;
-
-	unsigned int i = 0, l = 0;
-	while(lettre == 0 && i < TAILLE_TAB_LETTRES){	
-		l = 65 + i;
-		if(proba <= lettres[i++]){
-			lettre = (char)l;	
-			lettresGeneres[l]++;
-		}
-	}	
-
-	// La proportion de la lettre trouvée par rapport aux nombre
-	// de lettres générés est trop grande
-	// Ou si le ratio voyelles/consonnes n'est pas correct (à 10% près)
-    // ==> il faut générer un nouveau caractère
-	float ratioVoyelles = (lettresGeneres['A'] + lettresGeneres['E'] 
-							+ lettresGeneres['I'] +lettresGeneres['O'] + lettresGeneres['U']) / (float)lettresTotal;
-
-	if(nbRecursions < 5 && lettresTotal > 10 && lettresGeneres[l] > 2){
-		if(((lettresGeneres[l]/lettresTotal) > lettres[l]) 
-	   		|| ratioVoyelles < RATIO_VOYELLES)
-		{
-			lettresGeneres[l]--;
-			return __randLettre(++nbRecursions);	
-		}
-	}
-	lettresTotal++;
-
-	return lettre;
-}
-
-static cpVect _randPosition(int rayon){
-
-	static char p = 1;	
-	p ^= 0x01;
-
-	const unsigned int max = LARGUEUR_ECRAN - 2*OFFSET - rayon;
-
-	if(p){ // 1 fois sur 2 dans la partie gauche du panier
-		return cpv(_randMinMax(OFFSET + rayon, max/2), -rayon);
-	}
-	else { // partie droite du panier
-		return cpv(_randMinMax(max/2, max), -rayon);
-	}
-
 }
 
 //-------------------------------------------------------------------------------------------------------------

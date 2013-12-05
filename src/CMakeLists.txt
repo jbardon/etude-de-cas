@@ -36,37 +36,49 @@ enable_testing()
 
 include_directories(
 	"/usr/include/chipmunk"
-	"/usr/local/include/chipmunk" #chipmunk en local
+	"/usr/local/include/chipmunk" # chipmunk en local
 	"/usr/include/SDL"
+
 	"/usr/include/glib-2.0/"
-	"/usr/lib/i386-linux-gnu/glib-2.0/include/" #glibconfig.h (OS 32 bits)
-	"/usr/lib/x86_64-linux-gnu/glib-2.0/include/" #glibconfig.h (OS 64 bits)
+	"/usr/lib/i386-linux-gnu/glib-2.0/include/" # glibconfig.h (OS 32 bits)
+	"/usr/lib/x86_64-linux-gnu/glib-2.0/include/" # glibconfig.h (OS 64 bits)
+
+	"${CMAKE_CURRENT_SOURCE_DIR}/AlgoRecherche"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Aleatoire"
 	"${CMAKE_CURRENT_SOURCE_DIR}/Balle"
 	"${CMAKE_CURRENT_SOURCE_DIR}/GestionEnv"
+	"${CMAKE_CURRENT_SOURCE_DIR}/MenuSDL"
+
 	"${CMAKE_CURRENT_SOURCE_DIR}/main"
+
 	"${CMAKE_CURRENT_SOURCE_DIR}/TestSDL"
 	"${CMAKE_CURRENT_SOURCE_DIR}/TestChipmunk"
-	"${CMAKE_CURRENT_SOURCE_DIR}/AlgoRecherche"
-	"${CMAKE_CURRENT_SOURCE_DIR}/MenuSDL"
 )
 
 link_directories(
 	"/usr/lib/i386-linux-gnu/" # OS 32 bits
 	"/usr/lib/x86_64-linux-gnu/" # OS 64 bits
+
+	"${CMAKE_CURRENT_BINARY_DIR}/AlgoRecherche"
+	"${CMAKE_CURRENT_BINARY_DIR}/Aleatoire"
 	"${CMAKE_CURRENT_BINARY_DIR}/Balle"
 	"${CMAKE_CURRENT_BINARY_DIR}/GestionEnv"
+	"${CMAKE_CURRENT_BINARY_DIR}/MenuSDL"
+
 	"${CMAKE_CURRENT_BINARY_DIR}/main"
+
 	"${CMAKE_CURRENT_BINARY_DIR}/TestSDL"	
 	"${CMAKE_CURRENT_BINARY_DIR}/TestChipmunk"
-	"${CMAKE_CURRENT_BINARY_DIR}/AlgoRecherche"
-	"${CMAKE_CURRENT_BINARY_DIR}/MenuSDL"
 )
 
 add_subdirectory(AlgoRecherche)
+add_subdirectory(Aleatoire)
 add_subdirectory(Balle)
 add_subdirectory(GestionEnv)
 add_subdirectory(MenuSDL)
+
 add_subdirectory(main)
+
 add_subdirectory(TestChipmunk)
 add_subdirectory(TestSDL)
 

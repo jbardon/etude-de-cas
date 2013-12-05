@@ -4,6 +4,6 @@ configure_file(arial.ttf arial.ttf COPYONLY)
 configure_file(dicofinal.txt dicofinal.txt COPYONLY)
 
 add_executable(projet projet.c)
-target_link_libraries(projet GestionEnv Balle AlgoRecherche MenuSDL SDLmain SDL chipmunk SDL_gfx SDL_image SDL_ttf glib-2.0)
+target_link_libraries(projet GestionEnv Aleatoire Balle AlgoRecherche MenuSDL SDLmain SDL chipmunk SDL_gfx SDL_ttf glib-2.0)
 
 add_test(fichier ./fichier)

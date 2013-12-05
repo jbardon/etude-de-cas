@@ -13,13 +13,13 @@
 #ifndef __GESTION_ENV_H__
 #define __GESTION_ENV_H__
 
-#include <time.h>
-
 #include <chipmunk.h>
 #include <SDL_gfxPrimitives.h>
-#include <config.h>
-#include <Balle.h>
 #include <glib.h>
+
+#include <config.h>
+#include <Aleatoire.h>
+#include <Balle.h>
 
 /* Pour la fonction GestionEnv_afficherMessage (paramètre x) */
 #define ALIGN_CENTRE -1

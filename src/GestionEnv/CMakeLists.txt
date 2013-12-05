@@ -12,22 +12,18 @@ set_target_properties(
 )
 
 add_executable(testPanier testPanier.c)
-target_link_libraries(testPanier GestionEnv Balle SDL SDLmain SDL_gfx SDL_image SDL_ttf chipmunk glib-2.0)
+target_link_libraries(testPanier GestionEnv Aleatoire Balle SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
 
 add_executable(testBalles testBalles.c)
-target_link_libraries(testBalles GestionEnv Balle SDL SDLmain SDL_gfx SDL_image SDL_ttf chipmunk glib-2.0)
+target_link_libraries(testBalles GestionEnv Aleatoire Balle SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
 
 add_executable(testLigne testLigne.c)
-target_link_libraries(testLigne GestionEnv Balle AlgoRecherche SDL SDLmain SDL_gfx SDL_image SDL_ttf chipmunk glib-2.0)
+target_link_libraries(testLigne GestionEnv Aleatoire Balle AlgoRecherche SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
 
 add_executable(testCompareBalle testCompareBalle.c)
-target_link_libraries(testCompareBalle GestionEnv Balle SDL SDLmain SDL_gfx SDL_image SDL_ttf chipmunk glib-2.0)
-
-add_executable(testRandLettres testRandLettres.c)
-target_link_libraries(testRandLettres GestionEnv Balle SDL SDLmain SDL_gfx SDL_image SDL_ttf chipmunk glib-2.0)
+target_link_libraries(testCompareBalle GestionEnv Aleatoire Balle SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
 
 add_test(testPanier ./testPanier)
 add_test(testBalles ./testBalles)
 add_test(testLigne ./testLigne)
 add_test(testCompareBalle ./testCompareBalle)
-add_test(testRandLettres ./testRandLettres)

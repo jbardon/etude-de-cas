@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <sys/time.h>
+
 #include <GestionEnv.h>
 #include <AlgoRecherche.h>
 #include <MenuSDL.h>
@@ -29,6 +31,10 @@ int main(void){
 
 	// Score maximum
 	char* scoreMax = NULL;
+
+	// Mesure du temps d'execution des algos
+	struct timeval debut, fin; 
+	double duree = 0;
 
 	unsigned int rejouer = 1;
 	while(rejouer){
@@ -72,6 +78,7 @@ int main(void){
 		// Récupère les caractères des balles sélectionnées par l'utilisateur
 		char* lettres = GestionEnv_donnerCaracteresLigne(coordonneesLigne[0].x, coordonneesLigne[0].y, 
 														 coordonneesLigne[1].x, coordonneesLigne[1].y);
+		printf("Lettres selectionnes: %s\n", lettres);
 
 		// Cherche un mot dans le dictionnaire
 		lettres = minuscules(lettres);
@@ -79,20 +86,33 @@ int main(void){
 		int nbMotsTrouves = 0;
 		char* motsVersions [3] = { NULL };
 
+		gettimeofday(&debut, NULL);
 		motsVersions[nbMotsTrouves] = version1(dicoV1, lettres);
+		gettimeofday(&fin, NULL);
 		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
 			nbMotsTrouves++;
 		}
+		//printf("%f %f\n", debut.tv_usec, fin.tv_usec);
+		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
+		printf("Algo 1: %2.4fs\n", duree);
 
+		gettimeofday(&debut, NULL);
 		motsVersions[nbMotsTrouves] = version2(dicoV1, lettres);
+		gettimeofday(&fin, NULL);
 		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
 			nbMotsTrouves++;
 		}
+		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
+		printf("Algo 2: %2.4fs\n", duree);
 
+		gettimeofday(&debut, NULL);
 		motsVersions[nbMotsTrouves] = version3(dicoV3, lettres);
+		gettimeofday(&fin, NULL);
 		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
 			nbMotsTrouves++;
 		}
+		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
+		printf("Algo 3: %2.4fs\n", duree);
 
 		lettres = majuscules(lettres);
 		
@@ -132,7 +152,7 @@ int main(void){
 		}
 
 		// Affiche le score max
-		sprintf(message, "Projet etude de cas - Meilleur score: %d avec %s", strlen(scoreMax), scoreMax);
+		sprintf(message, "Petanque 2000 - Meilleur score: %d avec %s", strlen(scoreMax), scoreMax);
 		SDL_WM_SetCaption(message, NULL);
 
 		// Supprime les résultats
