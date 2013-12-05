@@ -548,6 +548,9 @@ void GestionEnv_afficherMessage(char* message, int x, int y, int taille){
 	SDL_Rect position = {x, y};
 
 	SDL_BlitSurface(texte, NULL, ecran, &position);
+	SDL_FreeSurface(texte);
+	TTF_CloseFont(police);	
+
 	SDL_Flip(ecran);
 
 }

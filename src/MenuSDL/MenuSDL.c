@@ -114,6 +114,7 @@ static void _afficherMessage(SDL_Surface* ecran, char* message, int x, int y, TT
 	SDL_Rect position = {x, y};
 
 	SDL_BlitSurface(texte, NULL, ecran, &position);
+	SDL_FreeSurface(texte);
 
 	SDL_Flip(ecran);
 }

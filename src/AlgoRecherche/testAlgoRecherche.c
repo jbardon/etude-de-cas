@@ -16,7 +16,7 @@ int main()
 	printf("Resultat attendu, value : %s, points : %d\n",resultatV1, (int)strlen(resultatV1));
 
 	char* ver1 = version1(dicoV1_V2, "zedabaissaidgf");
-	if(ver1)
+	if(strcmp(ver1, resultatV1) == 0)
 	{
 		printf("Chaine la plus longue : %s, vous marquez %d points \n", ver1, (int)strlen(ver1)); 
 		printf("\n ===> TEST VERSION 1 .......... OK \n");
@@ -34,7 +34,7 @@ int main()
 	printf("Resultat attendu, value : %s, points : %d\n",resultatV2, (int)strlen(resultatV2));
 
 	char* ver2 = version2(dicoV1_V2,"zaluqpminiuwwm");
-	if(ver2)
+	if(strcmp(ver2, resultatV2) == 0)
 	{
 		printf("Chaine la plus longue : %s, vous marquez %d points \n", ver2, (int)strlen(ver2)); 
 		printf("\n ===> TEST VERSION 2 .......... OK \n");
@@ -58,7 +58,7 @@ int main()
 	printf("Resultat attendu, value : %s, points : %d\n",resultatV3, (int)strlen(resultatV3));
 
 	char* ver3=version3(dicoV3,"rstlneaiaed");
-	if(ver3)
+	if(strcmp(ver3, resultatV3) == 0)
 	{
 		printf("Chaine la plus longue : %s, vous marquez %d points \n", ver3, (int)strlen(ver3)); 
 		printf("\n ===> TEST VERSION 3 .......... OK \n");

@@ -3,8 +3,10 @@
 /*
 * Variables statiques
 */
-static char* chaine_retourV2 = ""; //chaine de retour de la fonction (variable static du à la récursivité)
-static char* chaine_retourV3 = "";
+
+static char* chaine_retourV2 = NULL; //chaine de retour de la fonction (variable static du à la récursivité)
+static char* chaine_retourV3 = NULL; 
+
 
 /*
 * Fonctions locales
@@ -73,7 +75,7 @@ GHashTable* chargerDicoV1_V2(char* nomFichier){
 */
 char* version1(GHashTable* table, char* chaine)
 {
-    char* chaine_retourV1 = NULL; //variable qui contient le chaine à retourner
+    char* chaine_retourV1 = ""; //variable qui contient le chaine à retourner
     char* substring; //variable qui contiendra chaque sous-chaine
     int taille=0; //contiendra la taille de la plus longue chaine
  
@@ -82,21 +84,24 @@ char* version1(GHashTable* table, char* chaine)
         for(int j=i; j<strlen(chaine); j++) //on parcourt la chaine à partir de i
         {
             substring = _str_sub(chaine,i,j); //on extrait la sous chaine entre i et j
-            const unsigned int h = g_str_hash(substring); //on recupère la valeur de hash de la sous-chaine ...
-            
-            if(g_hash_table_contains(table, &h)) //... on regarde si cette valeur est dans la hashtable
-            {
-                char* ret=g_hash_table_lookup(table, &h);
-                if(strcmp(ret,substring)==0)
-                {
-                    if(strlen(substring) > taille) //si la taille est plus grande que celui trouver avant
-                    {
-                        taille=strlen(substring); //la taille change
-                        chaine_retourV1=substring; //la chaine de retour est cette nouvelle chaine
-                    }
-                }
-            }
-			if(chaine_retourV1 != substring){
+			if(strlen(substring)>strlen(chaine_retourV1))
+			{
+		        const unsigned int h = g_str_hash(substring); //on recupère la valeur de hash de la sous-chaine ...
+		        
+		        if(g_hash_table_contains(table, &h)) //... on regarde si cette valeur est dans la hashtable
+		        {
+		            char* ret=g_hash_table_lookup(table, &h);
+		            if(strcmp(ret,substring)==0)
+		            {
+		                if(strlen(substring) > taille) //si la taille est plus grande que celui trouver avant
+		                {
+		                    taille=strlen(substring); //la taille change
+		                    chaine_retourV1=substring; //la chaine de retour est cette nouvelle chaine
+		                }
+		            }
+		        }
+			}
+			if(strcmp(chaine_retourV1, substring)){
 				free(substring);
 			}
         }
@@ -113,13 +118,13 @@ char* version1(GHashTable* table, char* chaine)
 *	active, la chaine qui contiendra toutes les sous-chaine d'une chaine de caractère
 *	rest, la chaine qui contient la chaine de départ
 */
-char* version2_2(GHashTable* table, char* active, char* rest)
+void version2_2(GHashTable* table, char* active, char* rest)
 {
     if(strlen(rest)==0) //si la longueur de rest est 0
     {
         if(active == NULL) //si active vaut NULL
         {
-            return NULL; //on renvoie NULL
+            return; //on renvoie NULL
         }
  
         const unsigned int h = g_str_hash(active); //on recupère la valeur de hash de la sous-chaine ...
@@ -131,11 +136,11 @@ char* version2_2(GHashTable* table, char* active, char* rest)
             {
                 if(strlen(active) > strlen(chaine_retourV2)) //si la taille est plus grande que celui trouver avant
                 {
-                    chaine_retourV2=active; //la chaine de retour est cette nouvelle chaine
+                    chaine_retourV2 = realloc(chaine_retourV2, (strlen(active) + 1) * sizeof(char));//la chaine de retour est cette nouvelle chaine
+					strcpy(chaine_retourV2, active);
                 }
             }
         }
-        return chaine_retourV2;
     }
     else
     {
@@ -145,12 +150,12 @@ char* version2_2(GHashTable* table, char* active, char* rest)
  
         char tab[2] = {rest[0],'\0'};
         strcat(hash, tab); //on insère le premier élément et \0 à la fin de hash
+
 		version2_2(table,hash,sub1); //récursivité
-        version2_2(table,active,sub1);
-		
+        version2_2(table,active,sub1); //récursivité
+	
+		free(hash);		
 		free(sub1);
-		free(hash);
-		return chaine_retourV2; //récursivité
     }
 }
 
@@ -160,8 +165,10 @@ char* version2_2(GHashTable* table, char* active, char* rest)
 */
 char* version2(GHashTable* table, char* chaine)
 {
-	chaine_retourV2 = "";
-	return version2_2(table, "", chaine);
+	chaine_retourV2 = calloc(1, sizeof(char));
+	strcpy(chaine_retourV2, "");
+	version2_2(table, "", chaine);
+	return chaine_retourV2;
 }
 
 //*************************************************** ALGO VERSION 3 ***************************************************//
@@ -215,7 +222,6 @@ void supprimerDicoV3(GHashTable* table)
 	while(g_hash_table_iter_next(&iter, (gpointer)&key, (gpointer)&list))
 	{
 		g_slist_free_full(list,(GDestroyNotify)free); 
-		free(key);
 	}
 
 	g_hash_table_destroy(table);
@@ -260,13 +266,13 @@ GHashTable* chargerDicoV3(char* nomFichier)
 	return DicoHash;
 }
 
-char* version3_2(GHashTable* table, char* active, char* rest)
+void version3_2(GHashTable* table, char* active, char* rest)
 {
 	if(strlen(rest)==0) //si la longueur de rest est 0
 	{
 		if(active == NULL) //si active vaut NULL
 		{
-		    return NULL; //on renvoie NULL
+		    return; //on renvoie NULL
 		}
 
 		char* anagramme = RechercheAnagramme(active,table); //on cherche un anagramme de active
@@ -275,10 +281,10 @@ char* version3_2(GHashTable* table, char* active, char* rest)
 		{
 		    if(strlen(anagramme) > strlen(chaine_retourV3)) //si la taille de l'anagramme est plus grande que celui précédent
 		    {
-			chaine_retourV3=anagramme; //la chaine de retour est ce nouveau anagramme
+				chaine_retourV3=realloc(chaine_retourV3, (strlen(anagramme) + 1) * sizeof(char)); //la chaine de retour est ce nouveau anagramme
+              	strcpy(chaine_retourV3, anagramme);
 		    } 
 		}
-		return chaine_retourV3;
 	}
 	else
 	{
@@ -288,12 +294,12 @@ char* version3_2(GHashTable* table, char* active, char* rest)
 
 		char tab[2] = {rest[0],'\0'};
 		strcat(hash, tab); //on insère le premier élément et \0 à la fin de hash
+
 	    version3_2(table,hash,sub1); //récursivité
 		version3_2(table,active,sub1); //récursivité
-		free(sub1);
+
 		free(hash);
-		
-		return chaine_retourV3;
+		free(sub1);
 	}
 }
 
@@ -302,8 +308,10 @@ char* version3_2(GHashTable* table, char* active, char* rest)
 */
 char* version3(GHashTable* table, char* chaine)
 {
-	chaine_retourV3 = "";
-	return version3_2(table, "", chaine);
+	chaine_retourV3 = calloc(1, sizeof(char));
+	strcpy(chaine_retourV3, "");
+	version3_2(table, "", chaine);
+	return chaine_retourV3;
 }
 
 /*

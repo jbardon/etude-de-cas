@@ -80,17 +80,17 @@ int main(void){
 		char* motsVersions [3] = { NULL };
 
 		motsVersions[nbMotsTrouves] = version1(dicoV1, lettres);
-		if(motsVersions[nbMotsTrouves] != NULL){
+		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
 			nbMotsTrouves++;
 		}
 
 		motsVersions[nbMotsTrouves] = version2(dicoV1, lettres);
-		if(motsVersions[nbMotsTrouves] != NULL && strcmp(motsVersions[nbMotsTrouves], "") != 0){
+		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
 			nbMotsTrouves++;
 		}
 
 		motsVersions[nbMotsTrouves] = version3(dicoV3, lettres);
-		if(motsVersions[nbMotsTrouves] != NULL && strcmp(motsVersions[nbMotsTrouves], "") != 0){
+		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
 			nbMotsTrouves++;
 		}
 
@@ -122,7 +122,7 @@ int main(void){
 		}
 
 		// Met à jour le score maximum
-		if(scoreMax == NULL){
+		if(scoreMax == NULL){	
 			scoreMax = calloc(strlen(motsVersions[2]) + 1, sizeof(char));	
 			strcpy(scoreMax, motsVersions[2]);				
 		}
@@ -132,7 +132,7 @@ int main(void){
 		}
 
 		// Affiche le score max
-		sprintf(message, "Projet etude de cas - Score maximum: %d avec %s", strlen(scoreMax), scoreMax);
+		sprintf(message, "Projet etude de cas - Meilleur score: %d avec %s", strlen(scoreMax), scoreMax);
 		SDL_WM_SetCaption(message, NULL);
 
 		// Supprime les résultats
@@ -167,7 +167,7 @@ int main(void){
 
 	// Libération du dictionnaire
 	g_hash_table_destroy(dicoV1);
-	supprimerDicoV3(dicoV3); /* A VOIR */
+	//supprimerDicoV3(dicoV3); /* A VOIR */
 
 	// Libération du panier
 	GestionEnv_supprimerPanier();
