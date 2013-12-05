@@ -27,22 +27,18 @@
 
 int main(void){
 
-	SDL_Surface* ecran = GestionEnv_initSDL();
-	cpSpace* espace = GestionEnv_initChipmunk();
-
-	GestionEnv_creerPanier(espace, ecran);
-	GestionEnv_creerBalles(35);
+	Environnement* envJeu = GestionEnv_creerEnvironnement();
 
 /* DEBUT TEST */
 
 	do {		
-		GestionEnv_evoluer();
+		GestionEnv_evoluer(envJeu);
 	}
-	while(!GestionEnv_ballesImmobiles());
+	while(!GestionEnv_ballesImmobiles(envJeu));
 
 	int x1 = OFFSET + 10, y1 = OFFSET - 10;
 	int x2 = LARGUEUR_ECRAN - OFFSET - 10, y2 = HAUTEUR_ECRAN - OFFSET - 10;
-	char* lettres = GestionEnv_donnerCaracteresLigne(x1, y1, x2, y2);
+	char* lettres = GestionEnv_donnerCaracteresLigne(envJeu, x1, y1, x2, y2);
 
 	printf("Lettres sélectionnées: %s\n", lettres);
 
@@ -63,12 +59,7 @@ int main(void){
 /* FIN TEST */
 
 	pause();
-
-	GestionEnv_supprimerBalles();
-	GestionEnv_supprimerPanier();
-
-	GestionEnv_quitChipmunk();
-	GestionEnv_quitSDL();
+	GestionEnv_supprimerEnvironnement(envJeu);
 
 	return 0;
 }

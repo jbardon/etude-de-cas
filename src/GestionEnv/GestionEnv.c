@@ -15,11 +15,22 @@
 //-------------------------------------------------------------------------------------------------------------
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
-static void _afficherProgression();
+static cpSpace* _initChipmunk();
+static SDL_Surface* _initSDL();
+
+static void _quitChipmunk(cpSpace* espace);
+static void _quitSDL(SDL_Surface* ecran);
+
+static void _creerPanier(Environnement* envJeu);
+static void _supprimerPanier(cpShape** panier);
+
+static void _afficherProgression(Environnement* envJeu);
 static void _dessinerPanier();
 
-static void _Balle_foreach(Balle_Fonction fonction);
-static void _creerUneBalle();
+static void _Balle_foreach(GPtrArray* balles, Balle_Fonction fonction);
+static void _creerBalles(Environnement* envJeu, int nbBalles);
+static void _creerUneBalle(Environnement* envJeu);
+static void _supprimerBalles(GPtrArray* balles);
 
 //-------------------------------------------------------------------------------------------------------------
 //										Variables liées à l'environnement
@@ -33,7 +44,7 @@ static void _creerUneBalle();
  * Destruction: @see GestionEnv_quitChipmunk
  *
  */ 
-static cpSpace* espace = NULL;
+//static cpSpace* espace = NULL;
 
 /**
  * @var cpShape* panier[3]
@@ -46,7 +57,7 @@ static cpSpace* espace = NULL;
  * Ce tableau contient dans l'ordre le sol et les 2 murs (gauche, droite) 
  *
  */ 
-static cpShape* panier[3]; 
+//static cpShape* panier[3]; 
 
 /**
  * @var double temps
@@ -58,7 +69,7 @@ static cpShape* panier[3];
  * @see GestionEnv_evoluer
  *
  */ 
-static double temps = 0;
+//static double temps = 0;
 
 /**
  * @var SDL_Surface* ecran
@@ -68,7 +79,7 @@ static double temps = 0;
  * @see GestionEnv_quitSDL
  *
  */ 
-static SDL_Surface* ecran = NULL;
+//static SDL_Surface* ecran = NULL;
 
 /**
  * @var GSList balles
@@ -80,7 +91,7 @@ static SDL_Surface* ecran = NULL;
  *
  *
  */ 
-static GPtrArray* balles = NULL;
+//static GPtrArray* balles = NULL;
 
 /**
  * @var int nbBallesTotal
@@ -88,7 +99,7 @@ static GPtrArray* balles = NULL;
  *
  * @see balles
  */ 
-static int nbBallesTotal = 0;  
+//static int nbBallesTotal = 0;  
 
 /**
  * @var int nbBallesCrees
@@ -96,7 +107,7 @@ static int nbBallesTotal = 0;
  *
  * @see GestionEnv_creerBalles
  */ 
-static int nbBallesCrees = 0; 
+//static int nbBallesCrees = 0; 
 
 /**
  * @var int timerLancement
@@ -110,7 +121,7 @@ static int nbBallesCrees = 0;
  * @see GestionEnv_evoluer
  * @see DELAI_APPARITION (config.h)
  */ 
-static int timerLancement = 0;
+//static int timerLancement = 0;
 
 /**
  * @var int ajouterBalles
@@ -120,23 +131,52 @@ static int timerLancement = 0;
  *
  * @see GestionEnv_creerBalles
  */ 
-static int ajouterBalles = 0;
+//static int ajouterBalles = 0;
 
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation de l'environnement
 //-------------------------------------------------------------------------------------------------------------
 
+Environnement* GestionEnv_creerEnvironnement(){
+	
+	Environnement* envJeu = malloc(sizeof(Environnement));
+
+	if(envJeu){
+
+		Aleatoire_init();
+
+		envJeu->espace = _initChipmunk();
+		envJeu->ecran = _initSDL();
+		envJeu->balles = NULL;
+		envJeu->nbBallesTotal = 0;
+		envJeu->nbBallesCrees = 0;
+		envJeu->ajouterBalles = 0;
+
+		_creerPanier(envJeu);
+		_creerBalles(envJeu, NB_BALLES);
+	}
+
+	return envJeu;
+}
+
+void GestionEnv_rejouer(Environnement* envJeu){
+	_supprimerBalles(envJeu->balles);
+	envJeu->nbBallesTotal = 0;
+	envJeu->nbBallesCrees = 0;
+	_creerBalles(envJeu, NB_BALLES);
+}
+
 /**
- * @fn cpSpace* GestionEnv_initChipmunk()
+ * @fn cpSpace* _initChipmunk()
  * @brief Fonction qui initialise le monde chipmunk
  * 
  * @see espace
  *
  * @return L'espace physique créé
  */
-cpSpace* GestionEnv_initChipmunk(){
+static cpSpace* _initChipmunk(){
 
-	espace = cpSpaceNew();
+	cpSpace* espace = cpSpaceNew();
 
 	if(espace){
 		cpVect gravite = cpv(0, -100);  
@@ -147,7 +187,7 @@ cpSpace* GestionEnv_initChipmunk(){
 }
 
 /**
- * @fn SDL_Surface* GestionEnv_initSDL()
+ * @fn SDL_Surface* _initSDL()
  * @brief Fonction qui initialise la bibliothèque SDL 
  * et la fenêtre de jeu SDL
  * 
@@ -155,11 +195,11 @@ cpSpace* GestionEnv_initChipmunk(){
  *
  * @return La fenêtre SDL
  */
-SDL_Surface* GestionEnv_initSDL(){
-	Aleatoire_init();
+static SDL_Surface* _initSDL(){
+
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
-	ecran = SDL_SetVideoMode(LARGUEUR_ECRAN, HAUTEUR_ECRAN, SCREEN_BPP, SDL_HWSURFACE);
+	SDL_Surface* ecran = SDL_SetVideoMode(LARGUEUR_ECRAN, HAUTEUR_ECRAN, SCREEN_BPP, SDL_HWSURFACE);
 
 	if(ecran){
 		SDL_FillRect(ecran, NULL, COULEUR_FOND);
@@ -173,26 +213,36 @@ SDL_Surface* GestionEnv_initSDL(){
 //										Suppression de l'environnement
 //-------------------------------------------------------------------------------------------------------------
 
+void GestionEnv_supprimerEnvironnement(Environnement* envJeu){
+	_supprimerBalles(envJeu->balles);
+	_supprimerPanier(envJeu->panier);
+
+	_quitChipmunk(envJeu->espace);
+	_quitSDL(envJeu->ecran);
+
+	free(envJeu);
+}
+
 /**
- * @fn void GestionEnv_quitChipmunk()
+ * @fn void _quitChipmunk(cpSpace* espace)
  * @brief Fonction qui détruit le monde chipmunk
  * 
- * @see GestionEnv_initChipmunk
+ * @see _initChipmunk
  * @see espace
  */
-void GestionEnv_quitChipmunk(){
+static void _quitChipmunk(cpSpace* espace){
 	cpSpaceFree(espace);
 }
 
 /**
- * @fn Svoid GestionEnv_quitSDL()
+ * @fn Svoid _quitSDL(SDL_Surface* ecran)
  * @brief Fonction qui détruit la fenêtre de jeu SDL
  * et quitte la bibliothèque SDL 
  * 
- * @see GestionEnv_initSDL
+ * @see _initSDL
  * @see ecran
  */
-void GestionEnv_quitSDL(){
+static void _quitSDL(SDL_Surface* ecran){
 	SDL_FreeSurface(ecran);
 	TTF_Quit();
 	SDL_Quit();
@@ -208,11 +258,14 @@ void GestionEnv_quitSDL(){
  * physique et graphique du jeu avec notamment les balles 
  * qui se déplacent
  */
-void GestionEnv_evoluer(){
+void GestionEnv_evoluer(Environnement* envJeu){
+	
+	static double temps = 0;
+	static int timerLancement = 0;
 
 	// Créé une balle à chaque intervalle de temps, max = nombre de balles donnée dans GestionEnv_creerBalles
-	if(ajouterBalles && timerLancement >= DELAI_APPARITION){
-		_creerUneBalle();
+	if(envJeu->ajouterBalles && timerLancement >= DELAI_APPARITION){
+		_creerUneBalle(envJeu);
 		timerLancement = 0;	
 	}
 /*
@@ -223,26 +276,26 @@ void GestionEnv_evoluer(){
 	free(message);
 */
 	// Fait évoluer les balles, applique le déplacement et maj de l'affichage
-	cpSpaceStep(espace, uniteTemps);
+	cpSpaceStep(envJeu->espace, uniteTemps);
 
-	_Balle_foreach(Balle_deplacer); 
-	_dessinerPanier(); 
-	_afficherProgression();
+	_Balle_foreach(envJeu->balles, Balle_deplacer); 
+	_dessinerPanier(envJeu->ecran); 
+	_afficherProgression(envJeu);
 
-	SDL_Flip(ecran);
+	SDL_Flip(envJeu->ecran);
 
 	// Gestion du temps
 	temps += uniteTemps;
 	timerLancement += 1;
 }
 
-static void _afficherProgression(){	
+static void _afficherProgression(Environnement* envJeu){	
 
-	boxColor(ecran, 0, HAUTEUR_ECRAN - 5, LARGUEUR_ECRAN, HAUTEUR_ECRAN, COULEUR_FOND);
+	boxColor(envJeu->ecran, 0, HAUTEUR_ECRAN - 5, LARGUEUR_ECRAN, HAUTEUR_ECRAN, COULEUR_FOND);
 
-	if(ajouterBalles){
-		float longueur = ((float)nbBallesCrees/(float)nbBallesTotal) * LARGUEUR_ECRAN;
-		boxColor(ecran, 0, HAUTEUR_ECRAN - 5, ceil(longueur), HAUTEUR_ECRAN, 0xFF4040DD);
+	if(envJeu->ajouterBalles){
+		float longueur = ((float)envJeu->nbBallesCrees/(float)envJeu->nbBallesTotal) * LARGUEUR_ECRAN;
+		boxColor(envJeu->ecran, 0, HAUTEUR_ECRAN - 5, ceil(longueur), HAUTEUR_ECRAN, 0xFF4040DD);
 	}
 }
 
@@ -251,42 +304,42 @@ static void _afficherProgression(){
 //-------------------------------------------------------------------------------------------------------------
 
 /**
- * @fn void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf)
+ * @fn void _creerPanier(cpSpace* espace, SDL_Surface* surf)
  * @brief Fonction qui créé le panier au sens physique (chipmunk)
  * et affiche ces contours sur la fenêtre SDL
  *
  * @param espace Espace physique chipmunk @see espace
  * @param surf Ecran principal de la fenêtre SDL @see ecran
  */
-void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf){
+static void _creerPanier(Environnement* envJeu){
  
 	int x = OFFSET + 2;
 	int y = OFFSET;
 
 	// Création du sol qui est un élément statique
-	panier[0] = cpSegmentShapeNew(espace->staticBody, cpv(0,y), cpv(LARGUEUR_ECRAN,y), 0);
-	cpShapeSetFriction(panier[0], FRICTION);
-	cpShapeSetElasticity(panier[0], REBOND);
-	cpSpaceAddShape(espace, panier[0]);
+	envJeu->panier[0] = cpSegmentShapeNew(envJeu->espace->staticBody, cpv(0,y), cpv(LARGUEUR_ECRAN,y), 0);
+	cpShapeSetFriction(envJeu->panier[0], FRICTION);
+	cpShapeSetElasticity(envJeu->panier[0], REBOND);
+	cpSpaceAddShape(envJeu->espace, envJeu->panier[0]);
 
 	// Création du mur gauche
-	panier[1] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
-	cpShapeSetFriction(panier[1], FRICTION);
-	cpShapeSetElasticity(panier[1], REBOND);
-	cpSpaceAddShape(espace, panier[1]);
+	envJeu->panier[1] = cpSegmentShapeNew(envJeu->espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
+	cpShapeSetFriction(envJeu->panier[1], FRICTION);
+	cpShapeSetElasticity(envJeu->panier[1], REBOND);
+	cpSpaceAddShape(envJeu->espace, envJeu->panier[1]);
 
 	// Création du mur droit
 	x = LARGUEUR_ECRAN - OFFSET - 2;
-	panier[2] = cpSegmentShapeNew(espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
-	cpShapeSetFriction(panier[2], FRICTION);
-	cpShapeSetElasticity(panier[2], REBOND);
-	cpSpaceAddShape(espace, panier[2]);
+	envJeu->panier[2] = cpSegmentShapeNew(envJeu->espace->staticBody, cpv(x,0), cpv(x, HAUTEUR_ECRAN + BALLE_RAYON_MAX * 2), 0);
+	cpShapeSetFriction(envJeu->panier[2], FRICTION);
+	cpShapeSetElasticity(envJeu->panier[2], REBOND);
+	cpSpaceAddShape(envJeu->espace, envJeu->panier[2]);
 
 	// Dessine le panier sur l'écran
-	_dessinerPanier();
+	_dessinerPanier(envJeu->ecran);
 }
 
-static void _dessinerPanier(){
+static void _dessinerPanier(SDL_Surface* ecran){
 
 	static const unsigned int e = 10; // Epaisseur du trait (SDL)
 	static unsigned int x;
@@ -314,16 +367,16 @@ static void _dessinerPanier(){
 }
 
 /**
- * @fn void GestionEnv_supprimerPanier()
+ * @fn void _supprimerPanier(cpShape** panier)
  * @brief Fonction qui supprime le panier au sens physique (chipmunk)
  */
-void GestionEnv_supprimerPanier(){
+static void _supprimerPanier(cpShape** panier){
 	for(int i = 0; i < 3; i++){
 		cpShapeFree(panier[i]);
 	}
 }
 
-void GestionEnv_effacerPanier(){
+void GestionEnv_effacerPanier(SDL_Surface* ecran){
 	boxColor(ecran, 0, 2*OFFSET, LARGUEUR_ECRAN, HAUTEUR_ECRAN, COULEUR_FOND);
 }
 
@@ -339,7 +392,7 @@ void GestionEnv_effacerPanier(){
  * @param fonction Fonction provenant de la bibliothèque Balle
  * ayant aucun retour et pour seul paramètre une balle
  */
-static void _Balle_foreach(Balle_Fonction fonction){
+static void _Balle_foreach(GPtrArray* balles, Balle_Fonction fonction){
 	g_ptr_array_foreach(balles, (GFunc)fonction, NULL);
 }
 
@@ -358,9 +411,9 @@ static void _Balle_foreach(Balle_Fonction fonction){
  * @param fonction Fonction provenant de la bibliothèque Balle
  * ayant aucun retour et pour seul paramètre une balle
  */
-static void _creerUneBalle(){
+static void _creerUneBalle(Environnement* envJeu){
 
-	if(nbBallesCrees < nbBallesTotal){
+	if(envJeu->nbBallesCrees < envJeu->nbBallesTotal){
 
 		// Caractéritiques aléatoires pour les balles
 		const int rayon = Aleatoire_MinMax(BALLE_RAYON_MIN, BALLE_RAYON_MAX);
@@ -371,16 +424,16 @@ static void _creerUneBalle(){
 
 		// Création de la balle
 		//balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
-		g_ptr_array_add(balles, Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre));
-		nbBallesCrees++;
+		g_ptr_array_add(envJeu->balles, Balle_creer(envJeu->ecran, envJeu->espace, centre, direction, rayon, couleur, lettre));
+		envJeu->nbBallesCrees++;
 	}
 	else {
-		ajouterBalles = 0;
+		envJeu->ajouterBalles = 0;
 	}			
 }
 
 /**
- * @fn void GestionEnv_creerBalles(int nbBalles)
+ * @fn void _creerBalles(int nbBalles)
  * @brief Fonction qui demande à l'environnement de créé n balles.
  *
  * A l'appel de cette fonction une seule balle est réélement créée (@see nbBallesCrees)
@@ -390,29 +443,28 @@ static void _creerUneBalle(){
  * @param fonction Fonction provenant de la bibliothèque Balle
  * ayant aucun retour et pour seul paramètre une balle
  */
-void GestionEnv_creerBalles(int nbBalles){
+static void _creerBalles(Environnement* envJeu, int nbBalles){
 
-	balles = g_ptr_array_sized_new(nbBalles);
-	ajouterBalles = 1;
+	envJeu->balles = g_ptr_array_sized_new(nbBalles);
+	envJeu->ajouterBalles = 1;
 
-	if(balles){
-		nbBallesTotal = nbBalles;	
-		nbBallesCrees = 0;	
-		_creerUneBalle();		
+	if(envJeu->balles){
+		envJeu->nbBallesTotal = nbBalles;	
+		envJeu->nbBallesCrees = 0;	
+		_creerUneBalle(envJeu);		
 	}
 }
 
 /**
- * @fn void GestionEnv_supprimerBalles()
+ * @fn void _supprimerBalles()
  * @brief Fonction qui supprime toutes les balles
  * présentent dans l'environnement
  */
-void GestionEnv_supprimerBalles(){
+static void _supprimerBalles(GPtrArray* balles){
 
 //	GestionEnv_effacerPanier(); /* VITESSE */
 //	GestionEnv_viderZoneMessage(); /* VITESSE */
-
-	_Balle_foreach(Balle_supprimer);
+	_Balle_foreach(balles, Balle_supprimer);
 	 g_ptr_array_free(balles, 0);
 }
 
@@ -421,12 +473,12 @@ void GestionEnv_supprimerBalles(){
  * @brief Fonction qui retourne 1 si toutes les balles 
  * de l'environnement sont immobiles (@see Balle_estImmobile), 0 sinon
  */
-int GestionEnv_ballesImmobiles(){
+int GestionEnv_ballesImmobiles(Environnement* envJeu){
 
 	int ballesImmobiles = 1, i = 0;
 
-	while(ballesImmobiles && i < nbBallesCrees){
-		ballesImmobiles = Balle_estImmobile(g_ptr_array_index(balles, i++));
+	while(ballesImmobiles && i < envJeu->nbBallesCrees){
+		ballesImmobiles = Balle_estImmobile(g_ptr_array_index(envJeu->balles, i++));
 	}	
 
 	return ballesImmobiles;	
@@ -460,10 +512,10 @@ static int _comparerBalles(const Balle** a, const Balle** b){
 	return ((sensLigne == DROITE) ?  (*a)->cx -  (*b)->cx :  (*b)->cx -  (*a)->cx);
 }
 
-char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
+char* GestionEnv_donnerCaracteresLigne(Environnement* envJeu, int x1, int y1, int x2, int y2){
 
 	// Dessine la ligne
-	lineColor(ecran, x1, y1, x2, y2, 0x000000FF);
+	lineColor(envJeu->ecran, x1, y1, x2, y2, 0x000000FF);
 
 	// Cherche les balles touchées
 	// 80 = diamètre max d'une balle (voir _creerUneBalle)
@@ -473,11 +525,11 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	unsigned int nbBallesTouches = 0;	
 	Balle** ballesTouches = calloc(nbBallesMaxDiag, sizeof(Balle*));	
 
-	for(unsigned int i = 0; i < nbBallesCrees; i++){
+	for(unsigned int i = 0; i < envJeu->nbBallesCrees; i++){
 		
 		// Vérifie si la balle est touchée par la ligne
 		int touche =  cpShapeSegmentQuery(
-						   ((Balle*)g_ptr_array_index(balles, i))->zoneCollision, 
+						   ((Balle*)g_ptr_array_index(envJeu->balles, i))->zoneCollision, 
 						   cpv(x1, HAUTEUR_ECRAN - y1), 
 						   cpv(x2, HAUTEUR_ECRAN - y2),
 						   NULL
@@ -485,7 +537,7 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 
 		// Sauvegarde la balle touchée
 		if(touche){
-			ballesTouches[nbBallesTouches] = (Balle*)g_ptr_array_index(balles, i);
+			ballesTouches[nbBallesTouches] = (Balle*)g_ptr_array_index(envJeu->balles, i);
 			nbBallesTouches++;
 		}
 	}
@@ -505,24 +557,24 @@ char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2){
 	}
 
 	// Supprime les balles touchées du tableau global
-	nbBallesCrees -= nbBallesTouches;
+	envJeu->nbBallesCrees -= nbBallesTouches;
 	for(unsigned int i = 0; i < nbBallesTouches; i++){
-		g_ptr_array_remove(balles, ballesTouches[i]);
+		g_ptr_array_remove(envJeu->balles, ballesTouches[i]);
 		Balle_supprimer(ballesTouches[i]);	
 	}
 	free(ballesTouches);
 
 	// Met à jour l'affichage
-	SDL_Flip(ecran);
+	SDL_Flip(envJeu->ecran);
 
 	return lettres;
 }
 
 static int nbMessages = 0;
-void GestionEnv_afficherMessage(char* message, int x, int y, int taille){
+void GestionEnv_afficherMessage(Environnement* envJeu, char* message, int x, int y, int taille){
 
 	if(!nbMessages++){
-		boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, 0xA9EAFEFF);
+		boxColor(envJeu->ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, 0xA9EAFEFF);
 	}
 
 	SDL_Color couleur = {20, 50, 50};
@@ -539,18 +591,18 @@ void GestionEnv_afficherMessage(char* message, int x, int y, int taille){
 	SDL_Surface* texte = TTF_RenderText_Blended(police, message, couleur);
 	SDL_Rect position = {x, y};
 
-	SDL_BlitSurface(texte, NULL, ecran, &position);
+	SDL_BlitSurface(texte, NULL, envJeu->ecran, &position);
 	SDL_FreeSurface(texte);
 	TTF_CloseFont(police);	
 
-	SDL_Flip(ecran);
+	SDL_Flip(envJeu->ecran);
 
 }
 
-void GestionEnv_viderZoneMessage(){
+void GestionEnv_viderZoneMessage(Environnement* envJeu){
 	nbMessages = 0;
-	boxColor(ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, COULEUR_FOND);
-	SDL_Flip(ecran);
+	boxColor(envJeu->ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, COULEUR_FOND);
+	SDL_Flip(envJeu->ecran);
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -567,7 +619,7 @@ void GestionEnv_viderZoneMessage(){
  *
  * @return Pointeur sur le sol du panier
  */
-cpShape** donnerSol(){
-	return panier;
+cpShape** donnerSol(Environnement* envJeu){
+	return envJeu->panier;
 }
 

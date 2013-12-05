@@ -15,27 +15,18 @@
 
 int main(void){
 
-	SDL_Surface* ecran = GestionEnv_initSDL();
-	cpSpace* espace = GestionEnv_initChipmunk();
-
-	GestionEnv_creerPanier(espace, ecran);
-	GestionEnv_creerBalles(20);
+	Environnement* envJeu = GestionEnv_creerEnvironnement();
 
 /* DEBUT TEST */
 
 	for(float i = 0; i < 30; i+=uniteTemps){
-		GestionEnv_evoluer();
+		GestionEnv_evoluer(envJeu);
 	}
 
 /* FIN TEST */
 
 	pause();
-
-	GestionEnv_supprimerBalles();
-
-	GestionEnv_supprimerPanier();
-	GestionEnv_quitChipmunk();
-	GestionEnv_quitSDL();
+	GestionEnv_supprimerEnvironnement(envJeu);
 
 	return 0;
 }

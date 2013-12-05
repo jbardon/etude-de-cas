@@ -20,12 +20,11 @@
 
 int main(void){
 
-	SDL_Surface* ecran = GestionEnv_initSDL();
-	cpSpace* espace = GestionEnv_initChipmunk();
+	Environnement* envJeu = GestionEnv_creerEnvironnement();
 
 /* DEBUT TEST */
 
-	Balle* balle = Balle_creer(ecran, espace, cpv(LARGUEUR_ECRAN/2, 50), cpvzero, 50, 0x00FF00FF, ' ');
+	Balle* balle = Balle_creer(envJeu->ecran, envJeu->espace, cpv(LARGUEUR_ECRAN/2, 50), cpvzero, 50, 0x00FF00FF, ' ');
 	cpBodySetVelLimit(cpShapeGetBody(balle->zoneCollision), 30);
 
 	// Extrémités de la ligne
@@ -45,21 +44,19 @@ int main(void){
 
 		printf("Temps %2.2f touche %d\n", temps, touche);		
 
-		cpSpaceStep(espace, uniteTemps);	
+		cpSpaceStep(envJeu->espace, uniteTemps);	
 		Balle_deplacer(balle);
 
 		// Dessine la ligne
-		lineColor(ecran, x1, y1, x2, y2, 0x00FFFF);
+		lineColor(envJeu->ecran, x1, y1, x2, y2, 0x00FFFF);
 
-		SDL_Flip(ecran);
+		SDL_Flip(envJeu->ecran);
 	}
 
 /* FIN TEST */
 
 	pause();
-
-	GestionEnv_quitChipmunk();
-	GestionEnv_quitSDL();
+	GestionEnv_supprimerEnvironnement(envJeu);
 
 	return 0;
 }

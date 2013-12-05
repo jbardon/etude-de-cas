@@ -34,6 +34,19 @@
  */ 
 const cpFloat uniteTemps = 1.0/30.0; 
 
+typedef struct _Environnement Environnement;
+struct _Environnement {
+	cpSpace* espace;
+	cpShape* panier[3];
+
+	SDL_Surface* ecran;
+	GPtrArray* balles;
+	int nbBallesTotal;
+	int nbBallesCrees;
+
+	int ajouterBalles;
+};
+
 /**
  * Fonction générique pour appliquer plus facilement
  * des fonctions de la bibliothèque balle à toutes
@@ -43,29 +56,20 @@ const cpFloat uniteTemps = 1.0/30.0;
  */
 typedef void (*Balle_Fonction)(Balle*);
 
-extern cpSpace* GestionEnv_initChipmunk();
-extern SDL_Surface* GestionEnv_initSDL();
+extern Environnement* GestionEnv_creerEnvironnement();
+extern void GestionEnv_supprimerEnvironnement(Environnement* envJeu);
+extern void GestionEnv_rejouer(Environnement* envJeu);
 
-extern void GestionEnv_evoluer();
-
-extern void GestionEnv_quitChipmunk();
-extern void GestionEnv_quitSDL();
-
-extern void GestionEnv_creerPanier(cpSpace* espace, SDL_Surface* surf);
-extern void GestionEnv_supprimerPanier();
-
-extern void GestionEnv_creerBalles(int nbBalles);
-extern void GestionEnv_supprimerBalles();
-
+extern void GestionEnv_evoluer(Environnement* envJeu);
 extern int GestionEnv_ballesImmobiles();
 
-extern char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2);
-extern void GestionEnv_afficherMessage(char* message, int x, int y, int taille);
-extern void GestionEnv_viderZoneMessage();
-extern void GestionEnv_effacerPanier();
+extern char* GestionEnv_donnerCaracteresLigne(Environnement* envJeu, int x1, int y1, int x2, int y2);
+extern void GestionEnv_afficherMessage(Environnement* envJeu, char* message, int x, int y, int taille);
+extern void GestionEnv_viderZoneMessage(Environnement* envJeu);
+extern void GestionEnv_effacerPanier(SDL_Surface* ecran);
 
 /* DEBUG */
-extern cpShape** donnerSol();
+extern cpShape** donnerSol(Environnement* envJeu);
 /* DEBUG */
 
 #endif /* __GESTION_ENV_H__ */

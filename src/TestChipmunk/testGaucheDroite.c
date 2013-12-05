@@ -23,24 +23,21 @@
 
 int main(void){
 
-	SDL_Surface* ecran = GestionEnv_initSDL();
-	cpSpace* espace = GestionEnv_initChipmunk();
-
-	GestionEnv_creerPanier(espace, ecran);
+	Environnement* envJeu = GestionEnv_creerEnvironnement();
 
 /* DEBUT TEST */
 
-	cpShape** panier = donnerSol(); //!\\ Fonction uniquement pour débugger
-	*panier = cpSegmentShapeNew(espace->staticBody, cpv(0,300), cpv(LARGUEUR_ECRAN,50), 0);
+	cpShape** panier = donnerSol(envJeu); //!\\ Fonction uniquement pour débugger
+	*panier = cpSegmentShapeNew(envJeu->espace->staticBody, cpv(0,300), cpv(LARGUEUR_ECRAN,50), 0);
 	cpShapeSetFriction(*panier, 1);
 	cpShapeSetElasticity(*panier, 1);
-	cpSpaceAddShape(espace, *panier);
+	cpSpaceAddShape(envJeu->espace, *panier);
 
-	Balle* balle = Balle_creer(ecran, espace, cpv(100,0), cpvzero, 50, 0x00FF00FF, 'A');
+	Balle* balle = Balle_creer(envJeu->ecran, envJeu->espace, cpv(100,0), cpvzero, 50, 0x00FF00FF, 'A');
 
 /* FIN TEST */
 
-	SDL_Flip(ecran);
+	SDL_Flip(envJeu->ecran);
 
 	cpFloat timeStep = 1.0/60.0;
 	for(cpFloat time = 0; time < 10; time += timeStep){
@@ -53,18 +50,15 @@ int main(void){
 			time, pos.x, pos.y, ang
 		);
 
-		cpSpaceStep(espace, timeStep);
+		cpSpaceStep(envJeu->espace, timeStep);
 		Balle_deplacer(balle);
-		SDL_Flip(ecran);
+		SDL_Flip(envJeu->ecran);
 	}
 
 	pause();
 
 	Balle_supprimer(balle);
-	GestionEnv_supprimerPanier();
-
-	GestionEnv_quitChipmunk();
-	GestionEnv_quitSDL();
+	GestionEnv_supprimerEnvironnement(envJeu);
 
 	return 0;
 }

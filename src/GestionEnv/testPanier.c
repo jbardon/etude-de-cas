@@ -23,26 +23,20 @@
 
 int main(void){
 
-	SDL_Surface* ecran = GestionEnv_initSDL();
-	cpSpace* espace = GestionEnv_initChipmunk();
-
-	GestionEnv_creerPanier(espace, ecran);
+	Environnement* envJeu = GestionEnv_creerEnvironnement();
 
 /* DEBUT TEST */
 
-	lineColor(ecran, 0, HAUTEUR_ECRAN - OFFSET, LARGUEUR_ECRAN, HAUTEUR_ECRAN - OFFSET, 0x00FFFF);
-	lineColor(ecran, OFFSET, 0, OFFSET, HAUTEUR_ECRAN, 0x00FFFF);
-	lineColor(ecran, LARGUEUR_ECRAN - OFFSET, 0, LARGUEUR_ECRAN - OFFSET, HAUTEUR_ECRAN, 0x00FFFF);
+	lineColor(envJeu->ecran, 0, HAUTEUR_ECRAN - OFFSET, LARGUEUR_ECRAN, HAUTEUR_ECRAN - OFFSET, 0x00FFFF);
+	lineColor(envJeu->ecran, OFFSET, 0, OFFSET, HAUTEUR_ECRAN, 0x00FFFF);
+	lineColor(envJeu->ecran, LARGUEUR_ECRAN - OFFSET, 0, LARGUEUR_ECRAN - OFFSET, HAUTEUR_ECRAN, 0x00FFFF);
 
 /* FIN TEST */
 
-	SDL_Flip(ecran);
+	SDL_Flip(envJeu->ecran);
 
 	pause();
-
-	GestionEnv_supprimerPanier();
-	GestionEnv_quitChipmunk();
-	GestionEnv_quitSDL();
+	GestionEnv_supprimerEnvironnement(envJeu);
 
 	return 0;
 }

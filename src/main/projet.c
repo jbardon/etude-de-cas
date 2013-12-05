@@ -13,13 +13,13 @@ char* minuscules(char* chaine);
 
 int main(void){
 
+
 	// Initialisation de la SDL et de chipmunk
-	SDL_Surface* ecran = GestionEnv_initSDL();
-	cpSpace* espace = GestionEnv_initChipmunk();
+	Environnement* envJeu = GestionEnv_creerEnvironnement();
 
 	// Créé le panier et charge le dictionnaire
-	GestionEnv_creerPanier(espace, ecran);
-	GestionEnv_effacerPanier(); /* A VOIR */
+	//GestionEnv_creerPanier(espace, ecran);
+	//GestionEnv_effacerPanier(); /* A VOIR */
 	GHashTable* dicoV1 = chargerDicoV1_V2("dicofinal.txt");
 	GHashTable* dicoV3 = chargerDicoV3("dicofinal.txt");
 
@@ -39,14 +39,12 @@ int main(void){
 	unsigned int rejouer = 1;
 	while(rejouer){
 
-		GestionEnv_creerBalles(NB_BALLES);
-
 		// Attend que l'utilisateur appuis sur espace
-		GestionEnv_viderZoneMessage();
+		GestionEnv_viderZoneMessage(envJeu);
 		sprintf(message, "Appuyez sur [ESPACE] pour commencer");
-		GestionEnv_afficherMessage(message, ALIGN_CENTRE, 35, 20);
+		GestionEnv_afficherMessage(envJeu, message, ALIGN_CENTRE, 35, 20);
 		attendreCommencer();
-		GestionEnv_viderZoneMessage();
+		GestionEnv_viderZoneMessage(envJeu);
 
 		/*
 			long int screen = 0;
@@ -57,26 +55,26 @@ int main(void){
 
 		// Fait évoluer le système tant que toutes les boules sont en mouvement
 		do {	
-			SDL_FillRect(ecran, NULL, 0xFFFFFF);
-			GestionEnv_evoluer();
+			SDL_FillRect(envJeu->ecran, NULL, 0xFFFFFF);
+			GestionEnv_evoluer(envJeu);
 		}
-		while(!GestionEnv_ballesImmobiles());
+		while(!GestionEnv_ballesImmobiles(envJeu));
 
 		// Attent les 2 clic de l'utilisateur pour tracer la ligne
-		GestionEnv_viderZoneMessage();
+		GestionEnv_viderZoneMessage(envJeu);
 		sprintf(message, "Cliquez dans la fenetre pour tracer une ligne");
-		GestionEnv_afficherMessage(message, ALIGN_CENTRE, 35, 20);
+		GestionEnv_afficherMessage(envJeu, message, ALIGN_CENTRE, 35, 20);
 
 		// Récupère les coordonnées du clic et trace un point à cet emplacement
 		cpVect coordonneesLigne[2];
 		for(unsigned int i = 0; i < 2; i++){
 			coordonneesLigne[i] = AttendreClic();
-			filledCircleColor(ecran, coordonneesLigne[i].x, coordonneesLigne[i].y, 4, 0x000000FF);
-			SDL_Flip(ecran);
+			filledCircleColor(envJeu->ecran, coordonneesLigne[i].x, coordonneesLigne[i].y, 4, 0x000000FF);
+			SDL_Flip(envJeu->ecran);
 		}
 
 		// Récupère les caractères des balles sélectionnées par l'utilisateur
-		char* lettres = GestionEnv_donnerCaracteresLigne(coordonneesLigne[0].x, coordonneesLigne[0].y, 
+		char* lettres = GestionEnv_donnerCaracteresLigne(envJeu, coordonneesLigne[0].x, coordonneesLigne[0].y, 
 														 coordonneesLigne[1].x, coordonneesLigne[1].y);
 		printf("Lettres selectionnes: %s\n", lettres);
 
@@ -123,10 +121,10 @@ int main(void){
 				motsTrouves[i] = Solution_creer(majuscules(motsVersions[i]), strlen(motsVersions[i]));
 			}
 	
-			SDL_Surface* menu = MenuSDL_creer(ecran, lettres, motsTrouves, nbMotsTrouves);
+			SDL_Surface* menu = MenuSDL_creer(envJeu->ecran, lettres, motsTrouves, nbMotsTrouves);
 			SDL_Rect pos = { 0, 0 };
-			SDL_BlitSurface(menu, NULL, ecran, &pos);
-			SDL_Flip(ecran);
+			SDL_BlitSurface(menu, NULL, envJeu->ecran, &pos);
+			SDL_Flip(envJeu->ecran);
 
 			// Supprime le menu et les couples mot-score
 			for(int i = 0; i < nbMotsTrouves; i++){
@@ -136,9 +134,9 @@ int main(void){
 			SDL_FreeSurface(menu);
 		}
 		else {
-			GestionEnv_viderZoneMessage();
+			GestionEnv_viderZoneMessage(envJeu);
 			sprintf(message, "Aucun mot trouve pour: %s", lettres);
-			GestionEnv_afficherMessage(message, ALIGN_CENTRE, 20, 20);			
+			GestionEnv_afficherMessage(envJeu, message, ALIGN_CENTRE, 20, 20);			
 		}
 
 		// Met à jour le score maximum
@@ -162,25 +160,28 @@ int main(void){
 		}
 
 		// Supprime les balles sélectionneés
-		GestionEnv_effacerPanier();
+		GestionEnv_effacerPanier(envJeu->ecran);
 		do {	
-			GestionEnv_effacerPanier();
-			GestionEnv_evoluer();
+			GestionEnv_effacerPanier(envJeu->ecran);
+			GestionEnv_evoluer(envJeu);
 		}
-		while(!GestionEnv_ballesImmobiles());	
+		while(!GestionEnv_ballesImmobiles(envJeu));	
 
 		// Demande de recommencer
 		sprintf(message, "(Appuyez sur [Q] pour quitter ou [R] pour rejouer)");
-		GestionEnv_afficherMessage(message, ALIGN_CENTRE, 45, 12);
+		GestionEnv_afficherMessage(envJeu, message, ALIGN_CENTRE, 45, 12);
 
 		// Attent réponse pour rejouer ou quitter
 		rejouer = attendreReponseQR();
+		if(rejouer){
+			GestionEnv_rejouer(envJeu);
+		}
 
 		// Supprime toutes les balles
-		GestionEnv_supprimerBalles();
+		//GestionEnv_supprimerBalles();
 
 		// Efface tout l'écran
-		SDL_FillRect(ecran, NULL, COULEUR_FOND);
+		SDL_FillRect(envJeu->ecran, NULL, COULEUR_FOND);
 	}
 
 	free(scoreMax);
@@ -190,11 +191,12 @@ int main(void){
 	//supprimerDicoV3(dicoV3); /* A VOIR */
 
 	// Libération du panier
-	GestionEnv_supprimerPanier();
+	//GestionEnv_supprimerPanier();
 
 	// Ferme la SDL et chipmunk
-	GestionEnv_quitChipmunk();
-	GestionEnv_quitSDL();
+	//GestionEnv_quitChipmunk();
+	//GestionEnv_quitSDL();
+	GestionEnv_supprimerEnvironnement(envJeu);
 
 	return EXIT_SUCCESS;
 }

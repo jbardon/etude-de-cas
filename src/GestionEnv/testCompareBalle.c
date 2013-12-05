@@ -14,15 +14,14 @@ static int comparerBalles(const Balle** a, const Balle** b){
 
 int main(void){
 
-	SDL_Surface* ecran = GestionEnv_initSDL();
-	cpSpace* espace = GestionEnv_initChipmunk();
+	Environnement* envJeu = GestionEnv_creerEnvironnement();
 
 	Balle* balles[] = {
-		Balle_creer(ecran, espace, cpv(5,1), cpvzero, 2, 0, 'A'),
-		Balle_creer(ecran, espace, cpv(3,1), cpvzero, 2, 0, 'A'),
-		Balle_creer(ecran, espace, cpv(1,1), cpvzero, 2, 0, 'A'),
-		Balle_creer(ecran, espace, cpv(2,1), cpvzero, 2, 0, 'A'),
-		Balle_creer(ecran, espace, cpv(4,1), cpvzero, 2, 0, 'A')
+		Balle_creer(envJeu->ecran, envJeu->espace, cpv(5,1), cpvzero, 2, 0, 'A'),
+		Balle_creer(envJeu->ecran, envJeu->espace, cpv(3,1), cpvzero, 2, 0, 'A'),
+		Balle_creer(envJeu->ecran, envJeu->espace, cpv(1,1), cpvzero, 2, 0, 'A'),
+		Balle_creer(envJeu->ecran, envJeu->espace, cpv(2,1), cpvzero, 2, 0, 'A'),
+		Balle_creer(envJeu->ecran, envJeu->espace, cpv(4,1), cpvzero, 2, 0, 'A')
 	};
 
 	printf("Test ligne Droite->Gauche\n");
@@ -39,8 +38,7 @@ int main(void){
 		printf("#%d: x(%d)\n", i, balles[i]->cx);	
 	}
 
-	GestionEnv_quitChipmunk();
-	GestionEnv_quitSDL();
+	GestionEnv_supprimerEnvironnement(envJeu);
 
 	return 0;
 }
