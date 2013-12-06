@@ -11,8 +11,8 @@
 #define FRICTION 1
 #define DELAI_APPARITION 5     // Délai d'apparition des balles (30(FPS) -> 1 seconde)
 
-#define NB_BALLES 100		    // Nombre de balles à générer
-#define BALLE_RAYON_MIN 20      // Rayon minimum d'une balle
-#define BALLE_RAYON_MAX 25      // Rayon maximum d'une balle
+#define NB_BALLES 140		    // Nombre de balles à générer
+#define BALLE_RAYON_MIN 17      // Rayon minimum d'une balle
+#define BALLE_RAYON_MAX 22      // Rayon maximum d'une balle
 
 #endif /* __CONFIG_H__ */

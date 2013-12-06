@@ -31,14 +31,14 @@ int main(void){
 
 /* DEBUT TEST */
 
-TTF_Init();
+	TTF_Init();
 	for(char l = 65; l < 91; l++){
 		Balle* balle = Balle_creer(ecran, espace, cpv(100,100), cpvzero, 50, 0x00FF00FF, l);
 		SDL_Flip(ecran);
 		getchar();	
 		Balle_supprimer(balle);
 	}
-TTF_Quit();
+	TTF_Quit();
 
 /* FIN TEST */
 

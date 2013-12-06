@@ -5,12 +5,12 @@
  * @version 1.0
  *
  * Test pour les fonctions :
- *    @see GestionEnv_creerPanier 
- *    @see GestionEnv_supprimerPanier
- *    @see GestionEnv_initSDL
- *    @see GestionEnv_quitSDL
- *    @see GestionEnv_initChipmunk
- *    @see GestionEnv_quitChipmunk
+ *    @see _creerPanier 
+ *    @see _supprimerPanier
+ *    @see _initSDL
+ *    @see _quitSDL
+ *    @see _initChipmunk
+ *    @see _quitChipmunk
  *
  * Affiche les lignes du panier avec une épaisseur de 1px pour vérifier
  * que l'épaisseur est bien gérée et les lignes tracées sont au bon endroit

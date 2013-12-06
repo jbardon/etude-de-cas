@@ -36,7 +36,7 @@ int main(void){
 
 /* DEBUT TEST */
 
-TTF_Init();
+	TTF_Init();
 	Balle* balle = Balle_creer(ecran, espace, cpv(100,100), cpvzero, 50, 0x00FF00FF, 'A');
 
 
@@ -85,8 +85,10 @@ TTF_Init();
 	pause();
 
 	Balle_supprimer(balle);
-TTF_Quit();
+	TTF_Quit();
+
 	cpSpaceFree(espace);
+
 	SDL_FreeSurface(ecran);
 	SDL_Quit();
 

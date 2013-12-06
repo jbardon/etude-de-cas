@@ -34,17 +34,25 @@
  */ 
 const cpFloat uniteTemps = 1.0/30.0; 
 
+/**
+ * @struct Environnement
+ * @brief Représente l'environnement de jeu
+ *
+ * L'environnement est physique (chipmunk) et graphique (SDL)
+ * Il s'occupe de gérer l'évolution des balles dans le panier
+ *
+ */
 typedef struct _Environnement Environnement;
 struct _Environnement {
-	cpSpace* espace;
-	cpShape* panier[3];
+	cpSpace* espace; 	/*!< Espace physique (chipmunk) */
+	cpShape* panier[3]; /*!< 3 éléments du physique du panier: sol, mur gauche et mur droit */
 
-	SDL_Surface* ecran;
-	GPtrArray* balles;
-	int nbBallesTotal;
-	int nbBallesCrees;
+	SDL_Surface* ecran; /*!< Ecran principal de la fenêtre (SDL) */
+	GPtrArray* balles;  /*!< Balles présentes dans l'environnement */
+	int nbBallesTotal;  /*!< Nombre de balles demandées */
+	int nbBallesCrees;  /*!< Nombre de balles créées */
 
-	int ajouterBalles;
+	int ajouterBalles;  /*!< Booléen qui indique si toutes les balles ont été ajoutées */
 };
 
 /**

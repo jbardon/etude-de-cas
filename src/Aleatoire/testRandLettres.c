@@ -1,3 +1,12 @@
+/**
+ * @file testRandLettres.c
+ * @brief Test pour créer la fonction Aleatoire_Lettre
+ * @author Jérémy.B
+ * @version 1.0
+ * @date 10 novembre 2013
+ *
+ * @warning Ce test a permis d'élaborer la fonction Aleatoire_Lettre
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,6 +113,7 @@ int main(void){
 	for(int i = 0; i < 1000; i++){
 		printf("%c ", _randLettre());
 	}
+	printf("\n");
 
 	return 0;
 }

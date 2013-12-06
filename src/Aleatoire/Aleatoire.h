@@ -1,10 +1,11 @@
 /**
  * @file Aleatoire.h
- * @brief 
+ * @brief Gestion de l'aléatoire pour différents éléments
  * @author Jérémy.B
  * @version 1.0
- * @date 10 novembre 2013
+ * @date 6 décembre 2013
  *
+ * Gestion de l'aléatoire pour un entier, une direction, une lettre, une position et une couleur
  *
  */
 

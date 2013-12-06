@@ -4,6 +4,7 @@
 #include <GestionEnv.h>
 #include <AlgoRecherche.h>
 #include <MenuSDL.h>
+#include <unistd.h>
 
 cpVect AttendreClic();
 void attendreCommencer();
@@ -41,6 +42,7 @@ int main(void){
 
 		// Attend que l'utilisateur appuis sur espace
 		GestionEnv_viderZoneMessage(envJeu);
+		GestionEnv_effacerPanier(envJeu->ecran);
 		sprintf(message, "Appuyez sur [ESPACE] pour commencer");
 		GestionEnv_afficherMessage(envJeu, message, ALIGN_CENTRE, 35, 20);
 		attendreCommencer();
@@ -76,7 +78,7 @@ int main(void){
 		// Récupère les caractères des balles sélectionnées par l'utilisateur
 		char* lettres = GestionEnv_donnerCaracteresLigne(envJeu, coordonneesLigne[0].x, coordonneesLigne[0].y, 
 														 coordonneesLigne[1].x, coordonneesLigne[1].y);
-		printf("Lettres selectionnes: %s\n", lettres);
+		printf("Lettres selectionnes: %s \\%d\n", lettres, strlen(lettres));
 
 		// Cherche un mot dans le dictionnaire
 		lettres = minuscules(lettres);
@@ -90,9 +92,8 @@ int main(void){
 		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
 			nbMotsTrouves++;
 		}
-		//printf("%f %f\n", debut.tv_usec, fin.tv_usec);
 		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
-		printf("Algo 1: %2.4fs\n", duree);
+		printf("Algo 1: %s trouve en %2.4fs\n", majuscules(motsVersions[0]), duree);
 
 		gettimeofday(&debut, NULL);
 		motsVersions[nbMotsTrouves] = version2(dicoV1, lettres);
@@ -101,7 +102,7 @@ int main(void){
 			nbMotsTrouves++;
 		}
 		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
-		printf("Algo 2: %2.4fs\n", duree);
+		printf("Algo 2: %s trouve en %2.4fs\n", majuscules(motsVersions[1]), duree);
 
 		gettimeofday(&debut, NULL);
 		motsVersions[nbMotsTrouves] = version3(dicoV3, lettres);
@@ -110,7 +111,7 @@ int main(void){
 			nbMotsTrouves++;
 		}
 		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
-		printf("Algo 3: %2.4fs\n", duree);
+		printf("Algo 3: %s trouve en %2.4fs\n", majuscules(motsVersions[2]), duree);
 
 		lettres = majuscules(lettres);
 		
@@ -182,6 +183,7 @@ int main(void){
 
 		// Efface tout l'écran
 		SDL_FillRect(envJeu->ecran, NULL, COULEUR_FOND);
+		printf("\n");
 	}
 
 	free(scoreMax);

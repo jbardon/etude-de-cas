@@ -1,10 +1,11 @@
 /**
  * @file Aleatoire.c
- * @brief 
+ * @brief Gestion de l'aléatoire pour différents éléments
  * @author Jérémy.B
  * @version 1.0
- * @date 10 novembre 2013
+ * @date 6 décembre 2013
  *
+ * Gestion de l'aléatoire pour un entier, une direction, une lettre, une position et une couleur
  *
  */
 
@@ -19,6 +20,10 @@ static char _LettreAleatoire(int nbRecursions);
 //											Gestion de l'aléatoire
 //-------------------------------------------------------------------------------------------------------------
 
+/**
+ * @fn void Aleatoire_init()
+ * @brief Fonction qui initialise le générateur de nombres aléatoires
+ */
 void Aleatoire_init(){
 	srand(time(NULL));
 }
@@ -55,7 +60,6 @@ cpVect Aleatoire_Direction(){
 		return cpv(x,0);
 	}
 }
-
 
 /**
  * @var static Uint32 couleurs []
@@ -131,7 +135,8 @@ static const float lettres [] = {
 
 /**
  * @fn static char Aleatoire_Lettre()
- * @brief Fonction qui retourne une lettre majuscule
+ *
+ * Fonction qui retourne une lettre majuscule
  * de l'alphabet aléatoirement en suivant les probabilités
  * d'apparition listés dans le tableau lettres
  *
@@ -143,6 +148,10 @@ char Aleatoire_Lettre(){
 	return _LettreAleatoire(0);
 }
 
+/**
+ * @fn static char _LettreAleatoire(int nbRecursions)
+ * @see Aleatoire_Lettre
+ */
 static char _LettreAleatoire(int nbRecursions){
 	
 	/**
@@ -196,6 +205,13 @@ static char _LettreAleatoire(int nbRecursions){
 	return lettre;
 }
 
+/**
+ * @fn cpVect Aleatoire_Position(int rayon)
+ * @brief Retourne une position aléatoire en haut du panier
+ *
+ * @param rayon rayon de la balle (pour la placer au dessus de la fenêtre)
+ * @return cpVect Coordonnées du centre de la balle
+ */
 cpVect Aleatoire_Position(int rayon){
 
 	static char p = 1;	
