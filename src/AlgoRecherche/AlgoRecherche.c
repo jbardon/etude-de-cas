@@ -1,18 +1,28 @@
 #include "AlgoRecherche.h"
 
-/*
-* Variables statiques
-*/
+//**********************************************************************************************************************//
+//******************************************* VARIABLES & METHODES STATIQUES *******************************************//
+//**********************************************************************************************************************//
 
-static char* chaine_retourV2 = NULL; //chaine de retour de la fonction (variable static du à la récursivité)
+/**
+* @var char* chaine_retourV2
+* @brief Chaine de caractère qui sera renvoyé dans la version 2
+* Initialisation: @see char* version2(GHashTable* table, char* chaine)
+*/
+static char* chaine_retourV2 = NULL;
+
+/**
+* @var char* chaine_retourV3
+* @brief Chaine de caractère qui sera renvoyé dans la version 3
+* Initialisation: @see char* version3(GHashTable* table, char* chaine)
+*/
 static char* chaine_retourV3 = NULL; 
 
 
 /*
 * Fonctions locales
 */
-
-static char *_str_sub (const char *s, unsigned int start, unsigned int end);
+static char* _str_sub (const char *s, unsigned int start, unsigned int end);
 static void _supprimer_retour_ligne(char *chaine);
 
 /*
@@ -22,18 +32,21 @@ typedef int (*FonctionComparer)(const void*, const void*); //fonction de compara
 typedef void (*FonctionHash)(const void*); //fonction de hashage
 
 
+//**********************************************************************************************************************//
 //************************************************* ALGO VERSION 1 & 2 *************************************************//
+//**********************************************************************************************************************//
 
-/*
-* Permet la création du dictionnaire pour les versions 1 & 2 des algos
-* Paramètres :
-* 	nomFichier, le fichier .txt contenant le dictionnaire
+/**
+* @fn GHashTable* chargerDicoV1_V2(char* nomFichier)
+* @brief Fonction de création du dictionnaire pour les versions 1 & 2 des algos
+* @param nomFichier La chaine de caractère contenant le nom du fichier.txt du dico
+* @return La HashTable contenant le dictionnaire
 */
-GHashTable* chargerDicoV1_V2(char* nomFichier){
-	
+GHashTable* chargerDicoV1_V2(char* nomFichier)
+{
 	GHashTable* DicoHash = g_hash_table_new_full(g_int_hash, g_int_equal, (GDestroyNotify)free, (GDestroyNotify)free);
-
-	if(DicoHash){
+	if(DicoHash)
+	{
 		int valhash = 0; //valeur de la fonction de hashage
 	
 		FILE* fichier = NULL; //definition de la variable fichier
@@ -54,7 +67,6 @@ GHashTable* chargerDicoV1_V2(char* nomFichier){
 				char* tmp = g_strdup(line);
 				g_hash_table_insert(DicoHash,/* GINT_TO_POINTER(valhash)*/tmpval, tmp); //Insertion dans le hashtable
 			}
-	
 			fclose(fichier); //on ferme le fichier qui à été ouvert		
 		}
 		else //si le fichier n'a pas été ouvert
@@ -62,61 +74,60 @@ GHashTable* chargerDicoV1_V2(char* nomFichier){
 			printf("Impossible d'ouvrir le fichier dico.txt \n");
 		}
 	}
-	
 	return DicoHash;
 }
 
-/*
-* Permet la recherche de la plus longue sous-chaine dans une chaine en respectant l'ordre
-* sous-chaine est contenue dans le dico
-* Paramètres :
-* 	table, hashtable contenant le dico
-*	chaine, les lettres de départ
+/**
+* @fn char* version1(GHashTable* table, char* chaine)
+* @brief Permet la recherche de la plus longue sous-chaine, contenue dans le dico, d'une chaine en respectant l'ordre (Algo 1)
+* @param table Le dictionnaire pour la recherche
+* @param chaine La chaine qui contient les caractère de base
+* @return La sous-chaine la plus longue contenue dans le dico
 */
 char* version1(GHashTable* table, char* chaine)
 {
-    char* chaine_retourV1 = ""; //variable qui contient le chaine à retourner
-    char* substring; //variable qui contiendra chaque sous-chaine
-    int taille=0; //contiendra la taille de la plus longue chaine
- 
-    for(int i=0; i<strlen(chaine); i++) //on parcourt la chaine
-    {
-        for(int j=i; j<strlen(chaine); j++) //on parcourt la chaine à partir de i
-        {
-            substring = _str_sub(chaine,i,j); //on extrait la sous chaine entre i et j
+	char* chaine_retourV1 = ""; //variable qui contient le chaine à retourner
+	char* substring; //variable qui contiendra chaque sous-chaine
+	int taille=0; //contiendra la taille de la plus longue chaine
+
+	for(int i=0; i<strlen(chaine); i++) //on parcourt la chaine
+	{
+		for(int j=i; j<strlen(chaine); j++) //on parcourt la chaine à partir de i
+		{
+			substring = _str_sub(chaine,i,j); //on extrait la sous chaine entre i et j
 			if(strlen(substring)>strlen(chaine_retourV1))
 			{
-		        const unsigned int h = g_str_hash(substring); //on recupère la valeur de hash de la sous-chaine ...
-		        
-		        if(g_hash_table_contains(table, &h)) //... on regarde si cette valeur est dans la hashtable
-		        {
-		            char* ret=g_hash_table_lookup(table, &h);
-		            if(strcmp(ret,substring)==0)
-		            {
-		                if(strlen(substring) > taille) //si la taille est plus grande que celui trouver avant
-		                {
-		                    taille=strlen(substring); //la taille change
-		                    chaine_retourV1=substring; //la chaine de retour est cette nouvelle chaine
-		                }
-		            }
-		        }
+				const unsigned int h = g_str_hash(substring); //on recupère la valeur de hash de la sous-chaine ...
+
+				if(g_hash_table_contains(table, &h)) //... on regarde si cette valeur est dans la hashtable
+				{
+				    char* ret=g_hash_table_lookup(table, &h);
+				    if(strcmp(ret,substring)==0)
+				    {
+						if(strlen(substring) > taille) //si la taille est plus grande que celui trouver avant
+						{
+							taille=strlen(substring); //la taille change
+							chaine_retourV1=substring; //la chaine de retour est cette nouvelle chaine
+						}
+				    }
+				}
 			}
-			if(strcmp(chaine_retourV1, substring)){
+			if(strcmp(chaine_retourV1, substring))
+			{
 				free(substring);
 			}
-        }
-    }
-    return chaine_retourV1;
+		}
+	}
+   	return chaine_retourV1;
 }
 
-
-/*
-* Permet la recherche de la plus longue sous-chaine extraite dans une chaine en respectant l'ordre
-* sous-chaine est contenue dans le dico
-* Paramètres :
-* 	table, hashtable contenant le dico
-*	active, la chaine qui contiendra toutes les sous-chaine d'une chaine de caractère
-*	rest, la chaine qui contient la chaine de départ
+/**
+* @fn version2_2(GHashTable* table, char* active, char* rest)
+* @brief Appeler lors de l'appel à la fonction version2(GHashTable* table, char* chaine)
+* @param table Le dictionnaire pour la recherche
+* @param active La chaine qui contiendra toutes les sous-chaine d'une chaine de caractère
+* @param rest La chaine qui contient la chaine de départ
+* @return La sous-chaine la plus longue contenue dans le dico
 */
 void version2_2(GHashTable* table, char* active, char* rest)
 {
@@ -127,20 +138,20 @@ void version2_2(GHashTable* table, char* active, char* rest)
             return; //on renvoie NULL
         }
  
-        const unsigned int h = g_str_hash(active); //on recupère la valeur de hash de la sous-chaine ...
-            
-        if(g_hash_table_contains(table, &h)) //... on regarde si cette valeur est dans la hashtable
+		if(strlen(active) > strlen(chaine_retourV2)) //si la taille est plus grande que celui trouver avant
         {
-            char* ret=g_hash_table_lookup(table, &h);
-            if(strcmp(ret,active)==0)
-            {
-                if(strlen(active) > strlen(chaine_retourV2)) //si la taille est plus grande que celui trouver avant
-                {
-                    chaine_retourV2 = realloc(chaine_retourV2, (strlen(active) + 1) * sizeof(char));//la chaine de retour est cette nouvelle chaine
+			const unsigned int h = g_str_hash(active); //on recupère la valeur de hash de la sous-chaine ...
+				
+			if(g_hash_table_contains(table, &h)) //... on regarde si cette valeur est dans la hashtable
+			{
+				char* ret=g_hash_table_lookup(table, &h);
+				if(strcmp(ret,active)==0)
+				{
+					chaine_retourV2 = realloc(chaine_retourV2, (strlen(active) + 1) * sizeof(char));//la chaine de retour est cette nouvelle chaine
 					strcpy(chaine_retourV2, active);
-                }
-            }
-        }
+				}
+			}
+		}
     }
     else
     {
@@ -160,8 +171,13 @@ void version2_2(GHashTable* table, char* active, char* rest)
 }
 
 
-/*
-* Permet de cacher la version avec 3 paramètres où le deuxième est une chaine vide
+/**
+* @fn char* version2(GHashTable* table, char* chaine)
+* @brief Permet la recherche de la plus longue sous-chaine extraite, contenue dans le dico, dans une chaine (Algo 2)
+* Permet de cacher la version avec 3 paramètres dont le 2ème est une chaine vide au départ
+* @param table Le dictionnaire pour la recherche
+* @param chaine La chaine qui contient les caractère de base
+* @return La sous-chaine extraite la plus longue contenue dans le dico
 */
 char* version2(GHashTable* table, char* chaine)
 {
@@ -171,23 +187,29 @@ char* version2(GHashTable* table, char* chaine)
 	return chaine_retourV2;
 }
 
-//*************************************************** ALGO VERSION 3 ***************************************************//
 
-/*
-* Permet la comparaison de deux caractères (ordre alphabétique)
-* Paramètres :
-* 	car1 et car2, les caractères à comparer
+//**********************************************************************************************************************//
+//*************************************************** ALGO VERSION 3 ***************************************************//
+//**********************************************************************************************************************//
+
+/**
+* @fn int compare(const char* car1, const char* car2)
+* @brief Permet la comparaison de deux caractères (ordre alphabétique)
+* @param car1 Le premier caractère à comparer
+* @param car2 Le second
+* @return 0 si égal, >0 si car2 est avant car1 dans l'alphabet, <0 si car2 est après car1 dans l'alphabet
 */
 int compare(const char* car1, const char* car2)
 {
 	return *car1-*car2;
 }
 
-/*
-* Fonction de hashage pour la hashtable de la version 3
+/**
+* @fn char* hashage(char* chaine)
+* @brief Fonction de hashage pour la hashtable de la version 3
 * Principe : mettre les lettres d'un mot dans l'ordre alphabétique
-* Paramètres :
-* 	chaine, la chaine de caractère à hacher
+* @param chaine Le mot à hacher
+* @return La chaine dans l'ordre alphabétique (la clé du mot)
 */
 char* hashage(char* chaine)
 {
@@ -197,12 +219,14 @@ char* hashage(char* chaine)
 	return hash;
 }
 
-/*
-* Permet l'insertion dans la table de hashage
-* Paramètres :
-* 	table, la table de hashage
-*	data, la donnée à insérer
-*	key, la clé de la donnée
+/**
+* @fn void insert(GHashTable* table, char* data, char* key)
+* @brief Permet l'insertion dans la table de hashage pour la version 3
+* Principe : ranger dans des listes pour les mots qui auront la même clé
+* @param table Le dictionnaire
+* @param data La donnée à insérer
+* @param key La clé de la donnée
+* @return void
 */
 void insert(GHashTable* table, char* data, char* key)
 {
@@ -211,7 +235,12 @@ void insert(GHashTable* table, char* data, char* key)
 	g_hash_table_replace(table, key, anag);
 }
 
-
+/**
+* @fn supprimerDicoV3(GHashTable* table)
+* @brief Permet la suppression et la libération de l'espace mémoire du dico pour la version 3
+* @param table Le dictionnaire
+* @return void
+*/
 void supprimerDicoV3(GHashTable* table)
 {
 	GHashTableIter iter;
@@ -228,17 +257,19 @@ void supprimerDicoV3(GHashTable* table)
 }
 
 
-/*
-* Permet la création du dictionnaire pour la version 3
-* Paramètres :
-* 	nomFichier, le fichier .txt contenant le dictionnaire
+/**
+* @fn GHashTable* chargerDicoV3(char* nomFichier)
+* @brief Fonction de création du dictionnaire pour la version 3 des algos
+* @param nomFichier La chaine de caractère contenant le nom du fichier.txt du dico
+* @return La HashTable contenant le dictionnaire
 */
 GHashTable* chargerDicoV3(char* nomFichier)
 {
 	
 	GHashTable* DicoHash = g_hash_table_new(g_str_hash, g_str_equal);
 
-	if(DicoHash){
+	if(DicoHash)
+	{
 		char* valhash=NULL; //valeur de la fonction de hashage
 	
 		FILE* fichier = NULL; //definition de la variable fichier
@@ -262,10 +293,17 @@ GHashTable* chargerDicoV3(char* nomFichier)
 			printf("Impossible d'ouvrir le fichier dico.txt \n");
 		}
 	}
-	
 	return DicoHash;
 }
 
+/**
+* @fn version3_2(GHashTable* table, char* active, char* rest)
+* @brief Appeler lors de l'appel à la fonction version3(GHashTable* table, char* chaine)
+* @param table Le dictionnaire pour la recherche
+* @param active La chaine qui contiendra toutes les sous-chaine d'une chaine de caractère
+* @param rest La chaine qui contient la chaine de départ
+* @return L'anagramme le plus long contenu dans le dico
+*/
 void version3_2(GHashTable* table, char* active, char* rest)
 {
 	if(strlen(rest)==0) //si la longueur de rest est 0
@@ -275,15 +313,18 @@ void version3_2(GHashTable* table, char* active, char* rest)
 		    return; //on renvoie NULL
 		}
 
-		char* anagramme = RechercheAnagramme(active,table); //on cherche un anagramme de active
-
-		if(anagramme) //s'il y a un anagramme
+		if(strlen(active)>strlen(chaine_retourV3))
 		{
-		    if(strlen(anagramme) > strlen(chaine_retourV3)) //si la taille de l'anagramme est plus grande que celui précédent
-		    {
-				chaine_retourV3=realloc(chaine_retourV3, (strlen(anagramme) + 1) * sizeof(char)); //la chaine de retour est ce nouveau anagramme
-              	strcpy(chaine_retourV3, anagramme);
-		    } 
+			char* anagramme = RechercheAnagramme(table,active); //on cherche un anagramme de active
+
+			if(anagramme) //s'il y a un anagramme
+			{
+				if(strlen(anagramme) > strlen(chaine_retourV3)) //si la taille de l'anagramme est plus grande que celui précédent
+		    	{
+					chaine_retourV3=realloc(chaine_retourV3, (strlen(anagramme) + 1) * sizeof(char)); 
+	      			strcpy(chaine_retourV3, anagramme);//la chaine de retour est ce nouveau anagramme
+		    	} 
+			}
 		}
 	}
 	else
@@ -303,8 +344,13 @@ void version3_2(GHashTable* table, char* active, char* rest)
 	}
 }
 
-/*
-* Permet de cacher la version avec 3 paramètres où le deuxième est une chaine vide
+/**
+* @fn char* version3(GHashTable* table, char* chaine)
+* @brief Permet la recherche du plus grand anagramme, contenue dans le dico, dans une chaine (Algo 3)
+* Permet de cacher la version avec 3 paramètres dont le 2ème est une chaine vide au départ
+* @param table Le dictionnaire pour la recherche
+* @param chaine La chaine qui contient les caractère de base
+* @return L'anagramme le plus long contenue dans le dico
 */
 char* version3(GHashTable* table, char* chaine)
 {
@@ -314,14 +360,14 @@ char* version3(GHashTable* table, char* chaine)
 	return chaine_retourV3;
 }
 
-/*
-* Permet la recherche de tous les anagrammes d'un mot et en renvoie un au hasard
-* Paramètres :
-* 	table, hashtable contenant le dico
-*	chaine, le mot
+/**
+* @fn char* RechercheAnagramme(GHashTable* table, char *chaine)
+* @brief Permet la recherche de tous les anagrammes d'un mot
+* @param table Le dictionnaire pour la recherche
+* @param chaine Le mot de départ
+* @return Un des anagrammes du mot au hasard (le mot lui même si aucun anagramme)
 */
-
-char* RechercheAnagramme(char *chaine, GHashTable* table)
+char* RechercheAnagramme(GHashTable* table, char *chaine)
 {
 	// Recherche une clé dans la table et renvoie un pointeur sur la donnée (une liste ici)
 	char* hash=hashage(chaine);
@@ -337,7 +383,6 @@ char* RechercheAnagramme(char *chaine, GHashTable* table)
 		int aleatoire = rand()%lenght; //tirage aléatoire d'un nombre entre 0 et length
 	
 		return (char*)g_list_nth_data((GList*)anag,aleatoire); //retourne un des anagrammes du mot
-		/*(char*)anag->data;*/
 	}	
 	else //s'il n'y a pas d'anagramme
 	{	
@@ -346,18 +391,20 @@ char* RechercheAnagramme(char *chaine, GHashTable* table)
 }
 
 
-
+//**********************************************************************************************************************//
 //************************************************** FONCTIONS STATIC **************************************************//
+//**********************************************************************************************************************//
 
-/*
-* Permet d'extraire la chaine de caractère de la chaine s qui est comprise entre les positions start et end.
+/**
+* @fn static char* _str_sub (const char *s, unsigned int start, unsigned int end)
+* @brief Permet d'extraire la sous chaine de la chaine s qui est comprise entre les positions start et end.
 * Si start==end, renvoie le caractère à la position de start et end.
-* Paramètres :
-* 	s, la chaine de départ dont on doit extraire
-*	start, la position de départ de la sous chaine
-* 	end, la position de fin de la sous chaine
+* @param s La chaine entière
+* @param start L'indice de départ
+* @param end L'indice de fin
+* @return La chaine de caractère extraite entre les positions start et end de s
 */
-static char *_str_sub (const char *s, unsigned int start, unsigned int end)
+static char* _str_sub (const char *s, unsigned int start, unsigned int end)
 {
 	char *new_s = NULL; //initialisation de la chaine que l'on retorunera
 	//si la chaine que l'on passe n'est pas NULL et que les positions sont OK
@@ -382,10 +429,11 @@ static char *_str_sub (const char *s, unsigned int start, unsigned int end)
 	return new_s;
 }
 
-/*
-* Permet la suppression du retour chariot d'une chaine de caractere
-* Paramètres :
-* 	chaine, la chaine de caractere à traiter
+/**
+* @fn static void _supprimer_retour_ligne(char *chaine)
+* @brief Permet la suppression du retour chariot d'une chaine de caractere
+* @param chaine La chaine de caractère
+* @return void
 */
 static void _supprimer_retour_ligne(char *chaine)
 {
