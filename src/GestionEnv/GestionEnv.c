@@ -536,6 +536,10 @@ char* GestionEnv_donnerCaracteresLigne(Environnement* envJeu, int x1, int y1, in
 		strcat(lettres, l);
 	}
 
+	if(nbBallesTouches == 0){
+		strcpy(lettres, "");
+	}
+
 	// Supprime les balles touchées
 	envJeu->nbBallesCrees -= nbBallesTouches;
 	for(unsigned int i = 0; i < nbBallesTouches; i++){
