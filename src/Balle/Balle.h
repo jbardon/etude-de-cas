@@ -32,8 +32,9 @@
  * et physiquement (avec chipmunk) 
  *
  */
-typedef struct _Balle Balle;
-struct _Balle {
+//typedef struct _Balle Balle; /* Documentation plus propre */
+//struct _Balle {
+typedef struct {
 	SDL_Surface* ecranJeu;  /*!< Ecran principal de la fenêtre SDL */
 	SDL_Surface* canvas;    /*!< Surface ou la balle est dessinée */
 
@@ -45,7 +46,7 @@ struct _Balle {
 	Uint32 couleur;			/*!< Couleur de la balle sous la forme 0xRRGGBBAA */
 
 	char lettre;			/*!< Lettre liée à la balle (dessinée au centre) */
-};
+} Balle;
 
 
 extern Balle* Balle_creer(SDL_Surface* surf, cpSpace* espace, cpVect centre, cpVect direction, 

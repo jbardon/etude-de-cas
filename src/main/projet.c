@@ -1,3 +1,10 @@
+/**
+ * @file projet.c
+ * @brief Jeu en intégralitée
+ * @author Jérémy.B
+ * @version 1.0
+ */
+
 #include <stdio.h>
 #include <sys/time.h>
 
@@ -6,12 +13,19 @@
 #include <MenuSDL.h>
 #include <unistd.h>
 
-cpVect AttendreClic();
-void attendreCommencer();
-int attendreReponseQR();
-char* majuscules(char* chaine);
-char* minuscules(char* chaine);
+//-------------------------------------------------------------------------------------------------------------
+//										Déclaration des fonctions locales
+//-------------------------------------------------------------------------------------------------------------
+static cpVect _attendreClic();
+static void _attendreCommencer();
+static int _attendreReponseQR();
 
+static char* _majuscules(char* chaine);
+static char* _minuscules(char* chaine);
+
+//-------------------------------------------------------------------------------------------------------------
+//												Routine principale
+//-------------------------------------------------------------------------------------------------------------
 int main(void){
 
 
@@ -45,7 +59,7 @@ int main(void){
 		GestionEnv_effacerPanier(envJeu->ecran);
 		sprintf(message, "Appuyez sur [ESPACE] pour commencer");
 		GestionEnv_afficherMessage(envJeu, message, ALIGN_CENTRE, 35, 20);
-		attendreCommencer();
+		_attendreCommencer();
 		GestionEnv_viderZoneMessage(envJeu);
 
 		/*
@@ -70,7 +84,7 @@ int main(void){
 		// Récupère les coordonnées du clic et trace un point à cet emplacement
 		cpVect coordonneesLigne[2];
 		for(unsigned int i = 0; i < 2; i++){
-			coordonneesLigne[i] = AttendreClic();
+			coordonneesLigne[i] = _attendreClic();
 			filledCircleColor(envJeu->ecran, coordonneesLigne[i].x, coordonneesLigne[i].y, 4, 0x000000FF);
 			SDL_Flip(envJeu->ecran);
 		}
@@ -78,10 +92,11 @@ int main(void){
 		// Récupère les caractères des balles sélectionnées par l'utilisateur
 		char* lettres = GestionEnv_donnerCaracteresLigne(envJeu, coordonneesLigne[0].x, coordonneesLigne[0].y, 
 														 coordonneesLigne[1].x, coordonneesLigne[1].y);
+
 		printf("Lettres selectionnes: %s \\%d\n", lettres, strlen(lettres));
 
 		// Cherche un mot dans le dictionnaire
-		lettres = minuscules(lettres);
+		lettres = _minuscules(lettres);
 		
 		int nbMotsTrouves = 0;
 		char* motsVersions [3] = { NULL };
@@ -93,7 +108,7 @@ int main(void){
 			nbMotsTrouves++;
 		}
 		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
-		printf("Algo 1: %s trouve en %2.4fs\n", majuscules(motsVersions[0]), duree);
+		printf("Algo 1: %s trouve en %2.4fs\n", _majuscules(motsVersions[0]), duree);
 
 		gettimeofday(&debut, NULL);
 		motsVersions[nbMotsTrouves] = version2(dicoV1, lettres);
@@ -102,7 +117,7 @@ int main(void){
 			nbMotsTrouves++;
 		}
 		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
-		printf("Algo 2: %s trouve en %2.4fs\n", majuscules(motsVersions[1]), duree);
+		printf("Algo 2: %s trouve en %2.4fs\n", _majuscules(motsVersions[1]), duree);
 
 		gettimeofday(&debut, NULL);
 		motsVersions[nbMotsTrouves] = version3(dicoV3, lettres);
@@ -111,18 +126,18 @@ int main(void){
 			nbMotsTrouves++;
 		}
 		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
-		printf("Algo 3: %s trouve en %2.4fs\n", majuscules(motsVersions[2]), duree);
+		printf("Algo 3: %s trouve en %2.4fs\n", _majuscules(motsVersions[2]), duree);
 
-		lettres = majuscules(lettres);
+		_majuscules(lettres);
 		
 		if(nbMotsTrouves > 0){
 
 			// Définition des couples mot-score
 			for(int i = 0; i < nbMotsTrouves; i++){
-				motsTrouves[i] = Solution_creer(majuscules(motsVersions[i]), strlen(motsVersions[i]));
+				motsTrouves[i] = Solution_creer(_majuscules(motsVersions[i]), strlen(motsVersions[i]));
 			}
 	
-			SDL_Surface* menu = MenuSDL_creer(envJeu->ecran, lettres, motsTrouves, nbMotsTrouves);
+			SDL_Surface* menu = MenuSDL_creer(lettres, motsTrouves, nbMotsTrouves);
 			SDL_Rect pos = { 0, 0 };
 			SDL_BlitSurface(menu, NULL, envJeu->ecran, &pos);
 			SDL_Flip(envJeu->ecran);
@@ -173,7 +188,7 @@ int main(void){
 		GestionEnv_afficherMessage(envJeu, message, ALIGN_CENTRE, 45, 12);
 
 		// Attent réponse pour rejouer ou quitter
-		rejouer = attendreReponseQR();
+		rejouer = _attendreReponseQR();
 		if(rejouer){
 			GestionEnv_rejouer(envJeu);
 		}
@@ -203,7 +218,17 @@ int main(void){
 	return EXIT_SUCCESS;
 }
 
-cpVect AttendreClic(){
+//-------------------------------------------------------------------------------------------------------------
+//										Définition des fonctions locales
+//-------------------------------------------------------------------------------------------------------------
+
+/**
+ * @fn static cpVect _attendreClic()
+ * @brief Attend un clic de souris (SDL) et retoune la position du pointeur
+ *
+ * @return Position du pointeur au moment du clic
+ */
+static cpVect _attendreClic(){
 
     SDL_Event event;
 	cpVect positionSouris = cpvzero;
@@ -226,7 +251,11 @@ cpVect AttendreClic(){
 	return positionSouris;
 }
 
-void attendreCommencer(){
+/**
+ * @fn static void _attendreCommencer()
+ * @brief Attend un appuis sur la touche [Espace] (SDL)
+ */
+static void _attendreCommencer(){
 
     int continuer = 1;
     SDL_Event event;
@@ -240,7 +269,16 @@ void attendreCommencer(){
     }
 }
 
-int attendreReponseQR(){
+/**
+ * @fn static int _attendreReponseQR()
+ * @brief Attend une réponse de l'utilisateur (SDL)
+ *
+ * L'utilisateur doit appuyer sur la touche [R] pour rejouer 
+ * ou [Q] pour quitter
+ *
+ * @return Retourne 1 si l'utilisateur veut rejouer, 0 s'il veut quitter le jeu
+ */
+static int _attendreReponseQR(){
 
 	unsigned int rejouer = 0;
 
@@ -274,16 +312,37 @@ int attendreReponseQR(){
 	return rejouer;
 }
 
-char* minuscules(char* chaine){
+/**
+ * @fn static char* _minuscules(char* chaine)
+ * @brief Formate une chaine de caractère en minuscules
+ *
+ * @return Chaine de caractère en minuscules
+ *
+ * @warning La chaine est modifié même si le retour n'est pas pris en compte.
+ * Il s'agit d'un aspect pratique
+ */
+static char* _minuscules(char* chaine){
 	for(unsigned int i = 0; i < strlen(chaine); i++){
 		chaine[i] = (char) tolower(chaine[i]);
 	}
 	return chaine;
 }
 
-char* majuscules(char* chaine){
+/**
+ * @fn static char* _majuscules(char* chaine)
+ * @brief Formate une chaine de caractère en majuscules
+ *
+ * @return Chaine de caractère en majuscules
+ *
+ * @warning La chaine est modifié même si le retour n'est pas pris en compte.
+ * Il s'agit d'un aspect pratique
+ */
+static char* _majuscules(char* chaine){
 	for(unsigned int i = 0; i < strlen(chaine); i++){
 		chaine[i] = (char) toupper(chaine[i]);
 	}
 	return chaine;
 }
+
+
+

@@ -1,3 +1,14 @@
+/**
+ * @file testMenuSDL.c
+ * @brief Test la bibliothèque MenuSDL
+ * @author Jérémy.B
+ * @version 1.0
+ *
+ * Affichage des lettres sélectionnée et des résultats
+ * aux 3 algorithmes de recherche de mots
+ *
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 
@@ -24,7 +35,7 @@ int main(void){
 	};	
 
 	/* Créé et affiche le menu */
-	SDL_Surface* menu = MenuSDL_creer(ecran, "AAJKNBKI", motsTrouves, 3);
+	SDL_Surface* menu = MenuSDL_creer("AAJKNBKI", motsTrouves, 3);
 	SDL_Rect pos = { 0, 0 };
 	SDL_BlitSurface(menu, NULL, ecran, &pos);
 	SDL_Flip(ecran);

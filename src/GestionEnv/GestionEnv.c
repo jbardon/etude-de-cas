@@ -16,128 +16,41 @@
 //										Déclaration des fonctions locales
 //-------------------------------------------------------------------------------------------------------------
 
+/* Environnement physique et graphique */
 static cpSpace* _initChipmunk();
 static SDL_Surface* _initSDL();
 
 static void _quitChipmunk(cpSpace* espace);
 static void _quitSDL(SDL_Surface* ecran);
 
+/* Panier */
 static void _creerPanier(Environnement* envJeu);
 static void _supprimerPanier(cpShape** panier);
-
-static void _afficherProgression(Environnement* envJeu);
 static void _dessinerPanier();
 
-static void _Balle_foreach(GPtrArray* balles, Balle_Fonction fonction);
+/* Balles */
 static void _creerBalles(Environnement* envJeu, int nbBalles);
 static void _creerUneBalle(Environnement* envJeu);
 static void _supprimerBalles(GPtrArray* balles);
 
-//-------------------------------------------------------------------------------------------------------------
-//										Variables liées à l'environnement
-//-------------------------------------------------------------------------------------------------------------
-
-/**
- * @var cpSpace* espace
- * @brief Espace physique au sens de chipmunk
- *
- * Initialisation: @see GestionEnv_initChipmunk
- * Destruction: @see GestionEnv_quitChipmunk
- *
- */ 
-//static cpSpace* espace = NULL;
-
-/**
- * @var cpShape* panier[3]
- * @brief Limitations physique du saladier ou tombent
- * les balles
- *
- * @see GestionEnv_creerPanier
- * @see GestionEnv_supprimerPanier
- *
- * Ce tableau contient dans l'ordre le sol et les 2 murs (gauche, droite) 
- *
- */ 
-//static cpShape* panier[3]; 
-
-/**
- * @var double temps
- * @brief Temps dans le monde chipmunk
- *
- * Temps qui s'écoule dans le monde chipmunk à 
- * chaque appel de la fonction GestionEnv_evoluer
- *
- * @see GestionEnv_evoluer
- *
- */ 
-//static double temps = 0;
-
-/**
- * @var SDL_Surface* ecran
- * @brief Ecran principal de fenêtre SDL
- *
- * @see GestionEnv_initSDL
- * @see GestionEnv_quitSDL
- *
- */ 
-//static SDL_Surface* ecran = NULL;
-
-/**
- * @var GSList balles
- * @brief Tableau des balles présentent dans l'environnement
- * Balles créées avec la fonction _creerUneBalle
- *
- * @see GestionEnv_creerBalles
- * @see _creerUneBalle
- *
- *
- */ 
-//static GPtrArray* balles = NULL;
-
-/**
- * @var int nbBallesTotal
- * @brief Taille du tableau de balles
- *
- * @see balles
- */ 
-//static int nbBallesTotal = 0;  
-
-/**
- * @var int nbBallesCrees
- * @brief Nombre de balles réélement créées dans l'environnement
- *
- * @see GestionEnv_creerBalles
- */ 
-//static int nbBallesCrees = 0; 
-
-/**
- * @var int timerLancement
- * @brief Compteur de temps pour lancer les balles
- *
- * Le temps évolue avec GestionEnv_evoluer à travers
- * la variable temps. Une fois le compteur à son maximum (DELAI_APPARITION)
- * une balle est créée et le timer est remis à zéro
- *
- * @see temps
- * @see GestionEnv_evoluer
- * @see DELAI_APPARITION (config.h)
- */ 
-//static int timerLancement = 0;
-
-/**
- * @var int ajouterBalles
- * @brief Spécifie si l'on peut ajouter des balles
- * Important dans le cas ou l'on laisse évoluer le système
- * Une fois les lettres sélectionnées et supprimées
- *
- * @see GestionEnv_creerBalles
- */ 
-//static int ajouterBalles = 0;
+static void _Balle_foreach(GPtrArray* balles, Balle_Fonction fonction);
+static void _afficherProgression(Environnement* envJeu);
 
 //-------------------------------------------------------------------------------------------------------------
 //										Initialisation de l'environnement
 //-------------------------------------------------------------------------------------------------------------
 
+/**
+ * @fn Environnement* GestionEnv_creerEnvironnement()
+ * @brief Créé un nouvel environnement
+ * 
+ * @see _initChipmunk
+ * @see _initSDL
+ * @see _creerPanier
+ * @see _creerBalles
+ *
+ * @return L'environnement créé
+ */
 Environnement* GestionEnv_creerEnvironnement(){
 	
 	Environnement* envJeu = malloc(sizeof(Environnement));
@@ -160,6 +73,12 @@ Environnement* GestionEnv_creerEnvironnement(){
 	return envJeu;
 }
 
+/**
+ * @fn void GestionEnv_rejouer(Environnement* envJeu)
+ * @brief Paramètre l'environnement pour rejouer une partie
+ *
+ * @param envJeu Environnement de jeu
+ */
 void GestionEnv_rejouer(Environnement* envJeu){
 	_supprimerBalles(envJeu->balles);
 	envJeu->nbBallesTotal = 0;
@@ -170,9 +89,6 @@ void GestionEnv_rejouer(Environnement* envJeu){
 /**
  * @fn cpSpace* _initChipmunk()
  * @brief Fonction qui initialise le monde chipmunk
- * 
- * @see espace
- *
  * @return L'espace physique créé
  */
 static cpSpace* _initChipmunk(){
@@ -189,17 +105,14 @@ static cpSpace* _initChipmunk(){
 
 /**
  * @fn SDL_Surface* _initSDL()
- * @brief Fonction qui initialise la bibliothèque SDL 
- * et la fenêtre de jeu SDL
- * 
- * @see ecran
- *
+ * @brief Fonction qui initialise la bibliothèque SDL et la fenêtre de jeu SDL
  * @return La fenêtre SDL
  */
 static SDL_Surface* _initSDL(){
 
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
+
 	SDL_Surface* ecran = SDL_SetVideoMode(LARGUEUR_ECRAN, HAUTEUR_ECRAN, SCREEN_BPP, SDL_HWSURFACE);
 
 	if(ecran){
@@ -214,6 +127,14 @@ static SDL_Surface* _initSDL(){
 //										Suppression de l'environnement
 //-------------------------------------------------------------------------------------------------------------
 
+/**
+ * @fn void GestionEnv_supprimerEnvironnement(Environnement* envJeu)
+ * @brief Supprime un environnement de jeu
+ * 
+ * @param envJeu Environnement de jeu créé avec GestionEnv_creerEnvironnement
+ *
+ * @see GestionEnv_creerEnvironnement
+ */
 void GestionEnv_supprimerEnvironnement(Environnement* envJeu){
 	_supprimerBalles(envJeu->balles);
 	_supprimerPanier(envJeu->panier);
@@ -261,8 +182,8 @@ static void _quitSDL(SDL_Surface* ecran){
  */
 void GestionEnv_evoluer(Environnement* envJeu){
 	
-	static double temps = 0;
-	static int timerLancement = 0;
+	static double temps = 0; // Temps qui s'écoule dans l'espace chipmunk
+	static int timerLancement = 0; // Compteur de temps pour lancer les balles
 
 	// Créé une balle à chaque intervalle de temps, max = nombre de balles donnée dans GestionEnv_creerBalles
 	if(envJeu->ajouterBalles && timerLancement >= DELAI_APPARITION){
@@ -295,10 +216,23 @@ void GestionEnv_evoluer(Environnement* envJeu){
 	timerLancement += 1;
 }
 
+/**
+ * @fn static void _afficherProgression(Environnement* envJeu)
+ * @brief Affiche la progression de l'ajout des balles
+ *
+ * Calcul le ration nbBallesCrees/nbBallesTotal et l'affiche
+ * sous le panier sous la forme d'une ligne rouge
+ *
+ * @param envJeu Environnement de jeu dans lequel les balles ont été créées
+ *
+ * @warning La barre de progression ne s'affichera plus une fois toutes les balles créées
+ */
 static void _afficherProgression(Environnement* envJeu){	
 
+	// Efface la barre de progression
 	boxColor(envJeu->ecran, 0, HAUTEUR_ECRAN - 5, LARGUEUR_ECRAN, HAUTEUR_ECRAN, COULEUR_FOND);
 
+	// Calcul et affiche la progression
 	if(envJeu->ajouterBalles){
 		float longueur = ((float)envJeu->nbBallesCrees/(float)envJeu->nbBallesTotal) * LARGUEUR_ECRAN;
 		boxColor(envJeu->ecran, 0, HAUTEUR_ECRAN - 5, ceil(longueur), HAUTEUR_ECRAN, 0xFF4040DD);
@@ -349,13 +283,19 @@ static void _creerPanier(Environnement* envJeu){
 	_dessinerPanier(envJeu->ecran);
 }
 
+/**
+ * @fn static void _dessinerPanier(SDL_Surface* ecran)
+ * @brief Dessine le panier sur une surface SDL
+ *
+ * @param ecran Ecran de jeu SDL
+ */
 static void _dessinerPanier(SDL_Surface* ecran){
 
 	static const unsigned int e = 10; // Epaisseur du trait (SDL)
-	static unsigned int x;
-	static unsigned int y;
-	static unsigned int l;
-	static unsigned int h;
+	static unsigned int x;            // Position en abscisse
+	static unsigned int y;            // Position en ordonnée
+	static unsigned int l;            // Longueur
+	static unsigned int h;            // Hauteur
 
 	// Initialisations
 	x = OFFSET;
@@ -378,7 +318,7 @@ static void _dessinerPanier(SDL_Surface* ecran){
 
 /**
  * @fn void _supprimerPanier(cpShape** panier)
- * @brief Fonction qui supprime le panier au sens physique (chipmunk)
+ * @brief Supprime le panier au sens physique (chipmunk)
  */
 static void _supprimerPanier(cpShape** panier){
 	for(int i = 0; i < 3; i++){
@@ -386,6 +326,10 @@ static void _supprimerPanier(cpShape** panier){
 	}
 }
 
+/**
+ * @fn void GestionEnv_effacerPanier(SDL_Surface* ecran)
+ * @brief Efface tout le panier (bords compris)
+ */
 void GestionEnv_effacerPanier(SDL_Surface* ecran){
 	boxColor(ecran, 0, 2*OFFSET, LARGUEUR_ECRAN, HAUTEUR_ECRAN, COULEUR_FOND);
 }
@@ -395,10 +339,11 @@ void GestionEnv_effacerPanier(SDL_Surface* ecran){
 //-------------------------------------------------------------------------------------------------------------
 
 /**
- * @fn static void _Balle_foreach(Balle_Fonction fonction)
+ * @fn static void _Balle_foreach(GPtrArray* balles, Balle_Fonction fonction)
  * @brief Fonction qui applique une fonction sur toutes
  * les balles présentes dans l'environnement
  *
+ * @param balles Tableau de balles sur lequel appliquer la fonction
  * @param fonction Fonction provenant de la bibliothèque Balle
  * ayant aucun retour et pour seul paramètre une balle
  */
@@ -407,7 +352,7 @@ static void _Balle_foreach(GPtrArray* balles, Balle_Fonction fonction){
 }
 
 /**
- * @fn static void _creerUneBalle()
+ * @fn static void _creerUneBalle(Environnement* envJeu)
  * @brief Fonction qui créé une balle dans l'environnement 
  * avec des paramètres aléatoires :
  *
@@ -418,8 +363,7 @@ static void _Balle_foreach(GPtrArray* balles, Balle_Fonction fonction){
  * couleur: @see couleurs
  * lettre: A -> Z
  *
- * @param fonction Fonction provenant de la bibliothèque Balle
- * ayant aucun retour et pour seul paramètre une balle
+ * @param envJeu Environnement de jeu dans lequel créer la balle
  */
 static void _creerUneBalle(Environnement* envJeu){
 
@@ -431,21 +375,23 @@ static void _creerUneBalle(Environnement* envJeu){
 	const char lettre = Aleatoire_Lettre();
 
 	// Création de la balle
-	//balles[nbBallesCrees] = Balle_creer(ecran, espace, centre, direction, rayon, couleur, lettre);
 	g_ptr_array_add(envJeu->balles, Balle_creer(envJeu->ecran, envJeu->espace, centre, direction, rayon, couleur, lettre));
 	envJeu->nbBallesCrees++;		
 }
 
 /**
- * @fn void _creerBalles(int nbBalles)
+ * @fn static void _creerBalles(Environnement* envJeu, int nbBalles)
  * @brief Fonction qui demande à l'environnement de créé n balles.
  *
  * A l'appel de cette fonction une seule balle est réélement créée (@see nbBallesCrees)
  * Les suivantes sont créés toutes les n secondes (@see timerLancement, 
  * @see DELAI_APPARITION dans config.h) par la fonction @see GestionEnv_evoluer
  *
- * @param fonction Fonction provenant de la bibliothèque Balle
- * ayant aucun retour et pour seul paramètre une balle
+ * @param envJeu Environnement de jeu dans lequel créer les balles
+ * @param nbBalles Nombre de balles à créer
+ *
+ * @warning Les balles ne seront pas créées en même temps, voir GestionEnv_evoluer
+ * @see GestionEnv_evoluer
  */
 static void _creerBalles(Environnement* envJeu, int nbBalles){
 
@@ -460,9 +406,9 @@ static void _creerBalles(Environnement* envJeu, int nbBalles){
 }
 
 /**
- * @fn void _supprimerBalles()
- * @brief Fonction qui supprime toutes les balles
- * présentent dans l'environnement
+ * @fn static void _supprimerBalles(GPtrArray* balles)
+ * @brief Supprime toutes les balles présentes dans l'environnement
+ * @param balles Tableau des balles à supprimer
  */
 static void _supprimerBalles(GPtrArray* balles){
 
@@ -473,9 +419,11 @@ static void _supprimerBalles(GPtrArray* balles){
 }
 
 /**
- * @fn int GestionEnv_ballesImmobiles()
- * @brief Fonction qui retourne 1 si toutes les balles 
- * de l'environnement sont immobiles (@see Balle_estImmobile), 0 sinon
+ * @fn int GestionEnv_ballesImmobiles(Environnement* envJeu)
+ * @brief Retourne 1 si toutes les balles de l'environnement sont immobiles, 0 sinon
+ *
+ * @param envJeu Environnement de jeu dans lequel sont les balles
+ * @see Balle_estImmobile
  */
 int GestionEnv_ballesImmobiles(Environnement* envJeu){
 
@@ -493,11 +441,51 @@ int GestionEnv_ballesImmobiles(Environnement* envJeu){
 //-------------------------------------------------------------------------------------------------------------
 
 /**
- * @fn char* GestionEnv_donnerCaracteresLigne(int x1, int y1, int x2, int y2)
+ * @brief Fonction générique pour comparer 2 éléments de même type
+ *
+ * @see GestionEnv_donnerCaracteresLigne
+ */
+typedef int (*FonctionComparer)(const void *, const void *);
+
+/** @brief Ligne tracée de la droite vers la gauche */
+#define DIR_GAUCHE 1
+
+/** @brief Ligne tracée de la gauche vers la droite */
+#define DIR_DROITE -1
+
+/**
+ * @var static int sensLigne
+ * @brief Sens dans lequel la ligne est tracée
+ *
+ * @see GestionEnv_donnerCaracteresLigne
+ * @see _comparerBalles
+ */ 
+static int sensLigne = DIR_GAUCHE;
+
+/**
+ * @fn static int _comparerBalles(const Balle** a, const Balle** b)
+ * @brief Compare 2 balles selon leur position en absisse
+ *
+ * @param a Balle n°1
+ * @param b Balle n°2
+ *
+ * @return Retourne a->x - b->x ou b->x - a->x selon le sens de la ligne
+
+ * @warning Prend en compte le sens de lequel la ligne a été tracée
+ * @see sensLigne
+ * @see GestionEnv_donnerCaracteresLigne
+ */
+static int _comparerBalles(const Balle** a, const Balle** b){
+	return ((sensLigne == DIR_DROITE) ?  (*a)->cx -  (*b)->cx :  (*b)->cx -  (*a)->cx);
+}
+
+/**
+ * @fn char* GestionEnv_donnerCaracteresLigne(Environnement* envJeu, int x1, int y1, int x2, int y2)
  * @brief Fonction qui affiche une ligne de (x1,y1) à (x2,y2) et renvoie
  * la chaine de caractères formée par les lettres des balles traversés
  * par cette ligne
- *
+ * 
+ * @param envJeu Environnement de jeu dans lequel tracer la ligne
  * @param x1 Abscisse du point de départ de la ligne
  * @param y1 Ordonnée du point de départ de la ligne
  * @param x2 Abscisse du point final de la ligne
@@ -506,26 +494,15 @@ int GestionEnv_ballesImmobiles(Environnement* envJeu){
  * @return Chaîne de caractère formée par les lettres des balles 
  * traversés par la ligne
  */
-typedef int (*FonctionComparer)(const void *, const void *);
-
-#define DROITE -1
-#define GAUCHE 1
-
-static int sensLigne = GAUCHE;
-static int _comparerBalles(const Balle** a, const Balle** b){
-	return ((sensLigne == DROITE) ?  (*a)->cx -  (*b)->cx :  (*b)->cx -  (*a)->cx);
-}
-
 char* GestionEnv_donnerCaracteresLigne(Environnement* envJeu, int x1, int y1, int x2, int y2){
 
 	// Dessine la ligne
 	lineColor(envJeu->ecran, x1, y1, x2, y2, 0x000000FF);
 
 	// Cherche les balles touchées
-	// 80 = diamètre max d'une balle (voir _creerUneBalle)
 	const unsigned int nbBallesMaxDiag = ceil(sqrt(pow(HAUTEUR_ECRAN,2) + 
 										      pow(LARGUEUR_ECRAN,2))/(2*BALLE_RAYON_MAX)) * 2;
-/* DEBUG 	printf("max: %d\n", nbBallesMaxDiag); */
+
 	unsigned int nbBallesTouches = 0;	
 	Balle** ballesTouches = calloc(nbBallesMaxDiag, sizeof(Balle*));	
 
@@ -545,11 +522,10 @@ char* GestionEnv_donnerCaracteresLigne(Environnement* envJeu, int x1, int y1, in
 			nbBallesTouches++;
 		}
 	}
-/* DEBUG 	printf("touches: %d\n", nbBallesTouches); */
 
 	// Met les balles dans l'ordre suivant le tracé de la ligne
 	// pour avoir les caractères dans le bon ordre (pour version 1 & 2 de l'algo de recherche)
-	sensLigne = ((x1 < x2) ? DROITE : GAUCHE);
+	sensLigne = ((x1 < x2) ? DIR_DROITE : DIR_GAUCHE);
 	qsort(ballesTouches, nbBallesTouches, sizeof(Balle*), (FonctionComparer) _comparerBalles);
 
 	// Construit la chaine de caractères
@@ -560,7 +536,7 @@ char* GestionEnv_donnerCaracteresLigne(Environnement* envJeu, int x1, int y1, in
 		strcat(lettres, l);
 	}
 
-	// Supprime les balles touchées du tableau global
+	// Supprime les balles touchées
 	envJeu->nbBallesCrees -= nbBallesTouches;
 	for(unsigned int i = 0; i < nbBallesTouches; i++){
 		g_ptr_array_remove(envJeu->balles, ballesTouches[i]);
@@ -574,18 +550,51 @@ char* GestionEnv_donnerCaracteresLigne(Environnement* envJeu, int x1, int y1, in
 	return lettres;
 }
 
-static int nbMessages = 0;
+//-------------------------------------------------------------------------------------------------------------
+//								Gestion de l'affichage et de l'effacement
+//-------------------------------------------------------------------------------------------------------------
+
+/**
+ * @var static int nbMessages
+ * @brief Nombre de message écrit dans la zone des message
+ *
+ * Est incrémenté par GestionEnv_afficherMessage et remise zéro 
+ * par GestionEnv_viderZoneMessage
+ *
+ * Permet de n'afficher le fond de la zone des message qu'une fois
+ * pour éviter de masquer les anciens messages
+ */ 
+static int nbMessages = 0; 
+
+/**
+ * @fn void GestionEnv_afficherMessage(Environnement* envJeu, char* message, int x, int y, int taille)
+ * @brief Affiche un message an haut de l'écran dans la zone dédiée
+ *
+ * Le premier message affiché après appel à GestionEnv_viderZoneMessage
+ * applique un fond à la zone d'affichage
+ *
+ * @param envJeu Environnement de jeu dans lequel afficher le message
+ * @param message Message à afficher
+ * @param x Position en abscisse ou afficher le message
+ * @param y Position en ordonnée ou afficher le message
+ * @param taille Taille de la police
+ *
+ * @warning Cette fonction ne prend pas en compte la collision entre 2 messages
+ * écrit au même endroit, veuillez utiliser GestionEnv_viderZoneMessage	
+ */
 void GestionEnv_afficherMessage(Environnement* envJeu, char* message, int x, int y, int taille){
 
 	if(!nbMessages++){
 		boxColor(envJeu->ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, 0xA9EAFEFF);
 	}
 
+	// Chargement de la police
 	SDL_Color couleur = {20, 50, 50};
 	
 	TTF_Font* police = TTF_OpenFont("arial.ttf", taille);
 	TTF_SetFontStyle(police, TTF_STYLE_BOLD);
 
+	// Calcul de la position
 	if(x == ALIGN_CENTRE){
 		int w = 0;
 		TTF_SizeText(police, message, &w, NULL);
@@ -595,6 +604,7 @@ void GestionEnv_afficherMessage(Environnement* envJeu, char* message, int x, int
 	SDL_Surface* texte = TTF_RenderText_Blended(police, message, couleur);
 	SDL_Rect position = {x, y};
 
+	// Affichage
 	SDL_BlitSurface(texte, NULL, envJeu->ecran, &position);
 	SDL_FreeSurface(texte);
 	TTF_CloseFont(police);	
@@ -603,6 +613,12 @@ void GestionEnv_afficherMessage(Environnement* envJeu, char* message, int x, int
 
 }
 
+/**
+ * @fn void GestionEnv_viderZoneMessage(Environnement* envJeu)
+ * @brief Efface la zone des message en haut de l'écran
+ * @param envJeu Environnement de jeu dans lequel est la zone des messages
+ * @see GestionEnv_afficherMessage
+ */
 void GestionEnv_viderZoneMessage(Environnement* envJeu){
 	nbMessages = 0;
 	boxColor(envJeu->ecran, 0, 0, LARGUEUR_ECRAN, OFFSET*2, COULEUR_FOND);

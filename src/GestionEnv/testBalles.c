@@ -1,5 +1,5 @@
 /**
- * @file testBalle.c
+ * @file testBalles.c
  * @brief Fait evoluer un environnement avec la bibliothèque GestionEnv 
  * @author Jérémy.B
  * @version 1.0

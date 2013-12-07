@@ -21,7 +21,10 @@
 #include <Aleatoire.h>
 #include <Balle.h>
 
-/* Pour la fonction GestionEnv_afficherMessage (paramètre x) */
+/** 
+	@brief Centrer le message sur la surface
+	@see GestionEnv_afficherMessage
+ */
 #define ALIGN_CENTRE -1
 
 /**
@@ -42,8 +45,9 @@ const cpFloat uniteTemps = 1.0/30.0;
  * Il s'occupe de gérer l'évolution des balles dans le panier
  *
  */
-typedef struct _Environnement Environnement;
-struct _Environnement {
+//typedef struct _Environnement Environnement; /* Documentation plus propre */
+//struct _Environnement {
+typedef struct {
 	cpSpace* espace; 	/*!< Espace physique (chipmunk) */
 	cpShape* panier[3]; /*!< 3 éléments du physique du panier: sol, mur gauche et mur droit */
 
@@ -53,7 +57,7 @@ struct _Environnement {
 	int nbBallesCrees;  /*!< Nombre de balles créées */
 
 	int ajouterBalles;  /*!< Booléen qui indique si toutes les balles ont été ajoutées */
-};
+} Environnement;
 
 /**
  * Fonction générique pour appliquer plus facilement
