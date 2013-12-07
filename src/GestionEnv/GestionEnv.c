@@ -220,7 +220,7 @@ void GestionEnv_evoluer(Environnement* envJeu){
  * @fn static void _afficherProgression(Environnement* envJeu)
  * @brief Affiche la progression de l'ajout des balles
  *
- * Calcul le ration nbBallesCrees/nbBallesTotal et l'affiche
+ * Calcul le ratio nbBallesCrees/nbBallesTotal et l'affiche
  * sous le panier sous la forme d'une ligne rouge
  *
  * @param envJeu Environnement de jeu dans lequel les balles ont été créées
