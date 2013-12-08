@@ -156,18 +156,24 @@ int main(void){
 		}
 
 		// Met à jour le score maximum
-		if(scoreMax == NULL){	
-			scoreMax = calloc(strlen(motsVersions[2]) + 1, sizeof(char));	
-			strcpy(scoreMax, motsVersions[2]);				
-		}
-		else if(strlen(motsVersions[2]) > strlen(scoreMax)){
-			scoreMax = realloc(scoreMax, (strlen(motsVersions[2]) + 1) * sizeof(char));	
-			strcpy(scoreMax, motsVersions[2]);					
+		// Le score max est forcément la solution du 3e algorithme
+		// puiqu'il peut trouver les mêmes mots que le 1 et 2
+		if(nbMotsTrouves > 0){
+			if(scoreMax == NULL){	
+				scoreMax = calloc(strlen(motsVersions[2]) + 1, sizeof(char));	
+				strcpy(scoreMax, motsVersions[2]);				
+			}
+			else if(strlen(motsVersions[2]) > strlen(scoreMax)){
+				scoreMax = realloc(scoreMax, (strlen(motsVersions[2]) + 1) * sizeof(char));	
+				strcpy(scoreMax, motsVersions[2]);					
+			}
 		}
 
 		// Affiche le score max
-		sprintf(message, "Petanque 2000 - Meilleur score: %d avec %s", strlen(scoreMax), scoreMax);
-		SDL_WM_SetCaption(message, NULL);
+		if(scoreMax != NULL){
+			sprintf(message, "Petanque 2000 - Meilleur score: %d avec %s", strlen(scoreMax), scoreMax);
+			SDL_WM_SetCaption(message, NULL);
+		}
 
 		// Supprime les résultats
 		free(lettres);

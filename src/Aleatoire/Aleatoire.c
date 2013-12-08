@@ -150,6 +150,11 @@ char Aleatoire_Lettre(){
 
 /**
  * @fn static char _LettreAleatoire(int nbRecursions)
+ * @param nbRecursions Nombre d'appel récursifs de la fonction
+ *
+ * @warning nbRecursions permet de limiter le nombre de récursions et donc
+ * d'éviter une récursion infinie dans le cas ou aucune lettre ne rempli
+ * les conditions pour être choisie
  * @see Aleatoire_Lettre
  */
 static char _LettreAleatoire(int nbRecursions){
