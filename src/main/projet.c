@@ -1,8 +1,6 @@
 /**
  * @file projet.c
  * @brief Jeu en intégralitée
- * @author Jérémy.B
- * @version 1.0
  */
 
 #include <stdio.h>

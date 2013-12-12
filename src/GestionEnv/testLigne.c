@@ -3,8 +3,6 @@
  * @brief Fait evoluer un environnement avec la bibliothèque
  * GestionEnv et trace une ligne pour récupérer les lettres 
  * des balles traversées
- * @author Jérémy.B
- * @version 1.0
  *
  * Test pour les fonctions:
  *   GestionEnv_donnerCaracteresLigne

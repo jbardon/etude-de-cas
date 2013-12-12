@@ -1,8 +1,6 @@
 /**
  * @file testCompareBalle.c
  * @brief Test de trie d'un tableau de balle
- * @author Jérémy.B
- * @version 1.0
  *
  * Trie un tableau de balles avec qsort se basant
  * sur son abscisse et le sens de tracé de la ligne

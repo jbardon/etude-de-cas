@@ -1,9 +1,6 @@
 /**
  * @file testCaractere.c
  * @brief Test sur l'affichage d'un caractère avec SDL_ttf
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * Initialisation de la TTF
  * Inclusion de la police "arial"

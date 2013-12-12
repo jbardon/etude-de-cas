@@ -1,3 +1,8 @@
+/**
+* @file AlgoRecherche.h
+* @brief Contient l'ensemble des algos sur les chaine de caractere
+*/
+
 #include <ctype.h>
 #include <glib.h>
 #include <stdio.h> /* DEBUG */

@@ -1,9 +1,6 @@
 /**
  * @file testClic.c
  * @brief Test sur les coordonnées du pointeur de la souris au clic
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * Ecoute de l'évènement Input
  * Au clic gauche de la souris, récupération des coordonnées (X,Y)

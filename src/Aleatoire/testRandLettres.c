@@ -1,9 +1,6 @@
 /**
  * @file testRandLettres.c
  * @brief Test pour créer la fonction Aleatoire_Lettre
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * @warning Ce test a permis d'élaborer la fonction Aleatoire_Lettre
  */

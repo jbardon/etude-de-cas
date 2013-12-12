@@ -1,9 +1,6 @@
 /**
  * @file testBalle.c
  * @brief Test complet de la bibliothèque Balle
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * Liste des fonctions testés :
  * 	 @see Balle_creer

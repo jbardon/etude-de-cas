@@ -1,8 +1,6 @@
 /**
  * @file testPanier.c
  * @brief Affichage le panier sur une fenêtre SDL
- * @author Jérémy.B
- * @version 1.0
  *
  * Test pour les fonctions :
  *    @see _creerPanier 

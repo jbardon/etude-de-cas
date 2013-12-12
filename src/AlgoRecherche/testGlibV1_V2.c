@@ -1,7 +1,6 @@
 /**
 * @file testGlibV1_V2.c
 * @brief Permet de tester la GLib et la table de Hashage pour les versions 1 et 2
-* @author Mickael.A
 *
 * Test qui test la GLib pour les deux première version des algos
 *

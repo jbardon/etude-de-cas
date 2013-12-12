@@ -1,9 +1,6 @@
 /**
  * @file GestionEnv.h
  * @brief Gestion de l'environnement graphique et physique du jeu
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * Bibliothèque pour la gestion de la SDL, chipmunk, des balles et
  * du tracé des lignes pour sélectionner des balles

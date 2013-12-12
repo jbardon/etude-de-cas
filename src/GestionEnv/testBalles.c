@@ -1,8 +1,6 @@
 /**
  * @file testBalles.c
  * @brief Fait evoluer un environnement avec la bibliothèque GestionEnv 
- * @author Jérémy.B
- * @version 1.0
  *
  * Test qui laisse évoluer l'environnement avec 20 balles 
  * et pendant 30 secondes

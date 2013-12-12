@@ -1,8 +1,6 @@
 /**
  * @file testMenuSDL.c
  * @brief Test la bibliothèque MenuSDL
- * @author Jérémy.B
- * @version 1.0
  *
  * Affichage des lettres sélectionnée et des résultats
  * aux 3 algorithmes de recherche de mots

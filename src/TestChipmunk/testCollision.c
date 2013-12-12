@@ -3,10 +3,6 @@
  * @brief Test sur la collision entre une balle 
  * et une ligne avec chipmunk
  *
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
- *
  * Une ligne est tracée du coin supérieur gauche de l'écran 
  * au coin inférieur droit. Une balle au centre de l'écran tombe 
  * et passe à travers de la ligne qui détecte la collision 

@@ -1,9 +1,6 @@
 /**
  * @file Aleatoire.c
  * @brief Gestion de l'aléatoire pour différents éléments
- * @author Jérémy.B
- * @version 1.0
- * @date 6 décembre 2013
  *
  * Gestion de l'aléatoire pour un entier, une direction, une lettre, une position et une couleur
  *

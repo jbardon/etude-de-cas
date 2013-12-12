@@ -1,9 +1,6 @@
 /**
  * @file testRotation.c
  * @brief Test sur la rotation d'une surface SDL
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * Rotation d'une surface SDL avec la fonction rotozoomSurface
  * de la bibliothèque SDL_gfx

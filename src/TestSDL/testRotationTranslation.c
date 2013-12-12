@@ -1,9 +1,6 @@
 /**
  * @file testRotationTranslation.c
  * @brief Test sur la translation et la rotation d'une surface SDL
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * Déplacement et rotation d'une surface SDL 
  *

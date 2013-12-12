@@ -2,9 +2,6 @@
  * @file testDroiteGauche.c
  * @brief Affichage d'un panier avec une balle qui tombe
  * ou le sol n'est pas plat 
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * Test le moteur physique chipmunk et le débordement
  * des coordonnées lorsque la vitesse de la balle est trop grande

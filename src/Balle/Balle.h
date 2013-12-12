@@ -1,9 +1,6 @@
 /**
  * @file Balle.h
  * @brief Gestion d'une balle d'un point de vue graphique et physique
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * Bibliothèque pour la gestion d'une balle avec la SDL et chipmunk
  *

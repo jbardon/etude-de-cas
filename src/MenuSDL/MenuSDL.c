@@ -1,9 +1,6 @@
 /**
  * @file MenuSDL.c
  * @brief Affichage d'un menu pour les scores au algorithmes
- * @author Jérémy.B
- * @version 1.0
- * @date 10 novembre 2013
  *
  * Construction automatique d'une surface SDL à partir 
  * de données passés en paramètre

@@ -1,7 +1,6 @@
 /**
 * @file AlgoRecherche.c 
 * @brief Contient l'ensemble des algos sur les chaine de caractere
-* @author Mickael.A
 */
 
 #include "AlgoRecherche.h"
