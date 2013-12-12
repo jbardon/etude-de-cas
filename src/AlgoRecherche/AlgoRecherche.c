@@ -142,6 +142,7 @@ void version2_2(GHashTable* table, char* active, char* rest)
         {
             return; //on renvoie NULL
         }
+		
 
 		if(strlen(active) > strlen(chaine_retourV2)) //si la taille est plus grande que celui trouver avant
         {
@@ -188,7 +189,10 @@ char* version2(GHashTable* table, char* chaine)
 {
 	chaine_retourV2 = calloc(1, sizeof(char));
 	strcpy(chaine_retourV2, "");
-	version2_2(table, "", chaine);
+	if(strlen(chaine)>0)
+	{
+		version2_2(table, "", chaine);
+	}
 	return chaine_retourV2;
 }
 
@@ -362,7 +366,10 @@ char* version3(GHashTable* table, char* chaine)
 {
 	chaine_retourV3 = calloc(1, sizeof(char));
 	strcpy(chaine_retourV3, "");
-	version3_2(table, "", chaine);
+	if(strlen(chaine)>0)
+	{
+		version3_2(table, "", chaine);
+	}
 	return chaine_retourV3;
 }
 

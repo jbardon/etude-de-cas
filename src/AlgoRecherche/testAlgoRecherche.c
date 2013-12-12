@@ -42,7 +42,7 @@ int main()
 
 	char* resultatV2 = "aluminium";
 	printf("Resultat attendu, value : %s, points : %d\n",resultatV2, (int)strlen(resultatV2));
-
+//zaluqpminiuwwm
 	char* ver2 = version2(dicoV1_V2,"zaluqpminiuwwm");
 	if(strcmp(ver2, resultatV2) == 0)
 	{
