@@ -93,90 +93,113 @@ int main(void){
 
 		printf("Lettres selectionnes: %s \\%d\n", lettres, strlen(lettres));
 
-		// Cherche un mot dans le dictionnaire
-		lettres = _minuscules(lettres);
+		if(strcmp(lettres, "") != 0){
+
+			// Cherche un mot dans le dictionnaire
+			lettres = _minuscules(lettres);
 		
-		int nbMotsTrouves = 0;
-		char* motsVersions [3] = { NULL };
+			int nbMotsTrouves = 0;
+			char* motsVersions [3] = { NULL };
 
-		gettimeofday(&debut, NULL);
-		motsVersions[nbMotsTrouves] = version1(dicoV1, lettres);
-		gettimeofday(&fin, NULL);
-		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
-			nbMotsTrouves++;
-		}
-		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
-		printf("Algo 1: %s trouve en %2.4fs\n", _majuscules(motsVersions[0]), duree);
+			// Algo 1
+			gettimeofday(&debut, NULL);
+			motsVersions[nbMotsTrouves] = version1(dicoV1, lettres);
+			gettimeofday(&fin, NULL);
+			duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
 
-		gettimeofday(&debut, NULL);
-		motsVersions[nbMotsTrouves] = version2(dicoV1, lettres);
-		gettimeofday(&fin, NULL);
-		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
-			nbMotsTrouves++;
-		}
-		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
-		printf("Algo 2: %s trouve en %2.4fs\n", _majuscules(motsVersions[1]), duree);
-
-		gettimeofday(&debut, NULL);
-		motsVersions[nbMotsTrouves] = version3(dicoV3, lettres);
-		gettimeofday(&fin, NULL);
-		if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
-			nbMotsTrouves++;
-		}
-		duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
-		printf("Algo 3: %s trouve en %2.4fs\n", _majuscules(motsVersions[2]), duree);
-
-		_majuscules(lettres);
-		
-		if(nbMotsTrouves > 0){
-
-			// Définition des couples mot-score
-			for(int i = 0; i < nbMotsTrouves; i++){
-				motsTrouves[i] = Solution_creer(_majuscules(motsVersions[i]), strlen(motsVersions[i]));
+			if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
+				printf("Algo 1: %s trouve en %2.4fs\n", _majuscules(motsVersions[nbMotsTrouves]), duree);
+				nbMotsTrouves++;
 			}
+			else {
+				printf("Algo 1: Aucune solution en %2.4fs\n", duree);
+			}
+
+			// Algo 2
+			gettimeofday(&debut, NULL);
+			motsVersions[nbMotsTrouves] = version2(dicoV1, lettres);
+			gettimeofday(&fin, NULL);
+			duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
+
+			if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
+				printf("Algo 2: %s trouve en %2.4fs\n", _majuscules(motsVersions[nbMotsTrouves]), duree);
+				nbMotsTrouves++;
+			}
+			else {
+				printf("Algo 2: Aucune solution en %2.4fs\n", duree);
+			}
+
+			// Algo 3
+			gettimeofday(&debut, NULL);
+			motsVersions[nbMotsTrouves] = version3(dicoV3, lettres);
+			gettimeofday(&fin, NULL);
+			duree = ((double)(1000*(fin.tv_sec-debut.tv_sec)+((fin.tv_usec-debut.tv_usec)/1000)))/1000.;
+
+			if(strcmp(motsVersions[nbMotsTrouves], "") != 0){
+				printf("Algo 3: %s trouve en %2.4fs\n", _majuscules(motsVersions[nbMotsTrouves]), duree);
+				nbMotsTrouves++;
+			}
+			else {
+				printf("Algo 3: Aucune solution en %2.4fs\n", duree);
+			}
+
+			_majuscules(lettres);
+		
+			if(nbMotsTrouves > 0){
+
+				// Définition des couples mot-score
+				for(int i = 0; i < nbMotsTrouves; i++){
+					motsTrouves[i] = Solution_creer(_majuscules(motsVersions[i]), strlen(motsVersions[i]));
+				}
 	
-			SDL_Surface* menu = MenuSDL_creer(lettres, motsTrouves, nbMotsTrouves);
-			SDL_Rect pos = { 0, 0 };
-			SDL_BlitSurface(menu, NULL, envJeu->ecran, &pos);
-			SDL_Flip(envJeu->ecran);
+				SDL_Surface* menu = MenuSDL_creer(lettres, motsTrouves, nbMotsTrouves);
+				SDL_Rect pos = { 0, 0 };
+				SDL_BlitSurface(menu, NULL, envJeu->ecran, &pos);
+				SDL_Flip(envJeu->ecran);
 
-			// Supprime le menu et les couples mot-score
-			for(int i = 0; i < nbMotsTrouves; i++){
-				Solution_supprimer(motsTrouves[i]);
+				// Supprime le menu et les couples mot-score
+				for(int i = 0; i < nbMotsTrouves; i++){
+					Solution_supprimer(motsTrouves[i]);
+				}
+
+				SDL_FreeSurface(menu);
+
+				// Met à jour le score maximum
+				// Le score max est forcément la solution du 3e algorithme
+				// puiqu'il peut trouver les mêmes mots que le 1 et 2
+				if(scoreMax == NULL){	
+					scoreMax = calloc(strlen(motsVersions[2]) + 1, sizeof(char));	
+					strcpy(scoreMax, motsVersions[2]);				
+				}
+				else if(strlen(motsVersions[2]) > strlen(scoreMax)){
+					scoreMax = realloc(scoreMax, (strlen(motsVersions[2]) + 1) * sizeof(char));	
+					strcpy(scoreMax, motsVersions[2]);					
+				}
+			}
+			else {
+			
+				GestionEnv_viderZoneMessage(envJeu);
+				sprintf(message, "Aucun mot trouve pour: %s", lettres);
+				GestionEnv_afficherMessage(envJeu, message, ALIGN_CENTRE, 20, 20);			
 			}
 
-			SDL_FreeSurface(menu);
+			// Supprime les résultats
+			for(unsigned int i = 0; i < 3; i++){
+				free(motsVersions[i]);
+			}
 		}
 		else {
 			GestionEnv_viderZoneMessage(envJeu);
-			sprintf(message, "Aucun mot trouve pour: %s", lettres);
-			GestionEnv_afficherMessage(envJeu, message, ALIGN_CENTRE, 20, 20);			
-		}
+			GestionEnv_afficherMessage(envJeu, "Aucune lettre selectionee", ALIGN_CENTRE, 20, 20);			
+		}	
 
-		// Met à jour le score maximum
-		// Le score max est forcément la solution du 3e algorithme
-		// puiqu'il peut trouver les mêmes mots que le 1 et 2
-		if(nbMotsTrouves > 0){
-			if(scoreMax == NULL){	
-				scoreMax = calloc(strlen(motsVersions[2]) + 1, sizeof(char));	
-				strcpy(scoreMax, motsVersions[2]);				
-			}
-			else if(strlen(motsVersions[2]) > strlen(scoreMax)){
-				scoreMax = realloc(scoreMax, (strlen(motsVersions[2]) + 1) * sizeof(char));	
-				strcpy(scoreMax, motsVersions[2]);					
-			}
-		}
+		// Libère la mémoire des lettres		
+		free(lettres);	
 
 		// Affiche le score max
 		if(scoreMax != NULL){
 			sprintf(message, "Petanque 2000 - Meilleur score: %d avec %s", strlen(scoreMax), scoreMax);
 			SDL_WM_SetCaption(message, NULL);
-		}
-
-		// Supprime les résultats
-		free(lettres);
-		for(unsigned int i = 0; i < 3; i++){
-			free(motsVersions[i]);
 		}
 
 		// Supprime les balles sélectionneés
