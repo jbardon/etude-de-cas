@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 extern GHashTable* chargerDicoV1_V2(char* nomFichier);
 extern GHashTable* chargerDicoV3(char* nomFichier);
 

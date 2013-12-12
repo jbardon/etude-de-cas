@@ -137,7 +137,7 @@ void version2_2(GHashTable* table, char* active, char* rest)
         {
             return; //on renvoie NULL
         }
- 
+
 		if(strlen(active) > strlen(chaine_retourV2)) //si la taille est plus grande que celui trouver avant
         {
 			const unsigned int h = g_str_hash(active); //on recupère la valeur de hash de la sous-chaine ...
@@ -306,6 +306,7 @@ GHashTable* chargerDicoV3(char* nomFichier)
 */
 void version3_2(GHashTable* table, char* active, char* rest)
 {
+
 	if(strlen(rest)==0) //si la longueur de rest est 0
 	{
 		if(active == NULL) //si active vaut NULL

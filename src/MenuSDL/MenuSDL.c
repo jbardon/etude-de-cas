@@ -191,9 +191,11 @@ static void _afficherMessage(SDL_Surface* ecran, char* message, int x, int y, TT
 	SDL_Color couleur = {20, 50, 50};
 	
 	// Charge la police
+	int libererPolice = 0;
 	if(police == NULL){
 		police = TTF_OpenFont("arial.ttf", 20);
 		TTF_SetFontStyle(police, TTF_STYLE_BOLD);
+		libererPolice = 1;
 	}
 
 	// Calcul la position
@@ -208,6 +210,11 @@ static void _afficherMessage(SDL_Surface* ecran, char* message, int x, int y, TT
 
 	// Affiche le message
 	SDL_BlitSurface(texte, NULL, ecran, &position);
+
+	// Libération de la mémoire
+	if(libererPolice){
+		TTF_CloseFont(police);
+	}
 	SDL_FreeSurface(texte);
 
 	SDL_Flip(ecran);
