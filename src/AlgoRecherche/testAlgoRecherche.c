@@ -1,9 +1,19 @@
+/**
+* @file testAlgoRecherche.c
+* @brief Permet de tester les algorithmes des différentes versions des algos
+* @author Mickael.A
+*
+* Test qui créer les dictionnaires pour les différentes versions
+* et qui teste les 3 versions
+*
+*/
+
 #include "../main/config.h"
 #include "AlgoRecherche.h"
 
 int main()
 {	
-
+	
 	//******************************************* Création des dictionnaires *******************************************//
 	//création des dictionnaire avec la table de hashage
 	GHashTable* dicoV1_V2 = chargerDicoV1_V2("dicofinal.txt"); //pour la version 1 & 2

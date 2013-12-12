@@ -1,11 +1,22 @@
+/**
+ * @file testClic.c
+ * @brief Test sur les coordonnées du pointeur de la souris au clic
+ * @author Jérémy.B
+ * @version 1.0
+ * @date 10 novembre 2013
+ *
+ * Ecoute de l'évènement Input
+ * Au clic gauche de la souris, récupération des coordonnées (X,Y)
+ * Affichage de ces coordonnées
+ * 
+ */
+
 #include <stdio.h>
 #include <math.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_image.h>
 #include <unistd.h> //pause
-
-
 #include <stdlib.h>
 
 typedef struct
@@ -14,12 +25,11 @@ typedef struct
     int mousex,mousey;
     int mousexrel,mouseyrel;
     char mousebuttons[8];
-        char quit;
+    char quit;
 } Input;
 
 void UpdateEvents(Input* in)
 {
-
     SDL_Event event;
     while(SDL_PollEvent(&event))
     {
@@ -56,29 +66,25 @@ int main(void){
 
 SDL_Init(SDL_INIT_VIDEO);
 
-
   //Créé la fenêtre de jeu
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Surface* ecran = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_HWSURFACE);
   SDL_FillRect(ecran, NULL, COULEUR_FOND);
   SDL_WM_SetCaption("Projet étude de cas", NULL);
   SDL_Flip(ecran);
- 
-    Input in;
-    // init SDL, chargement, tout ce que vous faites avant la boucle.
-    memset(&in,0,sizeof(in));
-    while(!in.key[SDLK_ESCAPE] && !in.quit)
-    {
-        UpdateEvents(&in);
-        if (in.mousebuttons[SDL_BUTTON_LEFT])
-        {
-            in.mousebuttons[SDL_BUTTON_LEFT] = 0;
-            printf("x: %d, y: %d\n", in.mousex, in.mousey);
-			
-        }       
-        
-        
-    }
+
+  Input in;
+  // init SDL, chargement, tout ce que vous faites avant la boucle.
+  memset(&in,0,sizeof(in));
+  while(!in.key[SDLK_ESCAPE] && !in.quit)
+  {
+      UpdateEvents(&in); //Mise à jour de l'évènement
+      if (in.mousebuttons[SDL_BUTTON_LEFT])
+      {
+          in.mousebuttons[SDL_BUTTON_LEFT] = 0;
+          printf("x: %d, y: %d\n", in.mousex, in.mousey);
+      }               
+  }
 
   pause();
   
