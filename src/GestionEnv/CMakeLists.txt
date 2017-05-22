@@ -11,19 +11,19 @@ set_target_properties(
 	PROPERTIES OUTPUT_NAME GestionEnv
 )
 
-add_executable(testPanier testPanier.c)
-target_link_libraries(testPanier GestionEnv Aleatoire Balle SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
+#add_executable(testPanier testPanier.c)
+#target_link_libraries(testPanier GestionEnv Aleatoire Balle SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
 
-add_executable(testBalles testBalles.c)
-target_link_libraries(testBalles GestionEnv Aleatoire Balle SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
+#add_executable(testBalles testBalles.c)
+#target_link_libraries(testBalles GestionEnv Aleatoire Balle SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
 
-add_executable(testLigne testLigne.c)
-target_link_libraries(testLigne GestionEnv Aleatoire Balle AlgoRecherche SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
+#add_executable(testLigne testLigne.c)
+#target_link_libraries(testLigne GestionEnv Aleatoire Balle AlgoRecherche SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
 
-add_executable(testCompareBalle testCompareBalle.c)
-target_link_libraries(testCompareBalle GestionEnv Aleatoire Balle SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
+#add_executable(testCompareBalle testCompareBalle.c)
+#target_link_libraries(testCompareBalle GestionEnv Aleatoire Balle SDL SDLmain SDL_gfx SDL_ttf chipmunk glib-2.0)
 
-add_test(testPanier ./testPanier)
-add_test(testBalles ./testBalles)
-add_test(testLigne ./testLigne)
-add_test(testCompareBalle ./testCompareBalle)
+#add_test(testPanier ./testPanier)
+#add_test(testBalles ./testBalles)
+#add_test(testLigne ./testLigne)
+#add_test(testCompareBalle ./testCompareBalle)
